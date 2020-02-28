@@ -1,0 +1,7 @@
+is right of
+is behind
+is left of
+is in front of
+is behind
+is on the left side
+is to the left of

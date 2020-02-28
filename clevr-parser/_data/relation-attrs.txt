@@ -1,0 +1,6 @@
+left 
+right 
+behind 
+front
+above
+below
