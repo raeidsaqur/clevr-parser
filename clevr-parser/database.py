@@ -7,7 +7,7 @@
 #
 # This file is part of PGFM Parser.
 # Distributed under terms of the MIT license.
-# https://github.com/raeidsaqur/pgfmParser
+# https://github.com/raeidsaqur/clevr-parser
 
 import os
 import json

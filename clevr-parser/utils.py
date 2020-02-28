@@ -7,7 +7,7 @@
 #
 # This file is part of PGFM Parser.
 # Distributed under terms of the MIT license.
-# https://github.com/raeidsaqur/pgfmParser
+# https://github.com/raeidsaqur/clevr-parser
 
 import functools
 import tabulate
@@ -75,7 +75,6 @@ def compose_multimodal_graphs(Gs: nx.Graph, Gt: nx.Graph,
 
 def draw_adjacency_matrix(G, node_order=None, partitions=[], colors=[]):
     """
-    Source: http://sociograph.blogspot.com/2012/11/visualizing-adjacency-matrices-in-python.html
     - G is a netorkx graph
     - node_order (optional) is a list of nodes, where each node in G
           appears exactly once
@@ -128,7 +127,6 @@ def trace(f, DEBUG=False):
 #TODO: import graph library here
 @trace
 def toGraph(graph:Dict, id:int=0, file:str=None, caption:str=None, out=None):
-    # Import YAGL (yet another graph library) or
     # Base graph lib https://github.com/networkx/networkx
     raise NotImplementedError
 

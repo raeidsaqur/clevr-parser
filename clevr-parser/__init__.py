@@ -7,14 +7,14 @@
 #
 # This file is part of PGFM Parser.
 # Distributed under terms of the MIT license.
-# https://github.com/raeidsaqur/pgfmParser
+# https://github.com/raeidsaqur/clevr-parser
 
 from ._version import __version__, __author__, __email__
 
 from .parser import *
 from .utils import *
 from .explacy import *
-# from .graph import *
+
 
 
 
