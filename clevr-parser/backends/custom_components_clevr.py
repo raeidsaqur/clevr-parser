@@ -59,17 +59,22 @@ class CLEVRObjectRecognizer(object):
 	fn = lambda p: list(map(lambda x: x + ['S'], list(map(lambda y: list(y), permutations(attrs, p)))))
 	qn = lambda r: list(map(fn, r))
 
-	def __init__(self, nlp, label="CLEVR_OBJ"):
-		self._init_constants()
+	def __init__(self, nlp, label="CLEVR_OBJ", include_plurals=True):
+		
 		self.label = nlp.vocab.strings[label]  # get entity label ID
+		self.include_plurals = include_plurals
+		self._init_constants()
 		self._add_custom_spacy_extensions()
 		patterns = self.construct_patterns()
 		self.ruler = EntityRuler(nlp, phrase_matcher_attr=None, overwrite_ents=False, validate=True)
 		self.ruler.add_patterns(patterns)
+		if self.include_plurals:
+			self.ruler.add_patterns(plural_patterns)
 
 		self._add_ruler_to_pipeline(nlp, self.ruler, force=True)
 
 	def _init_constants(self):
+		## Attrs with synonyms.json mixin: ##
 		color_attrs = ['gray', 'red', 'blue', 'green', 'brown', 'purple', 'cyan', 'yellow']
 		material_attrs = ['rubber', 'matte', 'metal', 'metallic', 'shiny']
 		size_attrs = ['small', 'tiny', 'large', 'big']
@@ -85,12 +90,23 @@ class CLEVRObjectRecognizer(object):
 		has_material_getter = lambda obj: any([t.text in material_attrs for t in obj])
 		has_shape_getter = lambda obj: any([t.text in shape_attrs for t in obj])
 
+		is_attrs = ['is_size', 'is_color', 'is_material', 'is_shape']
+		has_attrs = ['has_size', 'has_color', 'has_material', 'has_shape']
 		is_attrs_getters = [is_size_getter, is_color_getter, is_material_getter, is_shape_getter]
 		has_attrs_getters = [has_size_getter, has_color_getter, has_material_getter, has_shape_getter]
 
-		is_attrs = ['is_size', 'is_color', 'is_material', 'is_shape']
-		has_attrs = ['has_size', 'has_color', 'has_material', 'has_shape']
+		if self.include_plurals:
+			shapes_attrs = list(map(lambda x: x + 's', shape_attrs))
+			is_shapes_getter = lambda token: token.text in shapes_attrs  # Handle plurals
+			has_shapes_getter = lambda obj: any([t.text in shapes_attrs for t in obj])  #Handle plurals
+			is_attrs = ['is_size', 'is_color', 'is_material', 'is_shape', 'is_shapes']
+			has_attrs = ['has_size', 'has_color', 'has_material', 'has_shape', 'has_shapes']
+			is_attrs_getters = [is_size_getter, is_color_getter, is_material_getter, is_shape_getter, is_shapes_getter]
+			has_attrs_getters = [has_size_getter, has_color_getter, has_material_getter, has_shape_getter,
+								 has_shapes_getter]
 
+		assert len(is_attrs) == len(is_attrs_getters)
+		assert len(has_attrs) == len(has_attrs_getters)
 		self.is_attrs_name2func = list(zip(is_attrs, is_attrs_getters))
 		self.has_attrs_name2func = list(zip(has_attrs, has_attrs_getters))
 
@@ -168,6 +184,33 @@ class CLEVRObjectRecognizer(object):
 				obj_patterns.append(obj_pattern)
 
 		return obj_patterns
+
+	@staticmethod
+	def construct_plural_patterns(label="CLEVR_OBJS") -> List[Dict]:
+		"""
+		E.g. case (from CLEVR q.fam: 2): 'Are there more big green things than large purple shiny cubes?'
+		:param label: entity label
+		:return: pattern
+		"""
+		def _patterns() -> List[List[List]]:
+			C = {"_": {"is_color": {"==": 1}}}
+			Z = {"_": {"is_size": {"==": 1}}}
+			M = {"_": {"is_material": {"==": 1}}}
+			SS = {"_": {"is_shapes": {"==": 1}}}
+			attrs = [C, Z, M]
+
+			fn = lambda p: list(map(lambda x: x + [SS], list(map(lambda y: list(y), permutations(attrs, p)))))
+			qn = lambda r: list(map(fn, r))
+			return qn([3, 2, 1, 0])
+
+		obj_patterns = []
+		for patterns in _patterns():
+			for pattern in patterns:
+				obj_pattern = {"label": label, "pattern": pattern}
+				obj_patterns.append(obj_pattern)
+
+		return obj_patterns
+
 
 	@staticmethod
 	def _get_token_info(doc, is_debug=False):
