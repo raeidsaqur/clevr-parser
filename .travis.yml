@@ -35,3 +35,6 @@ after_success:
   - codecov
 notifications:
   email: false
+
+deploy:
+  skip_cleanup: true
