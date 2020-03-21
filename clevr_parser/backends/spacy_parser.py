@@ -18,6 +18,7 @@ from ..utils import *
 __all__ = ['SpacyParser']
 
 from functools import reduce
+from operator import itemgetter
 from typing import List, Dict, Tuple, Sequence
 import copy
 import logging
@@ -32,6 +33,7 @@ except ImportError as ie:
     logger.error(f"Install NetworkX: {ie.name}")
 
 import numpy as np
+np.random.seed(42)
 import scipy.sparse as sp
 
 @Parser.register_backend
@@ -174,6 +176,10 @@ class SpacyParser(ParserBackend):
         """
         assert text is not None
         G_text, doc = self.parse(text, return_doc=True)
+        if G_text is None and 'SKIP' in doc:
+            logger.info(f'{text} contains plural (i.e. label CLEVR_OBJS')
+            return None, f"SKIP_{text}"
+
         doc_emd = self.get_clevr_doc_vector_embedding(doc, ent_vec_size=ent_vec_size, embedding_type=embedding_type)
 
         return G_text, doc_emd
@@ -212,6 +218,41 @@ class SpacyParser(ParserBackend):
 
         assert doc_vector.shape[1] == embed_sz
         return doc_vector
+
+    def get_clevr_entity_matrix_embedding(self, entity, dim=96, include_obj_node_emd=True, embedding_type=None):
+        """
+        Atomic function for generating matrix embedding from a doc entity:
+
+        :param entity: A spacy Doc.entity
+        :param dim: the dim of the embd matrix, default = 96, the same dim as each attr node
+        :param include_obj_node_emd: if True, a wrapper obj node "obj" is prepended to the entity vector embedding
+        :param embedding_type: one-hot, bag_of_words, GloVe etc.
+        :return: an N by M embedding matrix, where M = dim and N is the num of nodes of a generated graph of the entity
+        """
+        label = entity.label_
+        if label is None or label != "CLEVR_OBJ":
+            raise TypeError("The entity must be a CLEVR_OBJ entity")
+
+        # poss = []
+        # embds = []
+        embds_poss = []
+        for token in entity:
+            _v, pos = self.get_attr_token_vector_embedding(token, size=dim, embedding_type=embedding_type)
+            # poss.append(pos)
+            # embds.append(_v)
+            embds_poss.append((_v, pos))
+        #embds = reduce(lambda a,b: np.vstack((a,b)), embds) if len(embds) > 1 else embds[0]
+        embds_poss.sort(key=itemgetter(1))
+        embds = list(map(lambda x: x[0], embds_poss))
+        embds = np.array(embds, dtype=np.float32).squeeze()
+        #embds = embds[poss]
+        obj_embd = np.mean(embds,axis=0)
+        embds = np.vstack((obj_embd, embds))
+
+        assert embds.shape[-1] == dim
+
+        return embds
+
 
     def get_clevr_entity_vector_embedding(self, entity, size=384, include_obj_node_emd=True, embedding_type=None):
         """
@@ -380,6 +421,16 @@ class SpacyParser(ParserBackend):
                               is_debug=False):
         """
         The atomic graph constructor.
+        :param entity: atomic CLEVR Object
+        :param ent_num: the id of the object in context of the full graph
+        :param is_attr_name_node_label:
+        :param head_node_prefix:
+        :param hnode_sz:
+        :param anode_sz:
+        :param hnode_col:
+        :param anode_col:
+        :param is_return_list:
+        :param is_debug:
         :return:
         """
         obj_vals = (entity.label_, entity.text)
@@ -393,8 +444,8 @@ class SpacyParser(ParserBackend):
 
         _n_fn = lambda s, a, t: tuple((s, dict(zip(node_keys, (a, t.text)))))
         for t in entity:
-            node = cls.get_attr_node_from_token(t, ent_num)
-            nodelist.append(node)
+            _node = cls.get_attr_node_from_token(t, ent_num)
+            nodelist.append(_node)
 
         # Node Labels
         if is_attr_name_node_label:
@@ -441,6 +492,24 @@ class SpacyParser(ParserBackend):
         if is_return_list:
             [G, nodelist, labels, edgelist, edge_labels, nsz, nc]
         return G, nodelist, labels, edgelist, edge_labels, nsz, nc
+
+    def get_docs_from_nx_graph(cls, G:nx.Graph) -> List:
+        nodes: nx.NodeDataView = G.nodes(data=True)
+        # clevr_obj_nodes: List[Tuple] = list(filter(lambda n: n[1]['label'] == 'CLEVR_OBJ', nodes))
+        clevr_spans: List[str] = list(map(lambda x: x[1]['val'], filter(lambda n: n[1]['label'] == 'CLEVR_OBJ', nodes)))
+        # E.g. : ['small red rubber cylinder', 'large brown metal sphere']
+        nco = len(clevr_spans)
+        assert nco <= 10
+        if nco == 0:
+            logger.warning(f"No CLEVR_OBJ found in {clevr_spans}")
+            return None
+        _docs = []
+        for cs in clevr_spans:
+            _, _doc = cls.parse(cs)
+            _docs.append(_doc)
+
+        return _docs
+
 
     @classmethod
     def get_nx_graph_from_doc(cls, doc, head_node_prefix=None):
@@ -490,6 +559,9 @@ class SpacyParser(ParserBackend):
         1. generate (canonical) caption from the image scene for all the objects
         2. parser.parse(caption) -> graph, doc
         3. call parser.draw_clevr_obj_graph() # same used for text scene graph.
+
+        Issues:
+        1. Need to encode the positional information in image scene
         """
         graph, doc = self.get_doc_from_img_scene(scene)
 
@@ -536,7 +608,26 @@ class SpacyParser(ParserBackend):
                    debug=False):
 
         ### Nodes
-        pos = nx.spring_layout(G)  # Get node positions
+        NDV = G.nodes(data=True)
+        NV = G.nodes(data=False)
+        _is_head_node = lambda x: 'obj' in x
+        _is_attr_node = lambda x: 'obj' not in x
+        head_nodes = list(filter(_is_head_node, NV))
+        attr_nodes = list(filter(_is_attr_node, NV))
+        assert len(NDV) == len(head_nodes) + len(attr_nodes)
+        pos = nx.layout.bipartite_layout(G, nodes=head_nodes)
+        #pos = nx.layout.spectral_layout(G)
+        pos = nx.spring_layout(G, pos=pos, fixed=attr_nodes)
+        #pos = nx.spring_layout(G)  # Get node positions
+
+        # Create position copies for shadows, and shift shadows
+        # See: https://gist.github.com/jg-you/144a35013acba010054a2cc4a93b07c7
+        pos_shadow = copy.deepcopy(pos)
+        shift_amount = 0.001
+        for idx in pos_shadow:
+            pos_shadow[idx][0] += shift_amount
+            pos_shadow[idx][1] -= shift_amount
+
         nsz = [hnode_sz if 'obj' in node else anode_sz for node in G.nodes]
         # nsz2 = list(map(lambda node: hnode_sz if 'obj' in node else anode_sz, G.nodes))
         nc = [hnode_col if 'obj' in node else anode_col for node in G.nodes]
@@ -571,9 +662,13 @@ class SpacyParser(ParserBackend):
                     continue
                 h = head_nodes[i - 1]
                 t = h_node
-                r = "<R>" if i <= 1 else f"<R{i + 1}>"
-                G.add_edges_from([(h, t, {r: "tbd"})])
-                edge_labels.update({(h, t): r})
+                # TODO: Relations should be order invariant, remove i+1
+                key = "<R>" if i <= 1 else f"<R{i + 1}>"
+                G.add_edges_from([(h, t, {key: "tbd"})])
+                edge_labels.update({(h, t): key})
+                
+        # G.add_edges_from([('obj', 'obj2', {'<R>': 'tbd'})])
+        # edge_labels.update({('obj', 'obj2'): "<R>"})
 
         edgelist = G.edges(data=True)
 
@@ -587,6 +682,8 @@ class SpacyParser(ParserBackend):
         ax.set_title(ax_title)
 
         nx.draw_networkx_nodes(G, pos, node_size=nsz, node_color=nc)
+        nx.draw_networkx_nodes(G, pos_shadow, node_size=nsz, node_color='k', alpha=0.2)
+
         nx.draw_networkx_edges(G, pos, edgelist=edgelist)
         # nx.draw_networkx_edges(G, pos, edgelist=G.edges(data=True))
         nx.draw_networkx_labels(G, pos, labels=labels, font_size=font_size, font_color='k', font_family='sans-serif')
