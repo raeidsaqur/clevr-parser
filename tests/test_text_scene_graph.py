@@ -7,8 +7,8 @@ np = pytest.importorskip('numpy')
 import os, sys, platform
 import json
 
-import pgfm_parser
-from pgfm_parser.utils import *
+import clevr_parser
+from clevr_parser.utils import *
 
 import matplotlib.pyplot as plt
 from networkx import karate_club_graph, to_numpy_matrix
@@ -27,7 +27,7 @@ cap_1obj_train_00B = 'A rubber purple sphere'
 
 @pytest.fixture(scope="module")
 def parser():
-    parser = pgfm_parser.Parser().get_backend(identifier='spacy', model='en_core_web_sm')
+    parser = clevr_parser.Parser().get_backend(identifier='spacy', model='en_core_web_sm')
     return parser
 
 def test_parser_2obj(parser):

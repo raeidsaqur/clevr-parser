@@ -8,7 +8,7 @@ setup_requires = ['pytest-runner']
 tests_require = ['pytest', 'pytest-cov']
 
 setup(
-    name='pgfm_parser',
+    name='clevr_parser',
     version=__version__,
     description='PGM factoring, object candidate proposal generator for CLEVR dataset',
     author='Raeid Saqur',

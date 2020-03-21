@@ -67,7 +67,8 @@ class CLEVRObjectRecognizer(object):
 		self._add_custom_spacy_extensions()
 		patterns = self.construct_patterns()
 		self.ruler = EntityRuler(nlp, phrase_matcher_attr=None, overwrite_ents=False, validate=True)
-		self.ruler.add_patterns(patterns)
+		self.ruler.add_patterns(patterns)					# label: CLEVR_OBJ
+		plural_patterns = self.construct_plural_patterns()  # label: CLEVR_OBJS
 		if self.include_plurals:
 			self.ruler.add_patterns(plural_patterns)
 

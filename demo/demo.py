@@ -22,8 +22,8 @@ if nb_dir not in sys.path:
 
 print(f"{os.name}.{platform.system()}.{platform.release()}.{platform.node()}")
 
-import pgfm_parser
-from pgfm_parser.utils import *
+import clevr_parser
+from clevr_parser.utils import *
 
 from typing import *
 
@@ -43,7 +43,7 @@ def demo_G_text(parser, text=None):
 
 
 def demo_G_scene(parser, gfp):
-    from pgfm_parser import utils
+    from clevr_parser import utils
     groundings = utils.load_groundings_from_path(gfp)
     g = groundings[0]
     G_img = parser.draw_clevr_img_scene_graph(g)
@@ -53,11 +53,11 @@ def demo_G_scene(parser, gfp):
 def main():
     clevr_img_name = lambda split, i: f"CLEVR_{split}_{i:06d}.png"
     #Load Parser
-    parser = pgfm_parser.Parser().get_backend(identifier='spacy', model='en_core_web_sm')
+    parser = clevr_parser.Parser().get_backend(identifier='spacy', model='en_core_web_sm')
     clevrr_baseline_qp = "../data/CLEVRR_v1.0/questions/CLEVRR_compare_baseline_questions.json"
     image_grounding_parsed_gp = "../data/CLEVR_v1.0/scenes_parsed/val_scenes_parsed.json"
 
-    demo_G_scene(parser)
+    demo_G_text(parser)
     print("done")
 
 

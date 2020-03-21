@@ -93,6 +93,29 @@ class SpacyParser(ParserBackend):
             Returns a nx.MultiGraph and Spacy.doc
         """
         doc = self.__nlp(sentence)
+        is_plural = doc._.has_shapes
+        if is_plural:
+            logger.info(f'{sentence} contains plural, skipping all CLEVR_OBJS as an edge case')
+            return None, f"SKIP_img {index}_{filename}"
+
+        graph, en_graphs = self.get_nx_graph_from_doc(doc)
+
+        # N.b. The ordering of doc.ents and graph.nodes should be aligned
+        if return_doc:
+            return graph, doc
+        return graph
+
+
+    def parse2(self, sentence:str, index=0, filename=None, return_doc=True):
+        """
+            #TODO: combine entity and Grammar rules for later, `parse` simply does
+            CLEVR entity graphs.
+            The spaCy-based parser parse the sentence into scene graphs based on the dependency parsing
+            of the sentence by spaCy.
+
+            Returns a nx.MultiGraph and Spacy.doc
+        """
+        doc = self.__nlp(sentence)
         graph, en_graphs = self.get_nx_graph_from_doc(doc)
 
 
