@@ -4,7 +4,7 @@ from setuptools import setup, find_packages
 with open("README.md", "r") as fh:
     long_description = fh.read()
 
-__version__ = '0.0.2'
+__version__ = '0.0.5'
 url = "https://github.com/raeidsaqur/clevr-parser"
 
 install_requires = [
@@ -13,7 +13,10 @@ install_requires = [
     'networkx',
     'scikit-learn',
     'scikit-image',
-    'requests'
+    'requests',
+    'tabulate',
+    'stanfordnlp',
+    'spacy-transformers'
 ]
 
 needs_pytest = {'pytest', 'test', 'ptr'}.intersection(sys.argv)
@@ -22,7 +25,7 @@ setup_requires = [] + pytest_runner
 tests_require = ['pytest', 'pytest-cov', 'mock']
 
 setup(
-    name='clevr_parser',
+    name='clevr-parser',
     version=__version__,
     description='PGM factoring, object candidate proposal generator for CLEVR dataset',
     author='Raeid Saqur',
@@ -30,7 +33,6 @@ setup(
     long_description=long_description,
     long_description_content_type="text/markdown",
     url=url,
-    download_url='{}/archive/{}.tar.gz'.format(url, __version__),
     classifiers=[
         "Programming Language :: Python :: 3",
         "License :: OSI Approved :: MIT License",
