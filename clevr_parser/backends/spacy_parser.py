@@ -107,65 +107,6 @@ class SpacyParser(ParserBackend):
             return graph, doc
         return graph
 
-
-    def parse2(self, sentence:str, index=0, filename=None, return_doc=True):
-        """
-            #TODO: combine entity and Grammar rules for later, `parse` simply does
-            CLEVR entity graphs.
-            The spaCy-based parser parse the sentence into scene graphs based on the dependency parsing
-            of the sentence by spaCy.
-
-            Returns a nx.MultiGraph and Spacy.doc
-        """
-        doc = self.__nlp(sentence)
-        graph, en_graphs = self.get_nx_graph_from_doc(doc)
-
-
-        # Step 2: determine the relations between objs
-        relation_subj = dict()
-        for token in doc:
-            # E.g., A [woman] is [playing] the piano.
-            if token.dep_ == 'nsubj':
-                relation_subj[token.head.i] = token.i
-            # E.g., A [woman] [playing] the piano...
-            elif token.dep_ == 'acl':
-                relation_subj[token.i] = token.head.i
-            # E.g., The piano is [played] by a [woman].
-            elif token.dep_ == 'pobj' and token.head.dep_ == 'agent' and token.head.head.pos_ == 'VERB':
-                relation_subj[token.head.head.i] = token.i
-
-        # Step 3: determine the relations.
-        relations = list()
-        filtered_relations = list()
-        fake_noun_marks = set()
-
-        for object in objects:
-            # Again, the subjects and the objects are represented by their position.
-            relation = None
-            # small red rubber cylinder is behind a large brown metal sphere
-
-            if relation is not None:
-                relations.append(relation)
-
-        """
-        # Apply the `fake_noun_marks`.
-        entities = [e for e, ec in zip(entities, entity_chunks) if ec.root.i not in fake_noun_marks]
-        entity_chunks = [ec for ec in entity_chunks if ec.root.i not in fake_noun_marks]
-        
-        for relation in relations:
-            # Use a helper function to map the subj/obj represented by the position
-            # back to one of the entity nodes.
-            relation['subject'] = self.__locate_noun(entity_chunks, relation['subject'])
-            relation['object'] = self.__locate_noun(entity_chunks, relation['object'])
-            if relation['subject'] != None and relation['object'] != None:
-                filtered_relations.append(relation)
-        """
-
-        # N.b. The ordering of doc.ents and graph.nodes should be aligned
-        if return_doc:
-            return graph, doc
-        return graph
-
     def get_clevr_text_vector_embedding(self, text, ent_vec_size=384, embedding_type=None):
         """
         Takes a text input and returns the feature vector X
@@ -233,19 +174,14 @@ class SpacyParser(ParserBackend):
         if label is None or label != "CLEVR_OBJ":
             raise TypeError("The entity must be a CLEVR_OBJ entity")
 
-        # poss = []
-        # embds = []
         embds_poss = []
         for token in entity:
             _v, pos = self.get_attr_token_vector_embedding(token, size=dim, embedding_type=embedding_type)
-            # poss.append(pos)
-            # embds.append(_v)
             embds_poss.append((_v, pos))
         #embds = reduce(lambda a,b: np.vstack((a,b)), embds) if len(embds) > 1 else embds[0]
         embds_poss.sort(key=itemgetter(1))
         embds = list(map(lambda x: x[0], embds_poss))
         embds = np.array(embds, dtype=np.float32).squeeze()
-        #embds = embds[poss]
         obj_embd = np.mean(embds,axis=0)
         embds = np.vstack((obj_embd, embds))
 
@@ -266,8 +202,7 @@ class SpacyParser(ParserBackend):
         then the entity vector needs to be padded. For e.g., "red thing" -> "<C> <S>" with missing
         <Z>, <M> attrs, in which case, <Z> <C> <M> <S> entity embedding will have <Z> <M> padded
         """
-                                        #default_entity_vector_dim = 384
-        token_sz= int(size / 4)         #default = 384/4 = 96
+        token_sz= int(size / 4)
         label = entity.label_
         if label is None or label != "CLEVR_OBJ":
             raise TypeError("The entity must be a CLEVR_OBJ entity")
@@ -322,7 +257,6 @@ class SpacyParser(ParserBackend):
         if embedding_type is None:
             # Use the default embedding type
             vector = token.vector.reshape(1, -1)
-
         pos = self._get_attr_token_pos(token)
 
         return vector, pos
@@ -388,7 +322,6 @@ class SpacyParser(ParserBackend):
         caption = reduce(concat, map(f, clevr_objs))  # skeletal scene caption without pos, rel
         # p = lambda o: tuple(o['position'])  # (x, y, z) co-ordinates
         # pos = list(map(p, clevr_objs))
-
         return caption
 
     def get_doc_from_img_scene(self, scene, *args, **kwargs):
@@ -761,18 +694,4 @@ class SpacyParser(ParserBackend):
             if c.start <= i < c.end:
                 return j
         return None
-
-    # @classmethod
-    # def get_graph_edge_labels(cls, G):
-    #     # Edge List & Labels:
-    #     edgelist = []
-    #     edge_labels = {}  # edge_labels = {(u, v): d for u, v, d in G.edges(data=True)}
-    #     # _e_fn = lambda x: tuple((head_node_id, x[0], {x[1]['label']: x[1]['val']}))
-    #     # for i, node in enumerate(nodelist):
-    #     #     if node[0] == head_node_id:
-    #     #         continue
-    #     #     edge = _e_fn(node)
-    #     #     edgelist.append(edge)
-    #     #     edge_label = f"{node[0]}:{node[1]['label']}"
-    #     #     edge_labels.update({(head_node_id, node[0]): edge_label})
 
