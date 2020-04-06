@@ -3,12 +3,11 @@ An object candidate proposal parser for the CLEVR dataset. Code currrently under
 
 
 ### Demo ### 
-Download the data folder from: https://drive.google.com/drive/folders/1FdlfB-t18MDLAYZaH-KJel8olvRkdEbU?usp=sharing
 
-And place it in the top/root directory:
+Run the download.sh script form the root directory.
 
 clevr_parser
-	|-data
+	|-data/raw
 
 ### Install ###
 
