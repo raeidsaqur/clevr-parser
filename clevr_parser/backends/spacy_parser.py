@@ -150,7 +150,8 @@ class SpacyParser(ParserBackend):
         doc_vector = np.zeros((embed_sz,), dtype=np.float32).reshape((1, -1))
         ent_vecs = []
         for entity in entities:
-            if entity.label_ != 'CLEVR_OBJ':
+            #if entity.label_ != 'CLEVR_OBJ':
+            if entity.label_ not in ('CLEVR_OBJS', 'CLEVR_OBJ'):
                 continue
             ent_vec = self.get_clevr_entity_vector_embedding(entity, ent_vec_size, include_obj_node_emd, embedding_type)
             ent_vecs.append(ent_vec)
@@ -171,7 +172,8 @@ class SpacyParser(ParserBackend):
         :return: an N by M embedding matrix, where M = dim and N is the num of nodes of a generated graph of the entity
         """
         label = entity.label_
-        if label is None or label != "CLEVR_OBJ":
+        #if label is None or label != "CLEVR_OBJ":
+        if (label is None) or (label not in ("CLEVR_OBJS", "CLEVR_OBJ")):
             raise TypeError("The entity must be a CLEVR_OBJ entity")
 
         embds_poss = []
