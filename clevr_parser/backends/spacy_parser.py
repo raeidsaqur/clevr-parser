@@ -88,7 +88,7 @@ class SpacyParser(ParserBackend):
         self.__model = model
 
 
-    def parse(self, sentence:str, index=0, filename=None, return_doc=True):
+    def parse(self, sentence:str, index=0, filename=None, return_doc=True, skip_plurals=False):
         """
             The spaCy-based parser parse the sentence into scene graphs based on the dependency parsing
             of the sentence by spaCy.
@@ -97,12 +97,11 @@ class SpacyParser(ParserBackend):
         """
         doc = self.__nlp(sentence)
         is_plural = doc._.has_shapes
-        if is_plural:
-            logger.info(f'{sentence} contains plural, skipping all CLEVR_OBJS as an edge case')
-            return None, f"SKIP_img {index}_{filename}"
-
+        if skip_plurals:
+            if is_plural:
+                logger.info(f'{sentence} contains plural, skipping all CLEVR_OBJS as an edge case')
+                return None, f"SKIP_img {index}_{filename}"
         graph, en_graphs = self.get_nx_graph_from_doc(doc)
-
         # N.b. The ordering of doc.ents and graph.nodes should be aligned
         if return_doc:
             return graph, doc
@@ -286,9 +285,19 @@ class SpacyParser(ParserBackend):
             s = "<M>" if ent_num <= 1 else f"<M{ent_num}>"
             node = _n_fn(s, 'material', t)
             # node = ('M', dict(zip(node_keys, ('material', t.text))))
-        if t._.is_shape:
+        elif t._.is_shape:
             s = "<S>" if ent_num <= 1 else f"<S{ent_num}>"
             node = _n_fn(s, 'shape', t)
+        elif t._.is_shapes:
+            # Handle CLEVR_OBJS, plural shapes
+            # This is sound. the head_node label 'CLEVR_OBJS' captures
+            # plurality. All attribute values are the same
+            s = "<S>" if ent_num <= 1 else f"<S{ent_num}>"
+            node = _n_fn(s, 'shape', t)
+        else:
+            # an unknown node: set attr_id, label as <UNK{ent_num}>
+            s = "<UNK>" if ent_num <= 1 else f"<S{ent_num}"
+            node = _n_fn(s, '<UNK>', t)
 
         return node
 
