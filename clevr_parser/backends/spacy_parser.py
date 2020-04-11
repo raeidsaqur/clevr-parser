@@ -23,6 +23,7 @@ from typing import List, Dict, Tuple, Sequence
 import copy
 import logging
 logger = logging.getLogger(__name__)
+import os
 
 try:
     import matplotlib
@@ -605,7 +606,8 @@ class SpacyParser(ParserBackend):
                    plot_box=False,
                    save_file_path=None,
                    ax_title=None,
-                   debug=False):
+                   debug=False,
+                   doc=None):
 
         ### Nodes
         NDV = G.nodes(data=True)
@@ -648,6 +650,10 @@ class SpacyParser(ParserBackend):
         if debug:
             print(edge_labels)
 
+        # Extract relations if doc is passed to the function
+        # This will be used instead of <R[NUMBER]>
+        relations = cls.extract_relations(doc)            
+
         #### Add <R>, <R2> etc. edge between nodes
         head_nodes = []
         for i, node in enumerate(list(G.nodes(data=False))):
@@ -655,6 +661,10 @@ class SpacyParser(ParserBackend):
             if 'obj' in node:
                 head_nodes.append(node)
         print(f"head_nodes = {head_nodes}")
+        
+        # Check that the number of relations is 1 less than the number of nodes, if relations is not None       
+        assert relations is None or len(relations) == len(head_nodes)-1
+
         if len(head_nodes) > 1:
             # ToDo: there needs to be connection among all head node permutations
             for i, h_node in enumerate(head_nodes):
@@ -662,8 +672,14 @@ class SpacyParser(ParserBackend):
                     continue
                 h = head_nodes[i - 1]
                 t = h_node
-                # TODO: Relations should be order invariant, remove i+1
-                key = "<R>" if i <= 1 else f"<R{i + 1}>"
+                
+                # If spatial relations have been extracted from the sentence, then use them. Else label relations as <R[number]>
+                if relations:
+                    key = relations[i-1]
+                else:
+                    # TODO: Relations should be order invariant, remove i+1
+                    key = "<R>" if i <= 1 else f"<R{i + 1}>"
+
                 G.add_edges_from([(h, t, {key: "tbd"})])
                 edge_labels.update({(h, t): key})
                 
@@ -761,6 +777,36 @@ class SpacyParser(ParserBackend):
             if c.start <= i < c.end:
                 return j
         return None
+
+    @classmethod
+    def extract_relations(cls, doc):
+        '''
+        Takes a SpaCy parsed sentence and extracts the spatial relations
+        from it. Used in draw_graph to substitute relation name
+
+        Arguments:
+            doc: SpaCy parsed sentence
+
+        Returns:
+            extracted_relations: list of spatial relations in the parsed sentence
+        '''
+        if doc is None:
+            return None
+        else:
+            # Load the spatial relations from a file
+            relation_file = os.path.join(os.path.dirname(__file__), '../_data/relation-attrs.txt')            
+            spatial_relations = set(line.strip() for line in open(relation_file))
+
+            # Load the sentence. Since there is only one sentence, extracting the first one
+            sentence = str(doc).strip().split()
+
+            # Store the relations
+            extracted_relations = []
+            for word in sentence:
+                if word in spatial_relations:
+                    extracted_relations.append(word)
+
+            return extracted_relations
 
     # @classmethod
     # def get_graph_edge_labels(cls, G):

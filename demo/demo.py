@@ -48,7 +48,12 @@ def demo_G_scene(parser, gfp):
     g = groundings[0]
     G_img = parser.draw_clevr_img_scene_graph(g)
 
-
+def demo_G_text_spatial_relation(parser, text=None):
+    text = "The sphere is behind a rubber cylinder right of a metal cube" if text is None else text
+    q_graph, q_doc = parser.parse(text, return_doc=True)
+    ax_title = f"{q_doc}"
+    G_text, en_graphs = parser.get_nx_graph_from_doc(q_doc)
+    G = parser.draw_graph(G_text, en_graphs, ax_title=ax_title, doc=q_doc)
 
 def main():
     clevr_img_name = lambda split, i: f"CLEVR_{split}_{i:06d}.png"
@@ -57,7 +62,7 @@ def main():
     clevrr_baseline_qp = "../data/CLEVRR_v1.0/questions/CLEVRR_compare_baseline_questions.json"
     image_grounding_parsed_gp = "../data/CLEVR_v1.0/scenes_parsed/val_scenes_parsed.json"
 
-    demo_G_text(parser)
+    demo_G_text_spatial_relation(parser)
     print("done")
 
 
