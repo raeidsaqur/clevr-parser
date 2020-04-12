@@ -13,6 +13,7 @@ from .. import database
 from ..parser import Parser
 from .backend import ParserBackend
 from .custom_components_clevr import CLEVRObjectRecognizer
+from .spatial_recognizer import SpatialRecognizer
 from ..utils import *
 
 __all__ = ['SpacyParser']
@@ -46,8 +47,9 @@ class SpacyParser(ParserBackend):
 
     __identifier__ = 'spacy'
 
-    def __init__(self, model='en'):
+    def __init__(self, model='en', **kwargs):
         """
+        Pass `has_spatial=True` to invoke spatial relation parsing
         Args:
             model (str): a spec for the spaCy model. (default: en). Please refer to the
             official website of spaCy for a complete list of the available models.
@@ -65,6 +67,10 @@ class SpacyParser(ParserBackend):
             raise ImportError('Unable to load the English model. Run `python -m spacy download en` first.') from e
 
         self.__entity_recognizer = CLEVRObjectRecognizer(self.__nlp)
+        self.__spatial_recognizer = None
+        self.has_spatial = kwargs.get('has_spatial')    # Spatial Recog Flag
+        if self.has_spatial:
+            self.__spatial_recognizer = SpatialRecognizer(self.__nlp)
 
     @property
     def entity_recognizer(self):
@@ -73,6 +79,14 @@ class SpacyParser(ParserBackend):
     @entity_recognizer.setter
     def entity_recognizer(self, er):
         self.__entity_recognizer = er
+
+    @property
+    def spatial_recognizer(self):
+        return self.__spatial_recognizer
+
+    @spatial_recognizer.setter
+    def spatial_recognizer(self, sr):
+        self.__spatial_recognizer = sr
 
     @property
     def nlp(self):
@@ -96,9 +110,9 @@ class SpacyParser(ParserBackend):
 
             Returns a nx.MultiGraph and Spacy.doc
         """
-        doc = self.__nlp(sentence)
-        is_plural = doc._.has_shapes
+        doc = self.nlp(sentence)
         if skip_plurals:
+            is_plural = doc._.has_shapes
             if is_plural:
                 logger.info(f'{sentence} contains plural, skipping all CLEVR_OBJS as an edge case')
                 return None, f"SKIP_img {index}_{filename}"
@@ -111,77 +125,14 @@ class SpacyParser(ParserBackend):
     def parse_Gs(self, sentence:str, index=0, filename=None, return_doc=True):
         """
         This is intended to be invoked by the text side (not grounding image pipeline)
-            The spaCy-based parser parse the sentence into scene graphs based on the dependency parsing
-            of the sentence by spaCy.
-
-            All entities (nodes) of the graph come from the noun chunks in the sentence. And the dependencies
-            between noun chunks are used for determining the relations among these entities.
-
-            The parsing is performed in three steps:
-                1. find all the noun chunks as the entities, and resolve the modifiers on them.
-                2. determine the subject of verbs (including nsubj, acl and pobjpass). Please refer to the comments
-                in the code for better explanation.
-                3. determine all the relations among entities.
-            Returns a nx.graph and doc
+        Returns a nx.graph and doc
         """
 
         doc = self.__nlp(sentence)
-        #print([(ent.text, ent.label_) for ent in doc.ents])
+        graph, en_graphs = self.get_nx_graph_from_doc(doc)
 
-        # Step 1: determine the entities and create the graph
-        #entities = [ent.text for ent in doc.ents]
-        #entity_chunks = [ent.label_ for ent in doc.ents]
-        objects = []
-        graph = {
-            "image_index": index,
-            "image_filename": filename,
-            "objects": []
-        }
-        for i,o_span in enumerate(doc.ents):
-            obj = {}
-            for t in o_span:
-                if t._.is_color:
-                    obj['color'] = t.text
-                if t._.is_material:
-                    obj['material'] = t.text
-                if t._.is_size:
-                    obj['size'] = t.text
-                if t._.is_shape:
-                    obj['shape'] = t.text
-            objects.append(obj)
-        graph['objects'] = objects
-
-        if len(objects) < 3:
-            if return_doc:
-                return graph, doc
-            return graph
-
-        # Step 2: determine the relations between objs
-        relation_subj = dict()
-        for token in doc:
-            # E.g., A [woman] is [playing] the piano.
-            if token.dep_ == 'nsubj':
-                relation_subj[token.head.i] = token.i
-            # E.g., A [woman] [playing] the piano...
-            elif token.dep_ == 'acl':
-                relation_subj[token.i] = token.head.i
-            # E.g., The piano is [played] by a [woman].
-            elif token.dep_ == 'pobj' and token.head.dep_ == 'agent' and token.head.head.pos_ == 'VERB':
-                relation_subj[token.head.head.i] = token.i
-
-        # Step 3: determine the relations.
-        relations = list()
-        filtered_relations = list()
-        fake_noun_marks = set()
-
-        for object in objects:
-            # Again, the subjects and the objects are represented by their position.
-            relation = None
-            # small red rubber cylinder is behind a large brown metal sphere
-
-            if relation is not None:
-                relations.append(relation)
-
+        ## MODIFY HERE ##
+        
         if return_doc:
             return graph, doc
         return graph
@@ -198,14 +149,14 @@ class SpacyParser(ParserBackend):
         :return:
         """
         assert text is not None
-        G_text, doc = self.parse(text, return_doc=True)
-        if G_text is None and 'SKIP' in doc:
+        Gs, doc = self.parse(text, return_doc=True)
+        if Gs is None and 'SKIP' in doc:
             logger.info(f'{text} contains plural (i.e. label CLEVR_OBJS')
             return None, f"SKIP_{text}"
 
         doc_emd = self.get_clevr_doc_vector_embedding(doc, ent_vec_size=ent_vec_size, embedding_type=embedding_type)
 
-        return G_text, doc_emd
+        return Gs, doc_emd
 
     def get_clevr_doc_vector_embedding(self, doc,
                                        attr_vec_size=96,
@@ -538,21 +489,24 @@ class SpacyParser(ParserBackend):
         return _docs
 
     @classmethod
-    def get_nx_graph_from_doc(cls, doc, head_node_prefix=None):
+    def get_nx_graph_from_doc(cls, doc, head_node_prefix=None, **kwargs):
         """
         :param doc: doc obtained upon self.nlp(caption|text) contains doc.entities as clevr objs
         :return: a composed NX graph of all clevr objects along with pertinent info in en_graphs
         """
         assert doc.ents is not None
-        nco = len(doc.ents)
-        assert nco <= 10  # max number of clevr entities in one scene
+        #objs = list(filter(lambda x: x.label_ in ['CLEVR_OBJ', 'CLEVR_OBJS'], doc.ents))
+        objs = cls.filter_clevr_objs(doc.ents)
+        nco = len(objs)
+        if kwargs.get('cap_to_10_objs'):
+            assert nco <= 10    # max number of clevr entities in one scene
 
         en_graph_keys = list(range(1, nco + 1))
         en_graph_vals = ['graph', 'nodelist', 'labels', 'edgelist', 'edge_labels', 'nsz', 'nc']
         en_graphs = dict.fromkeys(en_graph_keys)
 
         graphs = []  # list of all graphs corresponding to each entity
-        for i, en in enumerate(doc.ents):
+        for i, en in enumerate(objs):
             en_graph_key = en_graph_keys[i]
             # print(f"Processing graph {en_graph_key} ... ")
             _g = cls.get_graph_from_entity(en, head_node_prefix=head_node_prefix, ent_num=i + 1, is_return_list=True)
@@ -915,7 +869,53 @@ class SpacyParser(ParserBackend):
         return None
 
     @classmethod
+    def filter_clevr_objs(cls, ents: Tuple) -> Tuple:
+        return cls.filter_ents_by_labels(ents, ['CLEVR_OBJ', 'CLEVR_OBJS'])
+
+    @classmethod
+    def filter_spatial_re(cls, ents: Tuple) -> Tuple:
+        return cls.filter_ents_by_labels(ents, ['SPATIAL_RE'])
+
+    @classmethod
+    def filter_matching_re(cls, ents: Tuple) -> Tuple:
+        return cls.filter_ents_by_labels(ents, ['MATCHING_RE'])
+
+    @classmethod
+    def filter_ents_by_labels(cls, ents: Tuple, labels:List) -> Tuple:
+        fn = lambda y,z: tuple(filter(lambda x: x.label_ in z, y))
+        return fn(ents, labels)
+
+    @classmethod
     def extract_relations(cls, doc):
+        '''
+        Takes a SpaCy parsed sentence and extracts the spatial relations
+        from it. Used in draw_graph to substitute relation name
+
+        Arguments:
+            doc: SpaCy parsed sentence
+
+        Returns:
+            extracted_relations: list of spatial relations in the parsed sentence
+        '''
+        if doc is None:
+            return None
+        else:
+            # Load the spatial relations from a file
+            relation_file = os.path.join(os.path.dirname(__file__), '../_data/relation-attrs.txt')
+            spatial_relations = set(line.strip() for line in open(relation_file))
+            spatial_ents = cls.filter_spatial_re(doc.ents)
+
+            # Store the relations
+            extracted_relations = []
+            for span in spatial_ents:
+                for t in span:
+                    if t.text in spatial_relations:
+                        extracted_relations.append(t)
+
+            return extracted_relations
+
+    @classmethod
+    def extract_relations2(cls, doc):
         '''
         Takes a SpaCy parsed sentence and extracts the spatial relations
         from it. Used in draw_graph to substitute relation name
