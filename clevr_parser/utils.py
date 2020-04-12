@@ -11,7 +11,7 @@
 
 import functools
 import tabulate
-from typing import List, Dict, Any, Collection, Set
+from typing import List, Dict, Any, Collection, Set, Tuple
 import os,json
 import spacy
 from spacy import displacy
@@ -23,12 +23,39 @@ from matplotlib import pyplot, patches
 __all__ = ['combine_en_graphs','compose_multimodal_graphs', 'draw_adjacency_matrix',
            'trace', 'print_eq', 'print_star', 'print_dash', 'tprint',
            'print_parsed_doc', 'print_parsed_caption', 'visualize_parsed',
-           'dotdict']
+           'dotdict',
+           'load_questions_and_groundings',
+           'load_captions_and_groundings',
+           'load_texts_and_groundings',
+           'get_Gunion',
+           'get_Gunion_connected']
 
 
 print_dash = lambda x: print(f"\n" + "-" * x + "\n")
 print_star = lambda x: print(f"\n" + "*" * x + "\n")
 print_eq = lambda x: print(f"\n" + "=" * x   + "\n")
+
+
+def invert_dict(d):
+    return {v: k for k, v in d.items()}
+
+
+def load_vocab(path):
+    with open(path, 'r') as f:
+        vocab = json.load(f)
+        vocab['question_idx_to_token'] = invert_dict(vocab['question_token_to_idx'])
+        vocab['program_idx_to_token'] = invert_dict(vocab['program_token_to_idx'])
+        vocab['answer_idx_to_token'] = invert_dict(vocab['answer_token_to_idx'])
+    # Sanity check: make sure <NULL>, <START>, and <END> are consistent
+    assert vocab['question_token_to_idx']['<NULL>'] == 0
+    assert vocab['question_token_to_idx']['<START>'] == 1
+    assert vocab['question_token_to_idx']['<END>'] == 2
+    assert vocab['program_token_to_idx']['<NULL>'] == 0
+    assert vocab['program_token_to_idx']['<START>'] == 1
+    assert vocab['program_token_to_idx']['<END>'] == 2
+    return vocab
+
+
 
 ### Networkx Library Extensions and Helpers ####
 import networkx as nx
@@ -44,6 +71,19 @@ def combine_en_graphs(en_s:Dict, en_t:Dict) -> Dict:
             en_graphs_union[count] = v
             count += 1
     return en_graphs_union
+
+def get_Gunion(fromGs: nx.Graph, Gt:nx.Graph) -> nx.MultiGraph:
+    Gu, _, _ = compose_multimodal_graphs(fromGs, Gt)
+    return Gu
+
+def get_Gunion_connected(fromGs: nx.Graph, Gt: nx.Graph) -> nx.MultiGraph:
+    Gu_conn, _, _ = compose_multimodal_graphs(fromGs, Gt, connect_obj_nodes=True)
+    return Gu_conn
+
+
+    print('done')
+    return Gu
+
 
 def compose_multimodal_graphs(Gs: nx.Graph, Gt: nx.Graph,
                               connect_obj_nodes=False, obj_node_id='obj'):
@@ -216,29 +256,57 @@ _tabulate_format = tabulate.TableFormat(
         padding=1, with_header_hide=None
 )
 
+def load_questions_and_groundings(qfp, gfp, max_samples=None) -> (List[Dict], List[Dict]):
+    return load_texts_and_groundings(qfp, gfp, text_type='questions', max_samples=max_samples)
 
-def load_questions_and_groundings(qfp, gfp) -> (List[Dict], List[Dict]):
-    if not os.path.exists(qfp):
-        raise FileNotFoundError(f"{qfp} does not exist")
+def load_captions_and_groundings(qfp, gfp, max_samples=None) -> (List[Dict], List[Dict]):
+    return load_texts_and_groundings(qfp, gfp, text_type='captions', max_samples=max_samples)
+
+def load_texts_and_groundings(tfp, gfp, text_type:str, max_samples=None) -> (List[Dict], List[Dict]):
+    if not os.path.exists(tfp):
+        raise FileNotFoundError(f"{tfp} does not exist")
     if not os.path.exists(gfp):
         raise FileNotFoundError(f"{gfp} does not exist")
-    questions = load_questions(qfp)
-    groundings = load_groundings_for_questions(questions, gfp)
+    if text_type not in ['questions', 'captions']:
+        raise ValueError("Text must be of type questions or captions")
 
-    return (questions, groundings)
+    texts = load_texts(tfp, text_type=text_type, max_samples=max_samples)
+    groundings = load_groundings_for_texts(texts, gfp, max_samples=max_samples)
+
+    return (texts, groundings)
+
+def load_captions(fp) -> List[Dict]:
+    """
+    :param fp: File Path to the questions/captions file
+    :return: Dict containing a list of question objects
+    """
+    return load_texts(fp, text_type='captions')
 
 def load_questions(fp) -> List[Dict]:
     """
     :param fp: File Path to the questions/captions file
     :return: Dict containing a list of question objects
     """
+    return load_texts(fp, text_type='questions')
+
+def load_texts(fp, text_type:str, max_samples=None) -> List[Dict]:
+    """
+    :param fp: File Path to the questions/captions file
+    :param text_type: questions or captions
+    :return: Dict containing a list of question objects
+    """
+    if text_type not in ['questions', 'captions']:
+        raise ValueError("Invalid text type, must be either 'questions' or 'captions'")
     if not os.path.exists(fp):
         raise FileNotFoundError(f"{fp} does not exist")
-    questions = None
+
     with open(fp, 'r') as f:
-        questions = json.load(f)["questions"]
-    assert len(questions) > 1
-    return questions
+        texts = json.load(f)[text_type]
+    assert len(texts) > 1
+    if max_samples:
+        texts = texts[0:max_samples]
+
+    return texts
 
 
 def load_grounding_for_questionObj(qObj:Dict, fp) -> Dict:
@@ -261,7 +329,7 @@ def load_groundings_from_path(fp) -> List[Dict]:
     assert len(scenes) > 1
     return scenes
 
-def load_groundings_for_questions(tobjs:List[Dict], fp) -> List[Dict]:
+def load_groundings_for_texts(tobjs:List[Dict], fp, max_samples=None) -> List[Dict]:
     """
     N.b. the groundings path could refer to the full scenes graph path, or
     the parsed scene graph (derived from the image segmentation pipeline.
@@ -275,11 +343,16 @@ def load_groundings_for_questions(tobjs:List[Dict], fp) -> List[Dict]:
 
     scenes = load_groundings_from_path(fp)
     tscenes = []
-    for t in tobjs:
+    for i, t in enumerate(tobjs):
+        if max_samples and (i >= max_samples):
+            break
         scene = list(filter(lambda g: g['image_filename'] == t['image_filename'], scenes))
         tscenes.append(scene[0])
+    if max_samples:
+        assert len(tscenes) == max_samples
+    else:
+        assert len(tscenes) == len(tobjs)
 
-    assert len(tobjs) == len(tscenes)
     return tscenes
 
 
