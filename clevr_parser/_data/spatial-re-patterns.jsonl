@@ -1,0 +1,9 @@
+{"label": "SPATIAL_RE", "pattern": "that are behind the"}
+{"label": "SPATIAL_RE", "pattern": "that is behind the"}
+{"label": "SPATIAL_RE", "pattern": "that are in front"}
+{"label": "SPATIAL_RE", "pattern": "that is in front"}
+{"label": "SPATIAL_RE", "pattern": "that is on the right"}
+{"label": "SPATIAL_RE", "pattern": "that is on the left"}
+{"label": "SPATIAL_RE", "pattern": "above the"}
+{"label": "SPATIAL_RE", "pattern": "below the"}
+{"label": "SPATIAL_RE", "pattern": [{"LOWER": "that"}, {"LOWER": "is"}, {"LOWER": "behind"}, {"LOWER": "the"} ]}
