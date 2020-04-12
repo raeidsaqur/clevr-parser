@@ -1,1 +1,3 @@
-{"label": "MATCHING_RE", "pattern": [{"LOWER": "that"},{"LOWER": "are"},{"LOWER": "the"},{"LOWER": "same"} ]}
+{"label": "MATCHING_RE", "pattern": [{"LOWER": "is"},{"LOWER": "the"}, {"LOWER": "same"},{"TEXT": {"IN": ["size", "color", "material", "shape"]}}]}
+{"label": "MATCHING_RE", "pattern": [{"LOWER": "are"},{"LOWER": "the"}, {"LOWER": "same"},{"TEXT": {"IN": ["size", "color", "material", "shape"]}}]}
+{"label": "MATCHING_RE", "pattern": [{"LOWER": "has"},{"LOWER": "the"}, {"LOWER": "same"},{"TEXT": {"IN": ["size", "color", "material", "shape"]}}]}

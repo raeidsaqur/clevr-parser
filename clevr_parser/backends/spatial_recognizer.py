@@ -48,7 +48,6 @@ class SpatialRecognizer(object):
         except ValueError as ve:
             logger.error(f"{ve}: Ensure patterns file is added.")
             self._add_patterns()
-        logger.debug(f"Pipeline -> {nlp.pipe_names}")
 
     def __call__(self, doc):
         #preprocess

@@ -14,6 +14,7 @@ from ..parser import Parser
 from .backend import ParserBackend
 from .custom_components_clevr import CLEVRObjectRecognizer
 from .spatial_recognizer import SpatialRecognizer
+from .matching_recognizer import MatchingRecognizer
 from ..utils import *
 
 __all__ = ['SpacyParser']
@@ -23,6 +24,7 @@ from operator import itemgetter
 from typing import List, Dict, Tuple, Sequence
 import copy
 import logging
+logging.basicConfig(level=logging.INFO, format="%(asctime)s %(message)s")
 logger = logging.getLogger(__name__)
 import os
 
@@ -74,6 +76,10 @@ class SpacyParser(ParserBackend):
             # filtered first with this on. For e.g. layout with len(doc.ents)
             logger.debug(f"Activated spatial recognizer")
             self.__spatial_recognizer = SpatialRecognizer(self.__nlp)
+        self.has_matching = kwargs.get('has_matching')  # Spatial Recog Flag
+        if self.has_matching:
+            logger.debug(f"Activated matching recognizer")
+            self.__matching_recognizer = MatchingRecognizer(self.__nlp)
 
     @property
     def entity_recognizer(self):
@@ -91,6 +97,14 @@ class SpacyParser(ParserBackend):
     def spatial_recognizer(self, sr):
         self.__spatial_recognizer = sr
 
+    @property
+    def matching_recognizer(self):
+        return self.__matching_recognizer
+
+    @matching_recognizer.setter
+    def matching_recognizer(self, mr):
+        self.__matching_recognizer = mr
+    
     @property
     def nlp(self):
         return self.__nlp
@@ -847,19 +861,35 @@ class SpacyParser(ParserBackend):
             nx.draw_networkx_edge_labels(G, pos, edge_labels=edge_labels, label_pos=0.5, font_size=8)
 
     @classmethod
-    def visualize(cls, doc, dep=False):
+    def visualize(cls, doc, dep=False, save_svg_fn=None):
         try:
             import sys
             from spacy import displacy
+            from pathlib import Path
+
             is_notebook = 'ipykernel' in sys.modules
+            colors = {"CLEVR_OBJ": "linear-gradient(90deg, #aa9cfc, #fc9ce7)",
+                      "CLEVR_OBJS": "linear-gradient(90deg, #aa9cfc, #fc9ce7)",
+                      "SPATIAL_RE": "linear-gradient(90deg, #00ad85bf, #0085ade3)",
+                      "MATCHING_RE": "linear-gradient(90deg, #fa8072, #fa80a6)"}
+            options = {"ents": ["CLEVR_OBJ", "CLEVR_OBJS",
+                                "SPATIAL_RE",
+                                "MATCHING_RE"], "colors": colors}
+
             if is_notebook:
-                displacy.render(doc, style='ent', jupyter=True)
+                displacy.render(doc, style='ent', jupyter=True, options = options)
                 if dep:
                     displacy.render(doc, style='dep', jupyter=True, options={'distance': 70})
             else:
-                displacy.serve(doc, style='ent', options={'compact': True})
+                displacy.serve(doc, style='ent', options=options.update({'compact': True}))
                 if dep:
                     displacy.serve(doc, style='dep', options={'compact': True})
+
+            if save_svg_fn:
+                svg = displacy.render(doc, style="dep", jupyter=False)
+                output_path = Path(f"../../demo/imgs/{save_svg_fn}")
+                output_path.open("w", encoding="utf-8").write(svg)
+
         except ImportError as ie:
             logger.error("Could not import displacy for visualization")
 

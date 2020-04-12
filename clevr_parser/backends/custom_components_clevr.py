@@ -30,7 +30,7 @@ from spacy.tokens import Doc, Span, Token
 from clevr_parser.utils import *
 from clevr_parser import setup_logging
 import logging
-logger = setup_logging(__name__, log_level=logging.DEBUG)
+logger = setup_logging(__name__, log_level=logging.INFO)
 
 __all__ = ['CLEVRObjectRecognizer']
 
