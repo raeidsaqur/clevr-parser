@@ -37,6 +37,7 @@ import numpy as np
 np.random.seed(42)
 import scipy.sparse as sp
 
+
 @Parser.register_backend
 class SpacyParser(ParserBackend):
     """
@@ -107,8 +108,89 @@ class SpacyParser(ParserBackend):
             return graph, doc
         return graph
 
+    def parse_Gs(self, sentence:str, index=0, filename=None, return_doc=True):
+        """
+        This is intended to be invoked by the text side (not grounding image pipeline)
+            The spaCy-based parser parse the sentence into scene graphs based on the dependency parsing
+            of the sentence by spaCy.
+
+            All entities (nodes) of the graph come from the noun chunks in the sentence. And the dependencies
+            between noun chunks are used for determining the relations among these entities.
+
+            The parsing is performed in three steps:
+                1. find all the noun chunks as the entities, and resolve the modifiers on them.
+                2. determine the subject of verbs (including nsubj, acl and pobjpass). Please refer to the comments
+                in the code for better explanation.
+                3. determine all the relations among entities.
+            Returns a nx.graph and doc
+        """
+
+        doc = self.__nlp(sentence)
+        #print([(ent.text, ent.label_) for ent in doc.ents])
+
+        # Step 1: determine the entities and create the graph
+        #entities = [ent.text for ent in doc.ents]
+        #entity_chunks = [ent.label_ for ent in doc.ents]
+        objects = []
+        graph = {
+            "image_index": index,
+            "image_filename": filename,
+            "objects": []
+        }
+        for i,o_span in enumerate(doc.ents):
+            obj = {}
+            for t in o_span:
+                if t._.is_color:
+                    obj['color'] = t.text
+                if t._.is_material:
+                    obj['material'] = t.text
+                if t._.is_size:
+                    obj['size'] = t.text
+                if t._.is_shape:
+                    obj['shape'] = t.text
+            objects.append(obj)
+        graph['objects'] = objects
+
+        if len(objects) < 3:
+            if return_doc:
+                return graph, doc
+            return graph
+
+        # Step 2: determine the relations between objs
+        relation_subj = dict()
+        for token in doc:
+            # E.g., A [woman] is [playing] the piano.
+            if token.dep_ == 'nsubj':
+                relation_subj[token.head.i] = token.i
+            # E.g., A [woman] [playing] the piano...
+            elif token.dep_ == 'acl':
+                relation_subj[token.i] = token.head.i
+            # E.g., The piano is [played] by a [woman].
+            elif token.dep_ == 'pobj' and token.head.dep_ == 'agent' and token.head.head.pos_ == 'VERB':
+                relation_subj[token.head.head.i] = token.i
+
+        # Step 3: determine the relations.
+        relations = list()
+        filtered_relations = list()
+        fake_noun_marks = set()
+
+        for object in objects:
+            # Again, the subjects and the objects are represented by their position.
+            relation = None
+            # small red rubber cylinder is behind a large brown metal sphere
+
+            if relation is not None:
+                relations.append(relation)
+
+        if return_doc:
+            return graph, doc
+        return graph
+
     def get_clevr_text_vector_embedding(self, text, ent_vec_size=384, embedding_type=None):
         """
+        N.b. This doesn't return uniform embedding dim across different graphs,
+        which can create training problems.
+
         Takes a text input and returns the feature vector X
         :param text: Caption or Question (any NL input)
         :param ent_vec_size: size of each entity.

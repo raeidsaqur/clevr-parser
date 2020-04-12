@@ -12,7 +12,6 @@
 """
 A small demo for the scene graph parser.
 """
-import stanfordnlp
 import os, sys, platform
 import json
 
