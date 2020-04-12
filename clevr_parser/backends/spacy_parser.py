@@ -70,6 +70,9 @@ class SpacyParser(ParserBackend):
         self.__spatial_recognizer = None
         self.has_spatial = kwargs.get('has_spatial')    # Spatial Recog Flag
         if self.has_spatial:
+            # N.b. Any calculations based on presumption that doc.ents only has objs, need to
+            # filtered first with this on. For e.g. layout with len(doc.ents)
+            logger.debug(f"Activated spatial recognizer")
             self.__spatial_recognizer = SpatialRecognizer(self.__nlp)
 
     @property
@@ -176,7 +179,7 @@ class SpacyParser(ParserBackend):
         :return: vector embedding for all the clevr entitites in a doc
         """
         assert doc is not None
-        entities = doc.ents
+        entities = self.filter_clevr_objs(doc.ents)
         embed_sz = len(entities) * ent_vec_size
         if include_obj_node_emd:
             embed_sz *= 2  # 2x size due to tiling of obj node vector
@@ -680,7 +683,7 @@ class SpacyParser(ParserBackend):
         plt.show()
 
     @classmethod
-    def draw_graph(cls, G, en_graphs,
+    def draw_graph(cls, G, en_graphs, doc=None,
                    hnode_sz=1200, anode_sz=700,
                    hnode_col='tab:blue', anode_col='tab:red',
                    font_size=12,
@@ -688,8 +691,7 @@ class SpacyParser(ParserBackend):
                    plot_box=False,
                    save_file_path=None,
                    ax_title=None,
-                   debug=False,
-                   doc=None):
+                   debug=False):
 
         ### Nodes
         NDV = G.nodes(data=True)
