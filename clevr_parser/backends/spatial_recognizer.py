@@ -56,18 +56,17 @@ class SpatialRecognizer(object):
     def construct_patters(self):
         """Hacky solution"""
         obj_patterns = [
-            {"label": "SPATIAL_RE", "pattern": "that are behind the"},
-            {"label": "SPATIAL_RE", "pattern": "that is behind the"},
-            {"label": "SPATIAL_RE", "pattern": "that are in front"},
-            {"label": "SPATIAL_RE", "pattern": "that is in front"},
-            {"label": "SPATIAL_RE", "pattern": "that is on the right"},
-            {"label": "SPATIAL_RE", "pattern": "to the right of"},
-            {"label": "SPATIAL_RE", "pattern": "that is on the left"},
-            {"label": "SPATIAL_RE", "pattern": "to the left of"},
-            {"label": "SPATIAL_RE", "pattern": "above the"},
-            {"label": "SPATIAL_RE", "pattern": "below the"},
             {"label": "SPATIAL_RE",
-             "pattern": [{"LOWER": "that"}, {"LOWER": "is"}, {"LOWER": "behind"}, {"LOWER": "the"}]}
+             "pattern": [{"LOWER": "that"}, {"TEXT": {"IN": ["is", "are"]}}, {"LOWER": "behind"}, {"LOWER": "the"}]},
+            {"label": "SPATIAL_RE", "pattern": [{"LOWER": "behind"}, {"LOWER": "the"}]},
+            {"label": "SPATIAL_RE",
+             "pattern": [{"LOWER": "that"}, {"TEXT": {"IN": ["is", "are"]}}, {"LOWER": "in"}, {"LOWER": "front"}]},
+            {"label": "SPATIAL_RE",
+             "pattern": [{"LOWER": "that"}, {"TEXT": {"IN": ["is", "are"]}}, {"TEXT": {"IN": ["in", "on"]}},
+                         {"LOWER": "the"}, {"TEXT": {"IN": ["left", "right"]}}]},
+            {"label": "SPATIAL_RE", "pattern": [{"LOWER": "to"}, {"LOWER": "the"}, {"TEXT": {"IN": ["right", "left"]}},
+                                                {"TEXT": {"IN": ["", "of"]}}]},
+            {"label": "SPATIAL_RE", "pattern": [{"TEXT": {"IN": ["above", "below"]}}, {"LOWER": "the"}]}
         ]
 
         return obj_patterns
