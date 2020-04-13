@@ -66,7 +66,8 @@ class SpatialRecognizer(object):
                          {"LOWER": "the"}, {"TEXT": {"IN": ["left", "right"]}}]},
             {"label": "SPATIAL_RE", "pattern": [{"LOWER": "to"}, {"LOWER": "the"}, {"TEXT": {"IN": ["right", "left"]}},
                                                 {"TEXT": {"IN": ["", "of"]}}]},
-            {"label": "SPATIAL_RE", "pattern": [{"TEXT": {"IN": ["above", "below"]}}, {"LOWER": "the"}]}
+            {"label": "SPATIAL_RE", "pattern": [{"TEXT": {"IN": ["above", "below"]}}, {"LOWER": "the"}]},
+            {"label": "SPATIAL_RE", "pattern": [{"TEXT": {"IN": ["left", "right", "front", "behind", "above", "below"] }}, ]}
         ]
 
         return obj_patterns
