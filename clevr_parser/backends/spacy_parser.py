@@ -13,6 +13,8 @@ from .. import database
 from ..parser import Parser
 from .backend import ParserBackend
 from .custom_components_clevr import CLEVRObjectRecognizer
+from .spatial_recognizer import SpatialRecognizer
+from .matching_recognizer import MatchingRecognizer
 from ..utils import *
 
 __all__ = ['SpacyParser']
@@ -22,6 +24,7 @@ from operator import itemgetter
 from typing import List, Dict, Tuple, Sequence
 import copy
 import logging
+logging.basicConfig(level=logging.INFO, format="%(asctime)s %(message)s")
 logger = logging.getLogger(__name__)
 import os
 
@@ -37,6 +40,7 @@ import numpy as np
 np.random.seed(42)
 import scipy.sparse as sp
 
+
 @Parser.register_backend
 class SpacyParser(ParserBackend):
     """
@@ -45,8 +49,9 @@ class SpacyParser(ParserBackend):
 
     __identifier__ = 'spacy'
 
-    def __init__(self, model='en'):
+    def __init__(self, model='en', **kwargs):
         """
+        Pass `has_spatial=True` to invoke spatial relation parsing
         Args:
             model (str): a spec for the spaCy model. (default: en). Please refer to the
             official website of spaCy for a complete list of the available models.
@@ -64,6 +69,17 @@ class SpacyParser(ParserBackend):
             raise ImportError('Unable to load the English model. Run `python -m spacy download en` first.') from e
 
         self.__entity_recognizer = CLEVRObjectRecognizer(self.__nlp)
+        self.__spatial_recognizer = None
+        self.has_spatial = kwargs.get('has_spatial')    # Spatial Recog Flag
+        if self.has_spatial:
+            # N.b. Any calculations based on presumption that doc.ents only has objs, need to
+            # filtered first with this on. For e.g. layout with len(doc.ents)
+            logger.debug(f"Activated spatial recognizer")
+            self.__spatial_recognizer = SpatialRecognizer(self.__nlp)
+        self.has_matching = kwargs.get('has_matching')  # Spatial Recog Flag
+        if self.has_matching:
+            logger.debug(f"Activated matching recognizer")
+            self.__matching_recognizer = MatchingRecognizer(self.__nlp)
 
     @property
     def entity_recognizer(self):
@@ -74,6 +90,22 @@ class SpacyParser(ParserBackend):
         self.__entity_recognizer = er
 
     @property
+    def spatial_recognizer(self):
+        return self.__spatial_recognizer
+
+    @spatial_recognizer.setter
+    def spatial_recognizer(self, sr):
+        self.__spatial_recognizer = sr
+
+    @property
+    def matching_recognizer(self):
+        return self.__matching_recognizer
+
+    @matching_recognizer.setter
+    def matching_recognizer(self, mr):
+        self.__matching_recognizer = mr
+    
+    @property
     def nlp(self):
         return self.__nlp
     @nlp.setter
@@ -83,92 +115,50 @@ class SpacyParser(ParserBackend):
     @property
     def model(self):
         return self.__model
+
     @model.setter
     def model(self, model):
         self.__model = model
 
-
-    def parse(self, sentence:str, index=0, filename=None, return_doc=True):
+    def parse(self, sentence: str, index=0, filename=None, return_doc=True, skip_plurals=False):
         """
             The spaCy-based parser parse the sentence into scene graphs based on the dependency parsing
             of the sentence by spaCy.
 
             Returns a nx.MultiGraph and Spacy.doc
         """
-        doc = self.__nlp(sentence)
-        is_plural = doc._.has_shapes
-        if is_plural:
-            logger.info(f'{sentence} contains plural, skipping all CLEVR_OBJS as an edge case')
-            return None, f"SKIP_img {index}_{filename}"
-
+        doc = self.nlp(sentence)
+        if skip_plurals:
+            is_plural = doc._.has_shapes
+            if is_plural:
+                logger.info(f'{sentence} contains plural, skipping all CLEVR_OBJS as an edge case')
+                return None, f"SKIP_img {index}_{filename}"
         graph, en_graphs = self.get_nx_graph_from_doc(doc)
-
         # N.b. The ordering of doc.ents and graph.nodes should be aligned
         if return_doc:
             return graph, doc
         return graph
 
-
-    def parse2(self, sentence:str, index=0, filename=None, return_doc=True):
+    def parse_Gs(self, sentence:str, index=0, filename=None, return_doc=True):
         """
-            #TODO: combine entity and Grammar rules for later, `parse` simply does
-            CLEVR entity graphs.
-            The spaCy-based parser parse the sentence into scene graphs based on the dependency parsing
-            of the sentence by spaCy.
-
-            Returns a nx.MultiGraph and Spacy.doc
+        This is intended to be invoked by the text side (not grounding image pipeline)
+        Returns a nx.graph and doc
         """
+
         doc = self.__nlp(sentence)
         graph, en_graphs = self.get_nx_graph_from_doc(doc)
 
-
-        # Step 2: determine the relations between objs
-        relation_subj = dict()
-        for token in doc:
-            # E.g., A [woman] is [playing] the piano.
-            if token.dep_ == 'nsubj':
-                relation_subj[token.head.i] = token.i
-            # E.g., A [woman] [playing] the piano...
-            elif token.dep_ == 'acl':
-                relation_subj[token.i] = token.head.i
-            # E.g., The piano is [played] by a [woman].
-            elif token.dep_ == 'pobj' and token.head.dep_ == 'agent' and token.head.head.pos_ == 'VERB':
-                relation_subj[token.head.head.i] = token.i
-
-        # Step 3: determine the relations.
-        relations = list()
-        filtered_relations = list()
-        fake_noun_marks = set()
-
-        for object in objects:
-            # Again, the subjects and the objects are represented by their position.
-            relation = None
-            # small red rubber cylinder is behind a large brown metal sphere
-
-            if relation is not None:
-                relations.append(relation)
-
-        """
-        # Apply the `fake_noun_marks`.
-        entities = [e for e, ec in zip(entities, entity_chunks) if ec.root.i not in fake_noun_marks]
-        entity_chunks = [ec for ec in entity_chunks if ec.root.i not in fake_noun_marks]
+        ## MODIFY HERE ##
         
-        for relation in relations:
-            # Use a helper function to map the subj/obj represented by the position
-            # back to one of the entity nodes.
-            relation['subject'] = self.__locate_noun(entity_chunks, relation['subject'])
-            relation['object'] = self.__locate_noun(entity_chunks, relation['object'])
-            if relation['subject'] != None and relation['object'] != None:
-                filtered_relations.append(relation)
-        """
-
-        # N.b. The ordering of doc.ents and graph.nodes should be aligned
         if return_doc:
             return graph, doc
         return graph
 
     def get_clevr_text_vector_embedding(self, text, ent_vec_size=384, embedding_type=None):
         """
+        N.b. This doesn't return uniform embedding dim across different graphs,
+        which can create training problems.
+
         Takes a text input and returns the feature vector X
         :param text: Caption or Question (any NL input)
         :param ent_vec_size: size of each entity.
@@ -176,20 +166,20 @@ class SpacyParser(ParserBackend):
         :return:
         """
         assert text is not None
-        G_text, doc = self.parse(text, return_doc=True)
-        if G_text is None and 'SKIP' in doc:
+        Gs, doc = self.parse(text, return_doc=True)
+        if Gs is None and 'SKIP' in doc:
             logger.info(f'{text} contains plural (i.e. label CLEVR_OBJS')
             return None, f"SKIP_{text}"
 
         doc_emd = self.get_clevr_doc_vector_embedding(doc, ent_vec_size=ent_vec_size, embedding_type=embedding_type)
 
-        return G_text, doc_emd
+        return Gs, doc_emd
 
     def get_clevr_doc_vector_embedding(self, doc,
-                                        attr_vec_size=96,
-                                        ent_vec_size=384,
-                                        include_obj_node_emd=True,
-                                        embedding_type=None):
+                                       attr_vec_size=96,
+                                       ent_vec_size=384,
+                                       include_obj_node_emd=True,
+                                       embedding_type=None):
         """
         Embedding = [<Gs-obj>, <Z>, <C>, <M>, <S>]
         To keep dim d constant, we pad missing attrs with [0]*attr_vec_size
@@ -203,14 +193,15 @@ class SpacyParser(ParserBackend):
         :return: vector embedding for all the clevr entitites in a doc
         """
         assert doc is not None
-        entities = doc.ents
+        entities = self.filter_clevr_objs(doc.ents)
         embed_sz = len(entities) * ent_vec_size
         if include_obj_node_emd:
-            embed_sz *= 2          # 2x size due to tiling of obj node vector
+            embed_sz *= 2  # 2x size due to tiling of obj node vector
         doc_vector = np.zeros((embed_sz,), dtype=np.float32).reshape((1, -1))
         ent_vecs = []
         for entity in entities:
-            if entity.label_ != 'CLEVR_OBJ':
+            # if entity.label_ != 'CLEVR_OBJ':
+            if entity.label_ not in ('CLEVR_OBJS', 'CLEVR_OBJ'):
                 continue
             ent_vec = self.get_clevr_entity_vector_embedding(entity, ent_vec_size, include_obj_node_emd, embedding_type)
             ent_vecs.append(ent_vec)
@@ -231,29 +222,28 @@ class SpacyParser(ParserBackend):
         :return: an N by M embedding matrix, where M = dim and N is the num of nodes of a generated graph of the entity
         """
         label = entity.label_
-        if label is None or label != "CLEVR_OBJ":
-            raise TypeError("The entity must be a CLEVR_OBJ entity")
+        # if label is None or label != "CLEVR_OBJ":
+        if (label is None) or (label not in ("CLEVR_OBJS", "CLEVR_OBJ")):
+            raise TypeError("The entity must be a CLEVR_OBJ(S) entity")
 
-        # poss = []
-        # embds = []
         embds_poss = []
         for token in entity:
             _v, pos = self.get_attr_token_vector_embedding(token, size=dim, embedding_type=embedding_type)
-            # poss.append(pos)
-            # embds.append(_v)
             embds_poss.append((_v, pos))
-        #embds = reduce(lambda a,b: np.vstack((a,b)), embds) if len(embds) > 1 else embds[0]
+        # embds = reduce(lambda a,b: np.vstack((a,b)), embds) if len(embds) > 1 else embds[0]
         embds_poss.sort(key=itemgetter(1))
         embds = list(map(lambda x: x[0], embds_poss))
-        embds = np.array(embds, dtype=np.float32).squeeze()
-        #embds = embds[poss]
-        obj_embd = np.mean(embds,axis=0)
+        embds = np.array(embds,
+                         dtype=np.float32).squeeze()  # Bug: when len(entity) == 1 (e.g. 'thing') -> deforms shape
+        if len(embds.shape) == 1 and embds.shape[0] == dim:
+            # when entity is defined by a single token. e.g. that 'thing'
+            embds = embds.reshape(1, -1)
+        obj_embd = np.mean(embds, axis=0)
         embds = np.vstack((obj_embd, embds))
 
         assert embds.shape[-1] == dim
 
         return embds
-
 
     def get_clevr_entity_vector_embedding(self, entity, size=384, include_obj_node_emd=True, embedding_type=None):
         """
@@ -267,8 +257,7 @@ class SpacyParser(ParserBackend):
         then the entity vector needs to be padded. For e.g., "red thing" -> "<C> <S>" with missing
         <Z>, <M> attrs, in which case, <Z> <C> <M> <S> entity embedding will have <Z> <M> padded
         """
-                                        #default_entity_vector_dim = 384
-        token_sz= int(size / 4)         #default = 384/4 = 96
+        token_sz = int(size / 4)
         label = entity.label_
         if label is None or label != "CLEVR_OBJ":
             raise TypeError("The entity must be a CLEVR_OBJ entity")
@@ -323,11 +312,9 @@ class SpacyParser(ParserBackend):
         if embedding_type is None:
             # Use the default embedding type
             vector = token.vector.reshape(1, -1)
-
         pos = self._get_attr_token_pos(token)
 
         return vector, pos
-
 
     @staticmethod
     def get_attr_node_from_token(token, ent_num=0):
@@ -341,7 +328,7 @@ class SpacyParser(ParserBackend):
         node_keys = ('label', 'val')
         # Reformat in nx.graph node construct structure
         _n_fn = lambda s, a, t: tuple((s, dict(zip(node_keys, (a, t.text)))))
-        t = token # N.b. the pipeline must have clevr 'ent_recognizer' added with extensions
+        t = token  # N.b. the pipeline must have clevr 'ent_recognizer' added with extensions
         if t._.is_size:
             s = "<Z>" if ent_num <= 1 else f"<Z{ent_num}>"
             node = tuple(_n_fn(s, 'size', t))
@@ -352,9 +339,19 @@ class SpacyParser(ParserBackend):
             s = "<M>" if ent_num <= 1 else f"<M{ent_num}>"
             node = _n_fn(s, 'material', t)
             # node = ('M', dict(zip(node_keys, ('material', t.text))))
-        if t._.is_shape:
+        elif t._.is_shape:
             s = "<S>" if ent_num <= 1 else f"<S{ent_num}>"
             node = _n_fn(s, 'shape', t)
+        elif t._.is_shapes:
+            # Handle CLEVR_OBJS, plural shapes
+            # This is sound. the head_node label 'CLEVR_OBJS' captures
+            # plurality. All attribute values are the same
+            s = "<S>" if ent_num <= 1 else f"<S{ent_num}>"
+            node = _n_fn(s, 'shape', t)
+        else:
+            # an unknown node: set attr_id, label as <UNK{ent_num}>
+            s = "<UNK>" if ent_num <= 1 else f"<S{ent_num}"
+            node = _n_fn(s, '<UNK>', t)
 
         return node
 
@@ -371,17 +368,17 @@ class SpacyParser(ParserBackend):
         return pos
 
     def get_caption_from_img_scene(self, scene, *args, **kwargs):
-
         scene_img_idx = scene["image_index"]
         scene_img_fn = scene["image_filename"]
         clevr_objs = scene['objects']
         nco = len(clevr_objs)
-        assert nco <= 10
+        if kwargs.get('cap_to_10_objs'):
+            assert nco <= 10
         if nco == 0:
             logger.warning(f"Scene derendering appears to have failed on {scene_img_idx}: {scene_img_fn}"
                            f"\nThe derenderer failed to produce any proposal for this scene image."
                            f"\nSkipping this scene image from data")
-            #return f"SKIP_{scene_img_idx}_{scene_img_fn}"
+            # return f"SKIP_{scene_img_idx}_{scene_img_fn}"
             return None
 
         f = lambda o: " ".join([o['size'], o['color'], o['material'], o['shape']])
@@ -389,7 +386,6 @@ class SpacyParser(ParserBackend):
         caption = reduce(concat, map(f, clevr_objs))  # skeletal scene caption without pos, rel
         # p = lambda o: tuple(o['position'])  # (x, y, z) co-ordinates
         # pos = list(map(p, clevr_objs))
-
         return caption
 
     def get_doc_from_img_scene(self, scene, *args, **kwargs):
@@ -409,16 +405,14 @@ class SpacyParser(ParserBackend):
         graph, doc = self.parse(caption, return_doc=True)
         return graph, doc
 
-
     @classmethod
-    #@trace
     def get_graph_from_entity(cls, entity, ent_num=0,
                               is_directed_graph=False,
-                              is_attr_name_node_label = False,
+                              is_attr_name_node_label=False,
                               head_node_prefix=None,
                               hnode_sz=1200, anode_sz=700,
                               hnode_col='tab:blue', anode_col='tab:red',
-                              is_return_list= False,
+                              is_return_list=False,
                               is_debug=False):
         """
         The atomic graph constructor.
@@ -452,7 +446,7 @@ class SpacyParser(ParserBackend):
         if is_attr_name_node_label:
             labels = dict(map(lambda x: (x[0], x[1]['label']), nodelist))
         else:
-            #print(nodelist[0])
+            # print(nodelist[0])
             labels = dict(map(lambda x: (x[0], x[1]['label']), [nodelist[0]]))
             a_labels = dict(map(lambda x: (x[0], x[1]['val']), nodelist[1:]))
             labels.update(a_labels)
@@ -494,7 +488,7 @@ class SpacyParser(ParserBackend):
             [G, nodelist, labels, edgelist, edge_labels, nsz, nc]
         return G, nodelist, labels, edgelist, edge_labels, nsz, nc
 
-    def get_docs_from_nx_graph(cls, G:nx.Graph) -> List:
+    def get_docs_from_nx_graph(cls, G: nx.Graph) -> List:
         nodes: nx.NodeDataView = G.nodes(data=True)
         # clevr_obj_nodes: List[Tuple] = list(filter(lambda n: n[1]['label'] == 'CLEVR_OBJ', nodes))
         clevr_spans: List[str] = list(map(lambda x: x[1]['val'], filter(lambda n: n[1]['label'] == 'CLEVR_OBJ', nodes)))
@@ -511,25 +505,27 @@ class SpacyParser(ParserBackend):
 
         return _docs
 
-
     @classmethod
-    def get_nx_graph_from_doc(cls, doc, head_node_prefix=None):
+    def get_nx_graph_from_doc(cls, doc, head_node_prefix=None, **kwargs):
         """
         :param doc: doc obtained upon self.nlp(caption|text) contains doc.entities as clevr objs
         :return: a composed NX graph of all clevr objects along with pertinent info in en_graphs
         """
         assert doc.ents is not None
-        nco = len(doc.ents)
-        assert nco <= 10        # max number of clevr entities in one scene
+        #objs = list(filter(lambda x: x.label_ in ['CLEVR_OBJ', 'CLEVR_OBJS'], doc.ents))
+        objs = cls.filter_clevr_objs(doc.ents)
+        nco = len(objs)
+        if kwargs.get('cap_to_10_objs'):
+            assert nco <= 10    # max number of clevr entities in one scene
 
         en_graph_keys = list(range(1, nco + 1))
         en_graph_vals = ['graph', 'nodelist', 'labels', 'edgelist', 'edge_labels', 'nsz', 'nc']
         en_graphs = dict.fromkeys(en_graph_keys)
 
         graphs = []  # list of all graphs corresponding to each entity
-        for i, en in enumerate(doc.ents):
+        for i, en in enumerate(objs):
             en_graph_key = en_graph_keys[i]
-            #print(f"Processing graph {en_graph_key} ... ")
+            # print(f"Processing graph {en_graph_key} ... ")
             _g = cls.get_graph_from_entity(en, head_node_prefix=head_node_prefix, ent_num=i + 1, is_return_list=True)
             if isinstance(_g[0], nx.Graph):
                 graphs.append(_g[0])
@@ -585,20 +581,123 @@ class SpacyParser(ParserBackend):
 
     @classmethod
     def draw_clevr_obj_graph(cls, text_scene_graph, doc,
-                             hnode_sz=1200, anode_sz=700,
-                             hnode_col='tab:blue', anode_col='tab:red',
-                             font_size=12,
-                             show_edge_labels=True,
-                             plot_box=False,
-                             save_file_path=None,
-                             debug=False):
+                             **kwargs):
         ax_title = f"{doc}"
         G, en_graphs = cls.get_nx_graph_from_doc(doc)
-        G = cls.draw_graph(G, en_graphs, ax_title=ax_title)
+        G = cls.draw_graph(G, en_graphs, ax_title=ax_title, **kwargs)
+        return G
+
+    # ----------------------- Helpers  --------------------------------------- #
+    @classmethod
+    def _get_head_node_edges(cls, G: nx.Graph, head_node_id='obj') -> List:
+        head_nodes = []
+        for i, node in enumerate(list(G.nodes(data=False))):
+            if 'obj' in node:
+                head_nodes.append(node)
+        print(f"head_nodes = {head_nodes}")
+        return head_nodes
+
+    @classmethod
+    def _remove_head_node_edges(cls, G: nx.Graph, head_node_id='obj'):
+        head_nodes = cls._get_head_node_edges(G, head_node_id)
+
+        if len(head_nodes) > 1:
+            # ToDo: Remove connection between head nodes
+            for i, h_node in enumerate(head_nodes):
+                if i == 0:
+                    continue
+                h = head_nodes[i - 1]
+                t = h_node
+                if G.has_edge(h, t):
+                    G.remove_edges_from([(h, t)])
+
         return G
 
     @classmethod
-    def draw_graph(cls, G, en_graphs,
+    def _add_head_node_edges(cls, G: nx.Graph, head_node_id='obj'):
+        """
+        # ToDo: there needs to be connection among all head node permutations
+        For now, just make the G connected component = 1
+        Also, change edge key from '<R>, <R1>' to <rel> as connections should be
+        order invariant
+
+        """
+        head_nodes = cls._get_head_node_edges(G, head_node_id)
+        if len(head_nodes) > 1:
+            # ToDo: there needs to be connection among all head node permutations
+            for i, h_node in enumerate(head_nodes):
+                if i == 0:
+                    continue
+                h = head_nodes[i - 1]
+                t = h_node
+                # TODO: Relations should be order invariant, remove i+1
+                key = "<R>" if i <= 1 else f"<R{i + 1}>"
+                G.add_edges_from([(h, t, {key: "tbd"})])
+                # edge_labels.update({(h, t): key})
+
+        return G
+
+    # ----------------------- Helpers end --------------------------------------- #
+    @classmethod
+    def draw_graphviz(cls, G, pos=None, plot_box=False, ax_title=None):
+        import random
+        from networkx.drawing.nx_agraph import graphviz_layout
+
+        NDV = G.nodes(data=True)
+        NV = G.nodes(data=False)
+        EV = G.edges(data=False)
+        EDV = G.edges(data=True)
+
+        is_head_node = lambda x: 'obj' in x
+        is_snode = lambda x: 'Gs' in x
+        is_tnode = lambda x: 'Gt' in x
+
+        # Desiderata:
+        # Draw the head_nodes a little larger, node_size=60 for hnodes, and 40 for anodes
+        # Color the Gs, Gt nodes differently or shape (node_shape)
+
+        # nsz = [60 if is_head_node(node) else 40 for node in NV]
+        # ncol = ['tab:purple' if is_snode(node) else 'tab:blue' for node in NV]
+        # nshape = ['8' if is_head_node(node) else 'o' for node in NV]
+
+        plt.figure(1, figsize=(8, 8))
+        plt.axis('on' if plot_box == True else "off")
+        plt.title(ax_title)
+        if pos is None:
+            pos = graphviz_layout(G, prog='neato')
+
+        pos_shadow = copy.deepcopy(pos)
+        shift_amount = 0.001
+        for k, v in pos_shadow.items():
+            x = v[0] + shift_amount
+            y = v[1] - shift_amount
+            pos_shadow[k] = (x, y)
+            # pos_shadow[idx][0] += shift_amount
+            # pos_shadow[idx][1] -= shift_amount
+
+        # C = (G.subgraph(c) for c in nx.connected_components(G))
+        # for g in C:
+        #     c = [random.random()] * nx.number_of_nodes(g)  # random color..
+        #     nx.draw(g, pos, node_size=40, node_color=c, vmin=0.0, vmax=1.0, with_labels=False)
+
+        for n in NV:
+            g = G.subgraph(n)
+            nsz = 60 if is_head_node(n) else 40
+            # ncol = 'tab:purple' if is_snode(n) else 'tab:blue'
+            # ref: https://matplotlib.org/examples/color/named_colors.html
+            # ncol = 'b' if is_snode(n) else 'darkmagenta'
+            ncol = 'b' if is_snode(n) else 'teal'
+            # marker ref: https://matplotlib.org/api/markers_api.html#module-matplotlib.markers
+            nshape = 'D' if is_head_node(n) else 'o'
+            nx.draw(g, pos, node_size=nsz, node_color=ncol, node_shape=nshape, with_labels=False)
+            nx.draw(g, pos_shadow, node_size=nsz, node_color='k', node_shape=nshape, alpha=0.2)
+
+        nx.draw_networkx_edges(G, pos, edgelist=EDV)
+        # nx.draw(G, pos, node_size=nsz, node_color=ncol, node_shape=nshape, vmin=0.0, vmax=1.0, with_labels=False)
+        plt.show()
+
+    @classmethod
+    def draw_graph(cls, G, en_graphs, doc=None,
                    hnode_sz=1200, anode_sz=700,
                    hnode_col='tab:blue', anode_col='tab:red',
                    font_size=12,
@@ -606,8 +705,7 @@ class SpacyParser(ParserBackend):
                    plot_box=False,
                    save_file_path=None,
                    ax_title=None,
-                   debug=False,
-                   doc=None):
+                   debug=False):
 
         ### Nodes
         NDV = G.nodes(data=True)
@@ -617,10 +715,11 @@ class SpacyParser(ParserBackend):
         head_nodes = list(filter(_is_head_node, NV))
         attr_nodes = list(filter(_is_attr_node, NV))
         assert len(NDV) == len(head_nodes) + len(attr_nodes)
-        pos = nx.layout.bipartite_layout(G, nodes=head_nodes)
-        #pos = nx.layout.spectral_layout(G)
-        pos = nx.spring_layout(G, pos=pos, fixed=attr_nodes)
-        #pos = nx.spring_layout(G)  # Get node positions
+
+        # pos = nx.layout.bipartite_layout(G, nodes=head_nodes)
+        ##pos = nx.layout.spectral_layout(G)
+        # pos = nx.spring_layout(G, pos=pos, fixed=attr_nodes)
+        pos = nx.spring_layout(G)  # Get node positions
 
         # Create position copies for shadows, and shift shadows
         # See: https://gist.github.com/jg-you/144a35013acba010054a2cc4a93b07c7
@@ -652,18 +751,18 @@ class SpacyParser(ParserBackend):
 
         # Extract relations if doc is passed to the function
         # This will be used instead of <R[NUMBER]>
-        relations = cls.extract_relations(doc)            
+        relations = cls.extract_relations(doc)
 
         #### Add <R>, <R2> etc. edge between nodes
         head_nodes = []
         for i, node in enumerate(list(G.nodes(data=False))):
-            #if i % 5 == 0:
+            # if i % 5 == 0:
             if 'obj' in node:
                 head_nodes.append(node)
         print(f"head_nodes = {head_nodes}")
-        
-        # Check that the number of relations is 1 less than the number of nodes, if relations is not None       
-        assert relations is None or len(relations) == len(head_nodes)-1
+
+        # Check that the number of relations is 1 less than the number of nodes, if relations is not None
+        assert relations is None or len(relations) == len(head_nodes) - 1
 
         if len(head_nodes) > 1:
             # ToDo: there needs to be connection among all head node permutations
@@ -672,17 +771,17 @@ class SpacyParser(ParserBackend):
                     continue
                 h = head_nodes[i - 1]
                 t = h_node
-                
+
                 # If spatial relations have been extracted from the sentence, then use them. Else label relations as <R[number]>
                 if relations:
-                    key = relations[i-1]
+                    key = relations[i - 1]
                 else:
                     # TODO: Relations should be order invariant, remove i+1
                     key = "<R>" if i <= 1 else f"<R{i + 1}>"
 
                 G.add_edges_from([(h, t, {key: "tbd"})])
                 edge_labels.update({(h, t): key})
-                
+
         # G.add_edges_from([('obj', 'obj2', {'<R>': 'tbd'})])
         # edge_labels.update({('obj', 'obj2'): "<R>"})
 
@@ -727,8 +826,8 @@ class SpacyParser(ParserBackend):
         except ImportError as ie:
             logger.error(f"Install pygraphviz and graphviz: {ie}")
 
-        #print(f"graph has {nx.number_of_nodes(G)} nodes with {nx.number_of_edges(G)} edges")
-        #print(nx.number_strongly_connected_components(G), "connected components")
+        # print(f"graph has {nx.number_of_nodes(G)} nodes with {nx.number_of_edges(G)} edges")
+        # print(nx.number_strongly_connected_components(G), "connected components")
 
         plt.figure(1, figsize=(8, 8))
         # layout graphs with positions using graphviz neato
@@ -762,12 +861,35 @@ class SpacyParser(ParserBackend):
             nx.draw_networkx_edge_labels(G, pos, edge_labels=edge_labels, label_pos=0.5, font_size=8)
 
     @classmethod
-    def visualize(cls, doc, dep=False):
+    def visualize(cls, doc, dep=False, save_svg_fn=None):
         try:
+            import sys
             from spacy import displacy
-            displacy.serve(doc, style='ent', options={'compact': True})
-            if dep:
-                displacy.serve(doc, style='dep', options={'compact': True})
+            from pathlib import Path
+
+            is_notebook = 'ipykernel' in sys.modules
+            colors = {"CLEVR_OBJ": "linear-gradient(90deg, #aa9cfc, #fc9ce7)",
+                      "CLEVR_OBJS": "linear-gradient(90deg, #aa9cfc, #fc9ce7)",
+                      "SPATIAL_RE": "linear-gradient(90deg, #00ad85bf, #0085ade3)",
+                      "MATCHING_RE": "linear-gradient(90deg, #fa8072, #fa80a6)"}
+            options = {"ents": ["CLEVR_OBJ", "CLEVR_OBJS",
+                                "SPATIAL_RE",
+                                "MATCHING_RE"], "colors": colors}
+
+            if is_notebook:
+                displacy.render(doc, style='ent', jupyter=True, options = options)
+                if dep:
+                    displacy.render(doc, style='dep', jupyter=True, options={'distance': 70})
+            else:
+                displacy.serve(doc, style='ent', options=options.update({'compact': True}))
+                if dep:
+                    displacy.serve(doc, style='dep', options={'compact': True})
+
+            if save_svg_fn:
+                svg = displacy.render(doc, style="dep", jupyter=False)
+                output_path = Path(f"../../demo/imgs/{save_svg_fn}")
+                output_path.open("w", encoding="utf-8").write(svg)
+
         except ImportError as ie:
             logger.error("Could not import displacy for visualization")
 
@@ -777,6 +899,23 @@ class SpacyParser(ParserBackend):
             if c.start <= i < c.end:
                 return j
         return None
+
+    @classmethod
+    def filter_clevr_objs(cls, ents: Tuple) -> Tuple:
+        return cls.filter_ents_by_labels(ents, ['CLEVR_OBJ', 'CLEVR_OBJS'])
+
+    @classmethod
+    def filter_spatial_re(cls, ents: Tuple) -> Tuple:
+        return cls.filter_ents_by_labels(ents, ['SPATIAL_RE'])
+
+    @classmethod
+    def filter_matching_re(cls, ents: Tuple) -> Tuple:
+        return cls.filter_ents_by_labels(ents, ['MATCHING_RE'])
+
+    @classmethod
+    def filter_ents_by_labels(cls, ents: Tuple, labels:List) -> Tuple:
+        fn = lambda y,z: tuple(filter(lambda x: x.label_ in z, y))
+        return fn(ents, labels)
 
     @classmethod
     def extract_relations(cls, doc):
@@ -794,7 +933,36 @@ class SpacyParser(ParserBackend):
             return None
         else:
             # Load the spatial relations from a file
-            relation_file = os.path.join(os.path.dirname(__file__), '../_data/relation-attrs.txt')            
+            relation_file = os.path.join(os.path.dirname(__file__), '../_data/relation-attrs.txt')
+            spatial_relations = set(line.strip() for line in open(relation_file))
+            spatial_ents = cls.filter_spatial_re(doc.ents)
+
+            # Store the relations
+            extracted_relations = []
+            for span in spatial_ents:
+                for t in span:
+                    if t.text in spatial_relations:
+                        extracted_relations.append(t)
+
+            return extracted_relations
+
+    @classmethod
+    def extract_relations2(cls, doc):
+        '''
+        Takes a SpaCy parsed sentence and extracts the spatial relations
+        from it. Used in draw_graph to substitute relation name
+
+        Arguments:
+            doc: SpaCy parsed sentence
+
+        Returns:
+            extracted_relations: list of spatial relations in the parsed sentence
+        '''
+        if doc is None:
+            return None
+        else:
+            # Load the spatial relations from a file
+            relation_file = os.path.join(os.path.dirname(__file__), '../_data/relation-attrs.txt')
             spatial_relations = set(line.strip() for line in open(relation_file))
 
             # Load the sentence. Since there is only one sentence, extracting the first one
@@ -808,17 +976,5 @@ class SpacyParser(ParserBackend):
 
             return extracted_relations
 
-    # @classmethod
-    # def get_graph_edge_labels(cls, G):
-    #     # Edge List & Labels:
-    #     edgelist = []
-    #     edge_labels = {}  # edge_labels = {(u, v): d for u, v, d in G.edges(data=True)}
-    #     # _e_fn = lambda x: tuple((head_node_id, x[0], {x[1]['label']: x[1]['val']}))
-    #     # for i, node in enumerate(nodelist):
-    #     #     if node[0] == head_node_id:
-    #     #         continue
-    #     #     edge = _e_fn(node)
-    #     #     edgelist.append(edge)
-    #     #     edge_label = f"{node[0]}:{node[1]['label']}"
-    #     #     edge_labels.update({(head_node_id, node[0]): edge_label})
+
 

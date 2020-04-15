@@ -28,6 +28,9 @@ from spacy.pipeline import EntityRuler, EntityLinker, EntityRecognizer
 from spacy.tokens import Doc, Span, Token
 
 from clevr_parser.utils import *
+from clevr_parser import setup_logging
+import logging
+logger = setup_logging(__name__, log_level=logging.INFO)
 
 __all__ = ['CLEVRObjectRecognizer']
 
@@ -201,12 +204,12 @@ class CLEVRObjectRecognizer(object):
 			else:
 				nlp.add_pipe(ruler, before=adj_comp)
 		else:
-			#print(f"{ruler.name} already exists in pipeline\n\t{pipeline}")
+			logger.warning(f"{ruler.name} already exists in pipeline\n\t{pipeline}")
 			if force:
-				#print(f"Force=True, removing and re-adding ruler")
+				logger.info(f"Force=True, removing and re-adding ruler")
 				pass
 		pipeline, _ = zip(*nlp.pipeline)
-		#print(f"Updated pipeline: {pipeline}")
+		logger.debug(f"Updated pipeline: {pipeline}")
 
 	def _remove_ruler_from_pipeline(self, nlp, ruler, adj_comp="ner", after=False):
 		if nlp == None:
