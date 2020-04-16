@@ -9,7 +9,7 @@
 # Distributed under terms of the MIT license.
 # https://github.com/raeidsaqur/clevr-parser
 
-__all__ = ['ParserBackend']
+__all__ = ['ParserBackend', 'EmbedderBackend']
 
 
 class ParserBackend(object):
@@ -22,5 +22,20 @@ class ParserBackend(object):
         #super(ParserBackend, self).__init__()
 
     def parse(self, sentence):
+        raise NotImplementedError()
+
+class EmbedderBackend(object):
+    """
+    Based class for all embedder backends. This class
+    specifies the methods that should be override by subclasses.
+    """
+    def __init__(self, *args, **kwargs):
+        super().__init__()
+        #super(EmbedderBackend, self).__init__()
+
+    def embed(self, sentence):
+        raise NotImplementedError()
+
+    def get_embeddings(self, G):
         raise NotImplementedError()
 
