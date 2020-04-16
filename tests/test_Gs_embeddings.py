@@ -28,7 +28,9 @@ cap_1obj_train_00B = 'A rubber purple sphere'
 
 @pytest.fixture(scope="module")
 def parser():
-    parser = clevr_parser.Parser().get_backend(identifier='spacy', model='en_core_web_sm')
+    parser = clevr_parser.Parser(backend='spacy', model='en_core_web_sm',
+                                 has_spatial=True,
+                                 has_matching=False).get_backend(identifier='spacy')
     return parser
 
 
