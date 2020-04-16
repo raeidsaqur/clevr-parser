@@ -48,7 +48,7 @@ def demo_G_scene(parser, gfp):
     G_img = parser.draw_clevr_img_scene_graph(g)
 
 def demo_G_text_spatial_relation(parser, text=None):
-    text = "The sphere is behind a rubber cylinder right of a metal cube" if text is None else text
+    text = "The sphere is behind a rubber cylinder which right of a metal cube" if text is None else text
     q_graph, q_doc = parser.parse(text, return_doc=True)
     #parser.visualize(q_doc)
     ax_title = f"{q_doc}"

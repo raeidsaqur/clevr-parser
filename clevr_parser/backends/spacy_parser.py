@@ -25,6 +25,7 @@ from typing import List, Dict, Tuple, Sequence
 import copy
 import logging
 logging.basicConfig(level=logging.INFO, format="%(asctime)s %(message)s")
+logging.getLogger('matplotlib').setLevel(logging.ERROR)
 logger = logging.getLogger(__name__)
 import os
 
@@ -716,10 +717,7 @@ class SpacyParser(ParserBackend):
         attr_nodes = list(filter(_is_attr_node, NV))
         assert len(NDV) == len(head_nodes) + len(attr_nodes)
 
-        # pos = nx.layout.bipartite_layout(G, nodes=head_nodes)
-        ##pos = nx.layout.spectral_layout(G)
-        # pos = nx.spring_layout(G, pos=pos, fixed=attr_nodes)
-        pos = nx.spring_layout(G)  # Get node positions
+        pos = cls.get_positions(G, head_nodes, attr_nodes)
 
         # Create position copies for shadows, and shift shadows
         # See: https://gist.github.com/jg-you/144a35013acba010054a2cc4a93b07c7
@@ -977,4 +975,33 @@ class SpacyParser(ParserBackend):
             return extracted_relations
 
 
+    @classmethod
+    def get_positions(cls, G, head_nodes, attr_nodes):
+        '''
+        Arranges only the head nodes in a circular layout, and
+        attribute nodes in a random layout. Then creates a spring
+        layout on top of that
 
+        Arguments:
+            G: the networkx graph
+            head_nodes: head_nodes of the graph
+            attr_nodes: attribute nodes of the graph
+
+        Returns:
+            The positions to be fed to spring layout
+        '''
+        # Generate the subgraph containing only the head nodes
+        head_subgraph = G.subgraph(head_nodes)
+
+        # Generate layouts for the head nodes and attribute nodes
+        head_pos = nx.circular_layout(head_subgraph)
+        random_pos = nx.random_layout(G)
+
+        # Assign polar coordinates in a sequential fashion
+        for node, sub_node in zip(head_nodes, head_subgraph.nodes):
+            random_pos[node] = head_pos[sub_node]
+
+        # Create a spring layout
+        pos = nx.spring_layout(G, k=0.9, pos=random_pos, fixed=head_nodes)
+
+        return pos
