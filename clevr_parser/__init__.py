@@ -15,7 +15,6 @@ from .parser import *
 from .utils import *
 from .explacy import *
 
-
 import os, logging
 
 def setup_logging(name, log_level=logging.INFO, log_file=None):

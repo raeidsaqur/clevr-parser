@@ -3,17 +3,13 @@
 
 import pytest
 np = pytest.importorskip('numpy')
-
 import os, sys, platform
 import json
+import matplotlib.pyplot as plt
 
 import clevr_parser
 from clevr_parser.utils import *
-
-import matplotlib.pyplot as plt
-from networkx import karate_club_graph, to_numpy_matrix
-import networkx as nx
-
+from  .samples import TEMPLATES, get_s_sample
 
 # Captions for 2obj_train_000001A
 cap_2obj_1a = 'A small red rubber cylinder is behind a large brown metal sphere'
@@ -27,16 +23,16 @@ cap_1obj_train_00B = 'A rubber purple sphere'
 
 @pytest.fixture(scope="module")
 def parser():
-    parser = clevr_parser.Parser().get_backend(identifier='spacy', model='en_core_web_sm')
+    parser = clevr_parser.Parser(backend='spacy', model='en_core_web_sm',
+                                 has_spatial=True,
+                                 has_matching=False).get_backend(identifier='spacy')
     return parser
 
 def test_parser_2obj(parser):
     caption = "The large brown metal sphere has a small red rubber cylinder to the right'"
-    graph, doc = parser.parse(caption, return_doc=True)
-    num_clevr_objs = len(graph['objects'])
+    _, doc = parser.parse(caption, return_doc=True)
+    num_clevr_objs = len(parser.filter_clevr_objs(doc.ents))
     assert num_clevr_objs == 2
-    assert len(doc.ents) == num_clevr_objs
-
 
 def test_parser_1obj_entity_vector(parser):
     caption = "small red rubber ball"
@@ -68,3 +64,4 @@ def test_parser_2obj_doc_vector(parser):
     doc_vector = parser.get_clevr_doc_vector_embedding(doc, ent_vec_size=ent_emd_sz)
     assert doc_vector is not None
     assert doc_vector.size == (ent_emd_sz * 2)
+    
