@@ -27,8 +27,8 @@ def test_visualize_and_mat_spa(parser):
         print(f"s_ams_{dist} = {s_ams}")
         Gs, doc = parser.parse(s_ams, return_doc=True)
         ax_title = f"{doc}"
-        Gs, en_graphs = parser.get_nx_graph_from_doc(doc)
-        G = parser.draw_graph(Gs, en_graphs, ax_title=ax_title, doc=doc)
+        _, en_graphs = parser.get_nx_graph_from_doc(doc)
+        G = parser.draw_graph(Gs, en_graphs, doc=doc, ax_title=ax_title )
         assert G is not None
 
 
@@ -38,6 +38,6 @@ def test_visualize_or_mat_spa(parser):
         print(f"s_oms_{dist} = {s_oms}")
         Gs, doc = parser.parse(s_oms, return_doc=True)
         ax_title = f"{doc}"
-        Gs, en_graphs = parser.get_nx_graph_from_doc(doc)
+        _, en_graphs = parser.get_nx_graph_from_doc(doc)
         G = parser.draw_graph(Gs, en_graphs, ax_title=ax_title, doc=doc)
         assert G is not None
