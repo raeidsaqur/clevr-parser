@@ -59,11 +59,11 @@ def get_s_sample(template:str, dist='train') -> str:
     s_oms_val = "How many things are cylinders that are behind the large purple metal thing " \
                 "or purple cylinders that are the same size as the cyan thing ?"
 
-    if template == f"and_mat_spa_{suffix}":
+    if template == f"and_mat_spa_baseline":
         return s_ams_bline
     elif template == f"and_mat_spa_val":
         return s_ams_val
-    elif template == f"or_mat_spa_{suffix}":
+    elif template == f"or_mat_spa_baseline":
         return s_oms_bline
     elif template == f"or_mat_spa_val":
         return s_oms_val
