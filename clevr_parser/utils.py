@@ -16,6 +16,7 @@ import os,json
 import spacy
 from spacy import displacy
 from .explacy import *
+import numpy as np
 
 from matplotlib import pyplot, patches
 
@@ -80,11 +81,6 @@ def get_Gunion_connected(fromGs: nx.Graph, Gt: nx.Graph) -> nx.MultiGraph:
     Gu_conn, _, _ = compose_multimodal_graphs(fromGs, Gt, connect_obj_nodes=True)
     return Gu_conn
 
-
-    print('done')
-    return Gu
-
-
 def compose_multimodal_graphs(Gs: nx.Graph, Gt: nx.Graph,
                               connect_obj_nodes=False, obj_node_id='obj'):
 
@@ -110,8 +106,6 @@ def compose_multimodal_graphs(Gs: nx.Graph, Gt: nx.Graph,
                 G_union.add_edge(i, j)
 
     return G_union, left_part, right_part
-
-
 
 def draw_adjacency_matrix(G, node_order=None, partitions=[], colors=[]):
     """
@@ -152,7 +146,6 @@ def draw_adjacency_matrix(G, node_order=None, partitions=[], colors=[]):
 ### END: Networkx Library Extensions and Helpers ####
 
 ### Decorators ###
-
 def trace(f, DEBUG=False):
     def wrap(*args, **kwargs):
         if DEBUG:
@@ -192,7 +185,6 @@ def toJSON(graph:Dict, id:int, file:str=None, caption:str=None, out=None):
     raise NotImplementedError
 
 @trace
-# def print_parsed_caption(graph:Dict, nlp, id:int=0, file:str=None, caption:str=None, out=None):
 def print_parsed_caption(caption:str, nlp=None, visualize=False):
     assert caption is not None
     if nlp is None:
@@ -354,7 +346,6 @@ def load_groundings_for_texts(tobjs:List[Dict], fp, max_samples=None) -> List[Di
         assert len(tscenes) == len(tobjs)
 
     return tscenes
-
 
 class dotdict(dict):
     """dot.notation access to dictionary attributes"""
