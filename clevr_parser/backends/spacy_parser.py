@@ -876,7 +876,7 @@ class SpacyParser(ParserBackend):
         # fig, axs = plt.subplots(1, 2)
         # axs[1].set_title(f"{doc}")
         fig, ax = plt.subplots(1, 1)
-        ax.set_title(ax_title)
+        ax.set_title(ax_title, wrap=True)
 
         nx.draw_networkx_nodes(G, pos, node_size=nsz, node_color=nc)
         nx.draw_networkx_nodes(G, pos_shadow, node_size=nsz, node_color='k', alpha=0.2)
@@ -1064,7 +1064,7 @@ class SpacyParser(ParserBackend):
         head_subgraph = G.subgraph(head_nodes)
 
         # Generate layouts for the head nodes and attribute nodes
-        head_pos = nx.circular_layout(head_subgraph)
+        head_pos = nx.circular_layout(head_subgraph, scale=1.5)
         random_pos = nx.random_layout(G)
 
         # Assign polar coordinates in a sequential fashion
@@ -1072,7 +1072,7 @@ class SpacyParser(ParserBackend):
             random_pos[node] = head_pos[sub_node]
 
         # Create a spring layout
-        pos = nx.spring_layout(G, k=0.9, pos=random_pos, fixed=head_nodes)
+        pos = nx.spring_layout(G, k=1, pos=random_pos, fixed=head_nodes)
 
         return pos
 
