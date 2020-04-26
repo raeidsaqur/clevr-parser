@@ -62,9 +62,10 @@ class MatchingRecognizer(object):
             {"label": "MATCHING_RE", "pattern": [{"LOWER": "are"}, {"LOWER": "the"}, {"LOWER": "same"},
                                                  {"TEXT": {"IN": ["size", "color", "material", "shape"]}}]},
             {"label": "MATCHING_RE", "pattern": [{"LOWER": "has"}, {"LOWER": "the"}, {"LOWER": "same"},
+                                                 {"TEXT": {"IN": ["size", "color", "material", "shape"]}}]},
+            {"label": "MATCHING_RE", "pattern": [{"LOWER": "same"},
                                                  {"TEXT": {"IN": ["size", "color", "material", "shape"]}}]}
         ]
-
         return obj_patterns
 
     def _add_patterns(self):
@@ -73,7 +74,7 @@ class MatchingRecognizer(object):
         other_pipes = self.nlp.pipe_names
         with self.nlp.disable_pipes(*other_pipes):
             self.ruler.add_patterns(patterns)
-        #self.ruler.add_patterns(patterns)
+
         self._add_ruler_to_pipeline(self.nlp, self.ruler)
 
     def _add_ruler_to_pipeline(self, nlp, ruler, name="matching_entity_ruler"):
