@@ -26,6 +26,9 @@ __all__ = ['combine_en_graphs','compose_multimodal_graphs', 'draw_adjacency_matr
            'print_parsed_doc', 'print_parsed_caption', 'visualize_parsed',
            'dotdict',
            'load_questions_and_groundings',
+           'load_groundings_from_path',
+           'load_grounding_for_img',
+           'load_grounding_for_img_idx',
            'load_captions_and_groundings',
            'load_texts_and_groundings',
            'get_Gunion',
@@ -306,6 +309,11 @@ def load_grounding_for_questionObj(qObj:Dict, fp) -> Dict:
     assert qObj['image_filename'] is not None
     scene = list(filter(lambda g: g['image_filename'] == qObj['image_filename']))
     return scene[0]
+
+def load_grounding_for_img_idx(idx:str, fp):
+    groundings = load_groundings_from_path(fp)
+    grounding = list(filter(lambda x: x['image_index'] == idx, groundings))[0]
+    return grounding
 
 def load_grounding_for_img(fn:str, fp):
     groundings = load_groundings_from_path(fp)

@@ -76,9 +76,32 @@ def demo_visualize_or_mat_spa(parser):
         G = parser.draw_graph(Gs, en_graphs, ax_title=ax_title, doc=doc)
         assert G is not None
 
+def demo_visualize_Gt(parser, fp, img_fn=None, img_idx=None):
+    """ Demo of a image scene graph generation """
+    # fp = "../data/CLEVR_v1.0/scenes_parsed/train_scenes_parsed.json"
+    fp = "../data/CLEVR_v1.0/scenes_parsed/val_scenes_parsed.json"
+    if not os.path.exists(fp):
+        raise FileNotFoundError(f"{fp} does not exist")
+
+    img_scene = None; scenes = None
+    if img_idx:
+        img_scene = load_grounding_for_img_idx(img_idx, fp)
+    elif img_fn:
+        img_scene = load_grounding_for_img(img_fn)
+    else:
+        scenes = load_groundings_from_path(fp)
+    try:
+        Gt, t_doc = parser.get_doc_from_img_scene(img_scene)
+    except AssertionError as ae:
+        print(f"AssertionError Encountered: {ae}")
+        print(f"[{img_fn}] Excluding images with > 10 objects")
+    ax_title = f"{t_doc}"
+    Gt, en_graphs = parser.get_nx_graph_from_doc(t_doc)
+    parser.draw_graph(Gt, en_graphs, ax_title=ax_title)
+
 def main():
     clevr_img_name = lambda split, i: f"CLEVR_{split}_{i:06d}.png"
-    clevrr_baseline_qp = "../data/CLEVRR_v1.0/questions/CLEVRR_compare_baseline_questions.json"
+    #clevrr_baseline_qp = "../data/CLEVRR_v1.0/questions/CLEVRR_compare_baseline_questions.json"
     image_grounding_parsed_gp = "../data/CLEVR_v1.0/scenes_parsed/val_scenes_parsed.json"
     parser = clevr_parser.Parser(backend='spacy', model='en_core_web_sm',
                                  has_spatial=True,
@@ -86,7 +109,9 @@ def main():
     #s_ams_bline = get_s_sample(template="and_mat_spa", dist="train")
     # demo_Gs_spatial_relation(parser, text=s_ams_bline)
     # demo_visualize_and_mat_spa(parser)
-    demo_visualize_or_mat_spa(parser)
+    #demo_visualize_or_mat_spa(parser)
+    # CLEVR_val_000015.png
+    demo_visualize_Gt(parser, image_grounding_parsed_gp, img_idx=15)
     print("done")
 
 
