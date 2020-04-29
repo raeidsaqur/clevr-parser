@@ -876,7 +876,7 @@ class SpacyParser(ParserBackend):
         # fig, axs = plt.subplots(1, 2)
         # axs[1].set_title(f"{doc}")
         fig, ax = plt.subplots(1, 1)
-        ax.set_title(ax_title)
+        ax.set_title(ax_title, wrap=True)
 
         nx.draw_networkx_nodes(G, pos, node_size=nsz, node_color=nc)
         nx.draw_networkx_nodes(G, pos_shadow, node_size=nsz, node_color='k', alpha=0.2)
@@ -1064,7 +1064,7 @@ class SpacyParser(ParserBackend):
         head_subgraph = G.subgraph(head_nodes)
 
         # Generate layouts for the head nodes and attribute nodes
-        head_pos = nx.circular_layout(head_subgraph)
+        head_pos = nx.circular_layout(head_subgraph, scale=1.5)
         random_pos = nx.random_layout(G)
 
         # Assign polar coordinates in a sequential fashion
@@ -1072,7 +1072,173 @@ class SpacyParser(ParserBackend):
             random_pos[node] = head_pos[sub_node]
 
         # Create a spring layout
-        pos = nx.spring_layout(G, k=0.9, pos=random_pos, fixed=head_nodes)
+        pos = nx.spring_layout(G, k=1, pos=random_pos, fixed=head_nodes)
 
-        return pos
+        return pos       
 
+    @classmethod
+    def draw_graph_testing(cls, G, en_graphs=None, doc=None,
+                   hnode_sz=2000, anode_sz=2000,
+                   hnode_col='tab:blue', anode_col='tab:red',
+                   font_size=14, attr_font_size=10,
+                   figsize=(11,9),
+                   show_edge_labels=True,
+                   show_edge_attributes=False,
+                   layout='graphviz',
+                   plot_box=False,
+                   save_file_path=None,
+                   ax_title=None,
+                   debug=False):
+
+        ### Nodes
+        NDV = G.nodes(data=True)
+        NV = G.nodes(data=False)
+        _is_head_node = lambda x: 'obj' in x
+        _is_attr_node = lambda x: 'obj' not in x
+        head_nodes = list(filter(_is_head_node, NV))
+        attr_nodes = list(filter(_is_attr_node, NV))
+        assert len(NDV) == len(head_nodes) + len(attr_nodes)
+
+        if layout == 'graphviz':
+            from networkx.drawing.nx_agraph import graphviz_layout
+            pos = graphviz_layout(G, prog='neato')
+
+            pos_shadow = copy.deepcopy(pos)
+            shift_amount = 0.001
+            for k, v in pos_shadow.items():
+                x = v[0] + shift_amount
+                y = v[1] - shift_amount
+                pos_shadow[k] = (x, y)
+        else:
+            pos = cls.get_positions(G, head_nodes, attr_nodes)
+
+            # Create position copies for shadows, and shift shadows
+            # See: https://gist.github.com/jg-you/144a35013acba010054a2cc4a93b07c7
+            pos_shadow = copy.deepcopy(pos)
+            shift_amount = 0.001
+            for idx in pos_shadow:
+                pos_shadow[idx][0] += shift_amount
+                pos_shadow[idx][1] -= shift_amount           
+
+        nsz = [hnode_sz if 'obj' in node else anode_sz for node in G.nodes]
+        # nsz2 = list(map(lambda node: hnode_sz if 'obj' in node else anode_sz, G.nodes))
+        nc = [hnode_col if 'obj' in node else anode_col for node in G.nodes]
+        #### Node Labels: Label head nodes as obj or obj{i}, and attr nodes with their values:
+        _label = lambda node: node[1]['val'] if 'obj' not in node[0] else node[0]
+        _labels = list(map(_label, G.nodes(data=True)))
+        labels = dict(zip(list(G.nodes), _labels))
+
+        ### Edges
+        #### Edge Labels
+        edge_labels = {}
+        if show_edge_attributes:
+            for u, v, d in G.edges(data=True):
+                edge_labels.update({(u, v): d})
+        else:
+            for u, v, d in G.edges(data=True):
+                if next(iter(d)) in ['matching_re', 'spatial_re']:
+                    edge_labels.update({(u, v): d[next(iter(d))]})
+                else:
+                    edge_labels.update({(u, v): next(iter(d))})          
+
+        # for k, v in en_graphs.items():
+        #     edge_labels.update(v['edge_labels'])
+
+        edgelist = G.edges(data=True)
+
+        ## Draw ##
+
+        # Render (MatPlotlib)
+        plt.axis('on' if plot_box == True else "off")
+        # fig, axs = plt.subplots(1, 2)
+        # axs[1].set_title(f"{doc}")
+        fig, ax = plt.subplots(1, 1, figsize=figsize)
+        ax.set_title(ax_title, wrap=True)
+
+        nx.draw_networkx_nodes(G, pos, node_size=nsz, node_color=nc)
+        nx.draw_networkx_nodes(G, pos_shadow, node_size=nsz, node_color='k', alpha=0.2)
+
+        nx.draw_networkx_edges(G, pos, edgelist=edgelist)
+
+        # Draw node labels (different font sizes for head and attribute nodes)
+        pos_head, pos_attr = {k: v for k, v in pos.items() if k in head_nodes},\
+                             {k: v for k, v in pos.items() if k in attr_nodes}
+        labels_head, labels_attr = {k: v for k, v in labels.items() if k in head_nodes},\
+                                   {k: v for k, v in labels.items() if k in attr_nodes}     
+        nx.draw_networkx_labels(G, pos_head, labels=labels_head, font_size=font_size, font_color='k', font_family='sans-serif')
+        nx.draw_networkx_labels(G, pos_attr, labels=labels_attr, font_size=attr_font_size, font_color='k', font_family='sans-serif')
+        
+        # Draw edge labels
+        if show_edge_labels:
+            nx.draw_networkx_edge_labels(G, pos, edge_labels=edge_labels, label_pos=0.5, font_size=8)
+
+        if save_file_path is not None:
+            plt.savefig(save_file_path, dpi=150)
+        # if pygraphviz_enabled:
+        #   nx.write_dot(G, 'file.dot')
+        plt.show()
+
+        return G
+
+
+    @classmethod
+    def draw_graphviz_testing(cls, G, pos=None, plot_box=False, ax_title=None):
+        import random
+        from networkx.drawing.nx_agraph import graphviz_layout
+
+        NDV = G.nodes(data=True)
+        NV = G.nodes(data=False)
+        print(NDV)
+        print(NV)
+        EV = G.edges(data=False)
+        EDV = G.edges(data=True)
+
+        is_head_node = lambda x: 'obj' in x
+        is_snode = lambda x: 'Gs' in x
+        is_tnode = lambda x: 'Gt' in x
+
+        # Desiderata:
+        # Draw the head_nodes a little larger, node_size=60 for hnodes, and 40 for anodes
+        # Color the Gs, Gt nodes differently or shape (node_shape)
+
+        # nsz = [60 if is_head_node(node) else 40 for node in NV]
+        # ncol = ['tab:purple' if is_snode(node) else 'tab:blue' for node in NV]
+        # nshape = ['8' if is_head_node(node) else 'o' for node in NV]
+
+        plt.figure(1, figsize=(8, 8))
+        plt.axis('on' if plot_box == True else "off")
+        plt.title(ax_title)
+        if pos is None:
+            pos = graphviz_layout(G, prog='neato')
+
+        pos_shadow = copy.deepcopy(pos)
+        shift_amount = 0.001
+        for k, v in pos_shadow.items():
+            x = v[0] + shift_amount
+            y = v[1] - shift_amount
+            pos_shadow[k] = (x, y)
+            # pos_shadow[idx][0] += shift_amount
+            # pos_shadow[idx][1] -= shift_amount
+
+        # C = (G.subgraph(c) for c in nx.connected_components(G))
+        # for g in C:
+        #     c = [random.random()] * nx.number_of_nodes(g)  # random color..
+        #     nx.draw(g, pos, node_size=40, node_color=c, vmin=0.0, vmax=1.0, with_labels=False)
+
+        for n in NV:
+            g = G.subgraph(n)
+            nsz = 1200 if is_head_node(n) else 700
+            # ncol = 'tab:purple' if is_snode(n) else 'tab:blue'
+            # ref: https://matplotlib.org/examples/color/named_colors.html
+            # ncol = 'b' if is_snode(n) else 'darkmagenta'
+            ncol = 'b' if is_snode(n) else 'teal'
+            # marker ref: https://matplotlib.org/api/markers_api.html#module-matplotlib.markers
+            nshape = 'D' if is_head_node(n) else 'o'
+            nx.draw(g, pos, node_size=nsz, node_color=ncol, node_shape=nshape, with_labels=True)
+            nx.draw(g, pos_shadow, node_size=nsz, node_color='k', node_shape=nshape, alpha=0.2)
+
+        nx.draw_networkx_edges(G, pos, edgelist=EDV)
+        # nx.draw(G, pos, node_size=nsz, node_color=ncol, node_shape=nshape, vmin=0.0, vmax=1.0, with_labels=False)
+        plt.show()
+
+        return G
