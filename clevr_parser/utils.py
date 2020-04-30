@@ -16,6 +16,7 @@ import os,json
 import spacy
 from spacy import displacy
 from .explacy import *
+import sympy; sympy.init_printing()
 import numpy as np
 
 from matplotlib import pyplot, patches
@@ -25,6 +26,8 @@ __all__ = ['combine_en_graphs','compose_multimodal_graphs', 'draw_adjacency_matr
            'trace', 'print_eq', 'print_star', 'print_dash', 'tprint',
            'print_parsed_doc', 'print_parsed_caption', 'visualize_parsed',
            'dotdict',
+           'invert_dict',
+           'load_vocab',
            'load_questions_and_groundings',
            'load_groundings_from_path',
            'load_grounding_for_img',
