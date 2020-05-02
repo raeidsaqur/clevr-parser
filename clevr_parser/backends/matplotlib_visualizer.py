@@ -10,13 +10,11 @@
 # https://github.com/raeidsaqur/clevr-parser
 
 from ..visualizer import Visualizer, get_default_visualizer
-from ..parser import  Parser, get_default_parser
 from .backend import VisualizerBackend
-from ..utils import *
 from typing import List, Dict, Tuple, Sequence
 import logging
 logger = logging.getLogger(__name__)
-import os, copy
+import copy
 
 try:
     import matplotlib
