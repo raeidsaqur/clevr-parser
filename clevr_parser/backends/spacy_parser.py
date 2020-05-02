@@ -1119,6 +1119,9 @@ class SpacyParser(ParserBackend):
                    ax_title=None,
                    debug=False):
 
+        import warnings
+        warnings.warn("deprecated: use MatplotlibVisualizer.draw_graph(...) instead",
+                      DeprecationWarning)
         ### Nodes
         NDV = G.nodes(data=True)
         NV = G.nodes(data=False)
@@ -1212,6 +1215,11 @@ class SpacyParser(ParserBackend):
 
     @classmethod
     def draw_graphviz_testing(cls, G, pos=None, plot_box=False, ax_title=None):
+
+        import warnings
+        warnings.warn("deprecated: use GraphVizVisualizer.draw_graph(...) instead",
+                      DeprecationWarning)
+
         import random
         from networkx.drawing.nx_agraph import graphviz_layout
 

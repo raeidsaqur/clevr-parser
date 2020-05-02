@@ -1,5 +1,12 @@
 #! /usr/bin/env python3
 # -*- coding: utf-8 -*-
+# File: parser.py
+# Author: Raeid Saqur
+# Email: rsaqur@cs.princeton.edu
+# Created on: 2020-05-02
+#
+# This file is part of CLEVR-PARSER
+# Distributed under terms of the MIT License
 
 from .utils import trace
 
@@ -83,7 +90,6 @@ class Parser(object):
         except Exception as e:
             raise ImportError('Unable to register backend: {}.'.format(backend.__name__)) from e
 
-    #@trace
     def get_backend(self, identifier=None, **kwargs):
         if identifier is None:
             return self._default_backend
@@ -94,12 +100,9 @@ class Parser(object):
                 return self._inst
             return _backend(**kwargs)
 
-
 # --------------------------------------------------------------------------#
 _default_parser = None
 
-
-@trace
 def get_default_parser():
     """
     Get the default parser.

@@ -9,8 +9,9 @@
 # Distributed under terms of the MIT license.
 # https://github.com/raeidsaqur/clevr-parser
 
-__all__ = ['ParserBackend', 'EmbedderBackend']
+from abc import ABC, abstractmethod, abstractproperty
 
+__all__ = ['ParserBackend', 'EmbedderBackend', 'VisualizerBackend']
 
 class ParserBackend(object):
     """
@@ -19,7 +20,6 @@ class ParserBackend(object):
     """
     def __init__(self, *args, **kwargs):
         super().__init__()
-        #super(ParserBackend, self).__init__()
 
     def parse(self, sentence):
         raise NotImplementedError()
@@ -39,3 +39,15 @@ class EmbedderBackend(object):
     def get_embeddings(self, G):
         raise NotImplementedError()
 
+class VisualizerBackend(ABC):
+    """
+    Based class for all visualizer backends. This class
+    specifies the methods that should be override by subclasses.
+    """
+    def __init__(self, *args, **kwargs):
+        super().__init__()
+
+    @classmethod
+    @abstractmethod
+    def draw_graph(cls, G, *args, **kwargs):
+        raise NotImplementedError()

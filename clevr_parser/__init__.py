@@ -12,6 +12,8 @@
 from ._version import __version__, __author__, __email__
 
 from .parser import *
+from .embedder import *
+from .visualizer import *
 from .utils import *
 from .explacy import *
 
