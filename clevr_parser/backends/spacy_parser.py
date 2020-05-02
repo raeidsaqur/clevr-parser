@@ -374,7 +374,8 @@ class SpacyParser(ParserBackend):
         scene_img_fn = scene["image_filename"]
         clevr_objs = scene['objects']
         nco = len(clevr_objs)
-        assert nco <= 10
+        if kwargs.get('cap_to_10_objs'):
+            assert nco <= 10
 
         p = lambda o: tuple(o['position'])  # (x, y, z) co-ordinates
         pos = list(map(p, clevr_objs))
@@ -382,6 +383,16 @@ class SpacyParser(ParserBackend):
         return pos
 
     def get_caption_from_img_scene(self, scene, *args, **kwargs):
+        """
+        The imgage scene here is the parsed img scene, not the oracle scene graph.
+        Only other info available are the image 'pos' as parsed by the scene
+        derenderer.
+        # RS TODO: could parse pos here @see `get_pos_from_img_scene`
+        :param scene:
+        :param args:
+        :param kwargs:
+        :return:
+        """
         scene_img_idx = scene["image_index"]
         scene_img_fn = scene["image_filename"]
         clevr_objs = scene['objects']
@@ -400,6 +411,7 @@ class SpacyParser(ParserBackend):
         caption = reduce(concat, map(f, clevr_objs))  # skeletal scene caption without pos, rel
         # p = lambda o: tuple(o['position'])  # (x, y, z) co-ordinates
         # pos = list(map(p, clevr_objs))
+
         return caption
 
     def get_doc_from_img_scene(self, scene, *args, **kwargs):
@@ -412,12 +424,19 @@ class SpacyParser(ParserBackend):
         """
         scene_img_idx = scene["image_index"]
         scene_img_fn = scene["image_filename"]
+        pos = self.get_pos_from_img_scene(scene, *args, *kwargs)
         caption = self.get_caption_from_img_scene(scene, *args, **kwargs)
         if caption is None:
             return None, f"SKIP_{scene_img_idx}_{scene_img_fn}"
 
-        graph, doc = self.parse(caption, return_doc=True)
+        # graph, doc = self.parse(caption, return_doc=True)
+        graph, doc = self.parse(caption,
+                                    index=scene_img_idx,
+                                   filename=scene_img_fn,
+                                   return_doc=True,
+                                   pos=pos)
         return graph, doc
+
 
     @classmethod
     def get_graph_from_entity(cls, entity, ent_num=0,
@@ -454,7 +473,8 @@ class SpacyParser(ParserBackend):
             head_node_id = f"{head_node_prefix}-{head_node_id}"
 
         nodelist = [tuple((head_node_id, d))]
-
+        # _z_fn = lambda a, t: dict(zip(node_keys, (a, t.text)))
+        # _n_fn = lambda s, a, t: tuple( (s, _z_fn(a,t)) )
         _n_fn = lambda s, a, t: tuple((s, dict(zip(node_keys, (a, t.text)))))
         for t in entity:
             _node = cls.get_attr_node_from_token(t, ent_num)
@@ -470,7 +490,7 @@ class SpacyParser(ParserBackend):
             labels.update(a_labels)
 
         # Edge List & Labels:
-        edgelist = []
+        edgelist = []       # Redundant, this is EDV G.edges(data=True)
         edge_labels = {}  # edge_labels = {(u, v): d for u, v, d in G.edges(data=True)}
         _e_fn = lambda x: tuple((head_node_id, x[0], {x[1]['label']: x[1]['val']}))
         for i, node in enumerate(nodelist):
@@ -529,6 +549,7 @@ class SpacyParser(ParserBackend):
 
         def add_nodes(n0, n1, r):
             if not G.has_edge(*(n0, n1, 'matching_re')):
+                #G.add_edge(n0, n1, **{'label': 'matching_re', 'val':r})
                 G.add_edge(n0, n1, matching_re=r)
                 # G.add_edge(n0, n1,key=r)
 
@@ -557,6 +578,7 @@ class SpacyParser(ParserBackend):
                     print(ie)
 
         return G
+        
 
     @classmethod
     def update_graph_with_spatial_re(cls, G: nx.MultiGraph, doc, **kwargs) -> nx.MultiGraph:
@@ -575,6 +597,7 @@ class SpacyParser(ParserBackend):
 
         def add_nodes(n0, n1, r):
             if not G.has_edge(*(n0, n1, 'spatial_re')):
+                #G.add_edge(n0, n1, **{'label':'spatial_re', 'val': r})
                 G.add_edge(n0, n1, spatial_re=r)
                 # G.add_edge(n0, n1,key=r)
 
@@ -610,6 +633,9 @@ class SpacyParser(ParserBackend):
         """
         :param doc: doc obtained upon self.nlp(caption|text) contains doc.entities as clevr objs
         :return: a composed NX graph of all clevr objects along with pertinent info in en_graphs
+
+        :param pos: passed in kwargs. contains List[Tuple(x,y,z)] of pos co-ordinates
+        len(pos) == num_of clevr_objects
         """
         assert doc.ents is not None
         # objs = list(filter(lambda x: x.label_ in ['CLEVR_OBJ', 'CLEVR_OBJS'], doc.ents))
@@ -890,6 +916,9 @@ class SpacyParser(ParserBackend):
             plt.savefig(save_file_path)
         # if pygraphviz_enabled:
         #   nx.write_dot(G, 'file.dot')
+        # See: https://stackoverflow.com/questions/37920935/matplotlib-cant-find-font
+        # for findfont errors
+
         plt.show()
 
         return G
