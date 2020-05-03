@@ -153,21 +153,6 @@ class SpacyParser(ParserBackend):
             return graph, doc
         return graph
 
-    def parse_Gs(self, sentence: str, index=0, filename=None, return_doc=True):
-        """
-        This is intended to be invoked by the text side (not grounding image pipeline)
-        Returns a nx.graph and doc
-        """
-
-        doc = self.__nlp(sentence)
-        graph, en_graphs = self.get_nx_graph_from_doc(doc)
-
-        ## MODIFY HERE ##
-
-        if return_doc:
-            return graph, doc
-        return graph
-
     def get_clevr_text_vector_embedding(self, text, ent_vec_size=384, embedding_type=None):
         """
         N.b. This doesn't return uniform embedding dim across different graphs,
