@@ -1,5 +1,13 @@
 #! /usr/bin/env python3
 # -*- coding: utf-8 -*-
+# File   : test_Gs_visualization.py
+# Author : Raeid Saqur
+# Email  : raeidsaqur@cs.utoronto.ca
+# Date   : 09/21/2019
+#
+# This file is part of CLEVR Parser.
+# Distributed under terms of the MIT license.
+# https://github.com/raeidsaqur/clevr-parser
 
 import pytest
 np = pytest.importorskip('numpy')

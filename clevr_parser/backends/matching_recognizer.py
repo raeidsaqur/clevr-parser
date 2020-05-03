@@ -1,20 +1,14 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
+# File   : matching_recognizer.py
+# Author : Raeid Saqur
+# Email  : raeidsaqur@gmail.com
+# Date   : 09/21/2019
+#
+# This file is part of CLEVR Parser.
+# Distributed under terms of the MIT license.
+# https://github.com/raeidsaqur/clevr-parser
 
-"""
-Author : Raeid Saqur
-Email  : rsaqur@cs.princeton.edu
-Date   : 13/04/2020
-
-This file is part of CLEVR Parser.
-Distributed under terms of the MIT license.
-https://github.com/raeidsaqur/clevr-parser
-
-* Custom pipeline components: https://spacy.io//usage/processing-pipelines#custom-components
-Compatible with: spaCy v2.0.0+
-Last tested with: v2.1.0
-
-"""
 from __future__ import unicode_literals, print_function
 
 import re
@@ -37,25 +31,27 @@ class MatchingRecognizer(object):
 
     name = "matching_recognizer"
 
-    def __init__(self, nlp, label="MATCHING_RE"):
+    def __init__(self, nlp, label="MATCHING_RE", **kwargs):
         self.label = nlp.vocab.strings[label]
         self.nlp = nlp
-        # self.ruler = EntityRuler(nlp, phrase_matcher_attr=None, overwrite_ents=False, validate=True)
         self.ruler = EntityRuler(nlp, overwrite_ents=False, validate=True)
+        self.is_debug = kwargs.get("is_debug")
         try:
             self.ruler = self.ruler.from_disk("../_data/matching-re-patterns.jsonl")
             self._add_ruler_to_pipeline(nlp, self.ruler)
         except ValueError as ve:
-            logger.error(f"{ve}: Ensure patterns file is added.")
+            if self.is_debug:
+                logger.error(f"{ve}: Ensure patterns file is added.")
             self._add_patterns()
-        #logger.debug(f"Pipeline -> {nlp.pipe_names}")
+        if self.is_debug:
+            logger.debug(f"Pipeline -> {nlp.pipe_names}")
 
     def __call__(self, doc):
         #preprocess
         return doc
 
     def construct_patters(self):
-        """Hacky solution"""
+        """Load patterns adhoc if loading .jsonl file fails"""
         obj_patterns = [
             {"label": "MATCHING_RE", "pattern": [{"LOWER": "is"}, {"LOWER": "the"}, {"LOWER": "same"},
                                                  {"TEXT": {"IN": ["size", "color", "material", "shape"]}}]},
