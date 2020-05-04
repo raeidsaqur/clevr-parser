@@ -5,7 +5,7 @@
 # Email  : raeidsaqur@gmail.com
 # Date   : 09/21/2019
 #
-# This file is part of PGFM Parser.
+# This file is part of CLEVR Parser.
 # Distributed under terms of the MIT license.
 # https://github.com/raeidsaqur/clevr-parser
 

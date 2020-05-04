@@ -5,6 +5,7 @@ with open("README.md", "r") as fh:
     long_description = fh.read()
 
 __version__ = '0.0.7'
+
 url = "https://github.com/raeidsaqur/clevr-parser"
 
 install_requires = [

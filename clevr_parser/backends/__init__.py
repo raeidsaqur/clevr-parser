@@ -11,5 +11,8 @@
 
 from .spacy_parser import *
 from .stanfordnlp_parser import *
+from .graphviz_visualizer import *
+from .matplotlib_visualizer import *
+from .torch_embedder import *
 from .custom_components_clevr import *
 
