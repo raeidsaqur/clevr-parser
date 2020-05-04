@@ -1026,7 +1026,8 @@ class SpacyParser(ParserBackend):
             for span in matching_ents:
                 for t in span:
                     if t.text in matching_relations:
-                        extracted_relations.append(t)
+                        # extracted_relations.append(t)       # BUG: Don't add token t as relation, will break pickling
+                        extracted_relations.append(t.text)
 
             return extracted_relations
 
@@ -1055,7 +1056,8 @@ class SpacyParser(ParserBackend):
             for span in spatial_ents:
                 for t in span:
                     if t.text in spatial_relations:
-                        extracted_relations.append(t)
+                        #extracted_relations.append(t)      # BUG: don't add token t to graph, will break pickling
+                        extracted_relations.append(t.text)
 
             return extracted_relations
 
