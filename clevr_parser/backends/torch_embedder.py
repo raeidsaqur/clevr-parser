@@ -40,7 +40,6 @@ import scipy.sparse as sp
 import torch
 import scipy.sparse
 import networkx as nx
-import torch_geometric.data
 
 
 __all__ = ['TorchEmbedder']
