@@ -328,7 +328,7 @@ class TorchEmbedder(EmbedderBackend):
 
 
     def get_embeddings(self, G: nx.MultiGraph, doc, embd_dim=96,
-                       embedding_type=None) -> np.ndarray:
+                       embedding_type=None, **kwargs) -> np.ndarray:
         """
         #TODO Add edge_attr information in embedding
         Example:
