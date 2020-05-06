@@ -662,50 +662,6 @@ class SpacyParser(ParserBackend):
 
         return G, en_graphs
 
-    def draw_clevr_img_scene_graph(self, scene,
-                                   hnode_sz=1200, anode_sz=700,
-                                   hnode_col='tab:blue', anode_col='tab:red',
-                                   font_size=12,
-                                   show_edge_labels=True,
-                                   plot_box=False,
-                                   save_file_path=None,
-                                   debug=False):
-        """
-        Steps:
-        1. generate (canonical) caption from the image scene for all the objects
-        2. parser.parse(caption) -> graph, doc
-        3. call parser.draw_clevr_obj_graph() # same used for text scene graph.
-
-        Issues:
-        1. Need to encode the positional information in image scene
-        """
-        graph, doc = self.get_doc_from_img_scene(scene)
-
-        if graph is None and doc.contains("SKIP"):
-            return None
-
-        kwargs = {
-            'hnode_sz': hnode_sz,
-            'anode_sz': anode_sz,
-            'hnode_col': hnode_col,
-            'anode_col': anode_col,
-            'font_size': font_size,
-            'show_edge_labels': show_edge_labels,
-            'plot_box': plot_box,
-            'save_file_path': save_file_path,
-            'debug': debug
-        }
-        G = self.__class__.draw_clevr_obj_graph(graph, doc, **kwargs)
-        return G
-
-    @classmethod
-    def draw_clevr_obj_graph(cls, text_scene_graph, doc,
-                             **kwargs):
-        ax_title = f"{doc}"
-        G, en_graphs = cls.get_nx_graph_from_doc(doc)
-        G = cls.draw_graph(G, en_graphs, ax_title=ax_title, **kwargs)
-        return G
-
     # ----------------------- Helpers  --------------------------------------- #
     @classmethod
     def _get_head_node_edges(cls, G: nx.Graph, head_node_id='obj') -> List:
@@ -757,203 +713,6 @@ class SpacyParser(ParserBackend):
         return G
 
     # ----------------------- Helpers end --------------------------------------- #
-    @classmethod
-    def draw_graphviz(cls, G, pos=None, plot_box=False, ax_title=None):
-        import random
-        from networkx.drawing.nx_agraph import graphviz_layout
-
-        NDV = G.nodes(data=True)
-        NV = G.nodes(data=False)
-        EV = G.edges(data=False)
-        EDV = G.edges(data=True)
-
-        is_head_node = lambda x: 'obj' in x
-        is_snode = lambda x: 'Gs' in x
-        is_tnode = lambda x: 'Gt' in x
-
-        # Desiderata:
-        # Draw the head_nodes a little larger, node_size=60 for hnodes, and 40 for anodes
-        # Color the Gs, Gt nodes differently or shape (node_shape)
-
-        # nsz = [60 if is_head_node(node) else 40 for node in NV]
-        # ncol = ['tab:purple' if is_snode(node) else 'tab:blue' for node in NV]
-        # nshape = ['8' if is_head_node(node) else 'o' for node in NV]
-
-        plt.figure(1, figsize=(8, 8))
-        plt.axis('on' if plot_box == True else "off")
-        plt.title(ax_title)
-        if pos is None:
-            pos = graphviz_layout(G, prog='neato')
-
-        pos_shadow = copy.deepcopy(pos)
-        shift_amount = 0.001
-        for k, v in pos_shadow.items():
-            x = v[0] + shift_amount
-            y = v[1] - shift_amount
-            pos_shadow[k] = (x, y)
-            # pos_shadow[idx][0] += shift_amount
-            # pos_shadow[idx][1] -= shift_amount
-
-        # C = (G.subgraph(c) for c in nx.connected_components(G))
-        # for g in C:
-        #     c = [random.random()] * nx.number_of_nodes(g)  # random color..
-        #     nx.draw(g, pos, node_size=40, node_color=c, vmin=0.0, vmax=1.0, with_labels=False)
-
-        for n in NV:
-            g = G.subgraph(n)
-            nsz = 60 if is_head_node(n) else 40
-            # ncol = 'tab:purple' if is_snode(n) else 'tab:blue'
-            # ref: https://matplotlib.org/examples/color/named_colors.html
-            # ncol = 'b' if is_snode(n) else 'darkmagenta'
-            ncol = 'b' if is_snode(n) else 'teal'
-            # marker ref: https://matplotlib.org/api/markers_api.html#module-matplotlib.markers
-            nshape = 'D' if is_head_node(n) else 'o'
-            nx.draw(g, pos, node_size=nsz, node_color=ncol, node_shape=nshape, with_labels=False)
-            nx.draw(g, pos_shadow, node_size=nsz, node_color='k', node_shape=nshape, alpha=0.2)
-
-        nx.draw_networkx_edges(G, pos, edgelist=EDV)
-        # nx.draw(G, pos, node_size=nsz, node_color=ncol, node_shape=nshape, vmin=0.0, vmax=1.0, with_labels=False)
-        plt.show()
-
-    @classmethod
-    def draw_graph(cls, G, en_graphs=None, doc=None,
-                   hnode_sz=1200, anode_sz=700,
-                   hnode_col='tab:blue', anode_col='tab:red',
-                   font_size=12,
-                   show_edge_labels=True,
-                   plot_box=False,
-                   save_file_path=None,
-                   ax_title=None,
-                   debug=False):
-
-        ### Nodes
-        NDV = G.nodes(data=True)
-        NV = G.nodes(data=False)
-        _is_head_node = lambda x: 'obj' in x
-        _is_attr_node = lambda x: 'obj' not in x
-        head_nodes = list(filter(_is_head_node, NV))
-        attr_nodes = list(filter(_is_attr_node, NV))
-        assert len(NDV) == len(head_nodes) + len(attr_nodes)
-
-        pos = cls.get_positions(G, head_nodes, attr_nodes)
-
-        # Create position copies for shadows, and shift shadows
-        # See: https://gist.github.com/jg-you/144a35013acba010054a2cc4a93b07c7
-        pos_shadow = copy.deepcopy(pos)
-        shift_amount = 0.001
-        for idx in pos_shadow:
-            pos_shadow[idx][0] += shift_amount
-            pos_shadow[idx][1] -= shift_amount
-
-        nsz = [hnode_sz if 'obj' in node else anode_sz for node in G.nodes]
-        # nsz2 = list(map(lambda node: hnode_sz if 'obj' in node else anode_sz, G.nodes))
-        nc = [hnode_col if 'obj' in node else anode_col for node in G.nodes]
-        #### Node Labels: Label head nodes as obj or obj{i}, and attr nodes with their values:
-        _label = lambda node: node[1]['val'] if 'obj' not in node[0] else node[0]
-        _labels = list(map(_label, G.nodes(data=True)))
-        labels = dict(zip(list(G.nodes), _labels))
-
-        ### Edges
-        #### Edge Labels
-        edge_labels = {}  # edge_labels = {(u, v): d for u, v, d in G.edges(data=True)}
-        # edge_labels = [{(u,v): d for u,v,d in G.edges(data=True)}]
-        for u, v, d in G.edges(data=True):
-            edge_labels.update({(u, v): d})
-            # edge_labels.update(d)
-
-        # for k, v in en_graphs.items():
-        #     edge_labels.update(v['edge_labels'])
-
-        # Extract relations if doc is passed to the function
-        # This will be used instead of <R[NUMBER]>
-        # relations = cls.extract_spatial_relations(doc)
-        relations = None  # should be already added before reaching draw (in parse)
-        # Check that the number of relations is 1 less than the number of nodes, if relations is not None
-        assert relations is None or len(relations) == len(head_nodes) - 1
-
-        #### Add <R>, <R2> etc. edge between nodes
-        # head_nodes = []
-        # for i, node in enumerate(list(G.nodes(data=False))):
-        #     if 'obj' in node:
-        #         head_nodes.append(node)
-        # print(f"head_nodes = {head_nodes}")
-
-        edgelist = G.edges(data=True)
-
-        ## Draw ##
-
-        # Render (MatPlotlib)
-        plt.axis('on' if plot_box == True else "off")
-        # fig, axs = plt.subplots(1, 2)
-        # axs[1].set_title(f"{doc}")
-        fig, ax = plt.subplots(1, 1)
-        ax.set_title(ax_title, wrap=True)
-
-        nx.draw_networkx_nodes(G, pos, node_size=nsz, node_color=nc)
-        nx.draw_networkx_nodes(G, pos_shadow, node_size=nsz, node_color='k', alpha=0.2)
-
-        nx.draw_networkx_edges(G, pos, edgelist=edgelist)
-        nx.draw_networkx_labels(G, pos, labels=labels, font_size=font_size, font_color='k', font_family='sans-serif')
-        if show_edge_labels:
-            nx.draw_networkx_edge_labels(G, pos, edge_labels=edge_labels, label_pos=0.5, font_size=8)
-
-        if save_file_path is not None:
-            plt.savefig(save_file_path)
-        # if pygraphviz_enabled:
-        #   nx.write_dot(G, 'file.dot')
-        # See: https://stackoverflow.com/questions/37920935/matplotlib-cant-find-font
-        # for findfont errors
-
-        plt.show()
-
-        return G
-
-    @classmethod
-    def plot_graph_graphviz(cls, G):
-        try:
-            import random
-            from networkx.drawing.nx_agraph import graphviz_layout
-            from networkx.algorithms.isomorphism.isomorph import (
-                graph_could_be_isomorphic as isomorphic,
-            )
-            from networkx.generators.atlas import graph_atlas_g
-        except ImportError as ie:
-            logger.error(f"Install pygraphviz and graphviz: {ie}")
-
-        # print(f"graph has {nx.number_of_nodes(G)} nodes with {nx.number_of_edges(G)} edges")
-        # print(nx.number_strongly_connected_components(G), "connected components")
-
-        plt.figure(1, figsize=(8, 8))
-        # layout graphs with positions using graphviz neato
-        pos = graphviz_layout(G, prog="neato")
-        # color nodes the same in each connected subgraph
-        C = (G.subgraph(c) for c in nx.strongly_connected_components(G))
-        for g in C:
-            c = [random.random()] * nx.number_of_nodes(g)  # random color...
-            nx.draw(g, pos, node_size=40, node_color=c, vmin=0.0, vmax=1.0, with_labels=False)
-        plt.show()
-
-    @classmethod
-    def plot_graph(cls, G, nodelist, labels, edgelist, edge_labels, nsz, nc, font_size=12, show_edge_labels=True):
-        pos = nx.spring_layout(G)
-        nx.draw_networkx_nodes(G, pos, node_size=nsz, node_color=nc)
-        nx.draw_networkx_edges(G, pos, edgelist=edgelist)
-        nx.draw_networkx_labels(G, pos, labels=labels, font_size=font_size, font_color='k', font_family='sans-serif')
-        if show_edge_labels:
-            nx.draw_networkx_edge_labels(G, pos, edge_labels=edge_labels, label_pos=0.5, font_size=8)
-
-    @classmethod
-    def plot_entity_graph_dict(cls, entity_graph, font_size=12, show_edge_labels=True):
-        en_graph_vals = ['graph', 'nodelist', 'labels', 'edgelist', 'edge_labels', 'nsz', 'nc']
-        G, nodelist, labels, edgelist, edge_labels, nsz, nc = list(map(lambda x: entity_graph[x], en_graph_vals))
-
-        pos = nx.spring_layout(G)
-        nx.draw_networkx_nodes(G, pos, node_size=nsz, node_color=nc)
-        nx.draw_networkx_edges(G, pos, edgelist=edgelist)
-        nx.draw_networkx_labels(G, pos, labels=labels, font_size=font_size, font_color='k', font_family='sans-serif')
-        if show_edge_labels:
-            nx.draw_networkx_edge_labels(G, pos, edge_labels=edge_labels, label_pos=0.5, font_size=8)
-
     @classmethod
     def visualize(cls, doc, dep=False, save_svg_fn=None):
         try:
@@ -1090,4 +849,191 @@ class SpacyParser(ParserBackend):
         # Create a spring layout
         pos = nx.spring_layout(G, k=1, pos=random_pos, fixed=head_nodes)
 
-        return pos       
+        return pos
+
+    # ----------------------- VISUALIZER METHODS --------------------------------------- #
+    # Deprecated: Migrated to visualizer backend. TODO: Remove
+    @classmethod
+    def plot_graph_graphviz(cls, G):
+        try:
+            import random
+            from networkx.drawing.nx_agraph import graphviz_layout
+            from networkx.algorithms.isomorphism.isomorph import (
+                graph_could_be_isomorphic as isomorphic,
+            )
+            from networkx.generators.atlas import graph_atlas_g
+        except ImportError as ie:
+            logger.error(f"Install pygraphviz and graphviz: {ie}")
+
+        # print(f"graph has {nx.number_of_nodes(G)} nodes with {nx.number_of_edges(G)} edges")
+        # print(nx.number_strongly_connected_components(G), "connected components")
+
+        plt.figure(1, figsize=(8, 8))
+        # layout graphs with positions using graphviz neato
+        pos = graphviz_layout(G, prog="neato")
+        # color nodes the same in each connected subgraph
+        C = (G.subgraph(c) for c in nx.strongly_connected_components(G))
+        for g in C:
+            c = [random.random()] * nx.number_of_nodes(g)  # random color...
+            nx.draw(g, pos, node_size=40, node_color=c, vmin=0.0, vmax=1.0, with_labels=False)
+        plt.show()
+
+    @classmethod
+    def plot_graph(cls, G, nodelist, labels, edgelist, edge_labels, nsz, nc, font_size=12, show_edge_labels=True):
+        pos = nx.spring_layout(G)
+        nx.draw_networkx_nodes(G, pos, node_size=nsz, node_color=nc)
+        nx.draw_networkx_edges(G, pos, edgelist=edgelist)
+        nx.draw_networkx_labels(G, pos, labels=labels, font_size=font_size, font_color='k', font_family='sans-serif')
+        if show_edge_labels:
+            nx.draw_networkx_edge_labels(G, pos, edge_labels=edge_labels, label_pos=0.5, font_size=8)
+
+    @classmethod
+    def plot_entity_graph_dict(cls, entity_graph, font_size=12, show_edge_labels=True):
+        en_graph_vals = ['graph', 'nodelist', 'labels', 'edgelist', 'edge_labels', 'nsz', 'nc']
+        G, nodelist, labels, edgelist, edge_labels, nsz, nc = list(map(lambda x: entity_graph[x], en_graph_vals))
+
+        pos = nx.spring_layout(G)
+        nx.draw_networkx_nodes(G, pos, node_size=nsz, node_color=nc)
+        nx.draw_networkx_edges(G, pos, edgelist=edgelist)
+        nx.draw_networkx_labels(G, pos, labels=labels, font_size=font_size, font_color='k', font_family='sans-serif')
+        if show_edge_labels:
+            nx.draw_networkx_edge_labels(G, pos, edge_labels=edge_labels, label_pos=0.5, font_size=8)
+
+    def draw_clevr_img_scene_graph(self, scene,
+                                   hnode_sz=1200, anode_sz=700,
+                                   hnode_col='tab:blue', anode_col='tab:red',
+                                   font_size=12,
+                                   show_edge_labels=True,
+                                   plot_box=False,
+                                   save_file_path=None,
+                                   debug=False):
+        """
+        Steps:
+        1. generate (canonical) caption from the image scene for all the objects
+        2. parser.parse(caption) -> graph, doc
+        3. call parser.draw_clevr_obj_graph() # same used for text scene graph.
+
+        Issues:
+        1. Need to encode the positional information in image scene
+        """
+        graph, doc = self.get_doc_from_img_scene(scene)
+
+        if graph is None and doc.contains("SKIP"):
+            return None
+
+        kwargs = {
+            'hnode_sz': hnode_sz,
+            'anode_sz': anode_sz,
+            'hnode_col': hnode_col,
+            'anode_col': anode_col,
+            'font_size': font_size,
+            'show_edge_labels': show_edge_labels,
+            'plot_box': plot_box,
+            'save_file_path': save_file_path,
+            'debug': debug
+        }
+        G = self.__class__.draw_clevr_obj_graph(graph, doc, **kwargs)
+        return G
+
+    @classmethod
+    def draw_clevr_obj_graph(cls, text_scene_graph, doc,
+                             **kwargs):
+        ax_title = f"{doc}"
+        G, en_graphs = cls.get_nx_graph_from_doc(doc)
+        G = cls.draw_graph(G, en_graphs, ax_title=ax_title, **kwargs)
+        return G
+
+    @classmethod
+    def draw_graph(cls, G, en_graphs=None, doc=None,
+                   hnode_sz=1200, anode_sz=700,
+                   hnode_col='tab:blue', anode_col='tab:red',
+                   font_size=12,
+                   show_edge_labels=True,
+                   plot_box=False,
+                   save_file_path=None,
+                   ax_title=None,
+                   debug=False):
+
+        ### Nodes
+        NDV = G.nodes(data=True)
+        NV = G.nodes(data=False)
+        _is_head_node = lambda x: 'obj' in x
+        _is_attr_node = lambda x: 'obj' not in x
+        head_nodes = list(filter(_is_head_node, NV))
+        attr_nodes = list(filter(_is_attr_node, NV))
+        assert len(NDV) == len(head_nodes) + len(attr_nodes)
+
+        pos = cls.get_positions(G, head_nodes, attr_nodes)
+
+        # Create position copies for shadows, and shift shadows
+        # See: https://gist.github.com/jg-you/144a35013acba010054a2cc4a93b07c7
+        pos_shadow = copy.deepcopy(pos)
+        shift_amount = 0.001
+        for idx in pos_shadow:
+            pos_shadow[idx][0] += shift_amount
+            pos_shadow[idx][1] -= shift_amount
+
+        nsz = [hnode_sz if 'obj' in node else anode_sz for node in G.nodes]
+        # nsz2 = list(map(lambda node: hnode_sz if 'obj' in node else anode_sz, G.nodes))
+        nc = [hnode_col if 'obj' in node else anode_col for node in G.nodes]
+        #### Node Labels: Label head nodes as obj or obj{i}, and attr nodes with their values:
+        _label = lambda node: node[1]['val'] if 'obj' not in node[0] else node[0]
+        _labels = list(map(_label, G.nodes(data=True)))
+        labels = dict(zip(list(G.nodes), _labels))
+
+        ### Edges
+        #### Edge Labels
+        edge_labels = {}  # edge_labels = {(u, v): d for u, v, d in G.edges(data=True)}
+        # edge_labels = [{(u,v): d for u,v,d in G.edges(data=True)}]
+        for u, v, d in G.edges(data=True):
+            edge_labels.update({(u, v): d})
+            # edge_labels.update(d)
+
+        # for k, v in en_graphs.items():
+        #     edge_labels.update(v['edge_labels'])
+
+        # Extract relations if doc is passed to the function
+        # This will be used instead of <R[NUMBER]>
+        # relations = cls.extract_spatial_relations(doc)
+        relations = None  # should be already added before reaching draw (in parse)
+        # Check that the number of relations is 1 less than the number of nodes, if relations is not None
+        assert relations is None or len(relations) == len(head_nodes) - 1
+
+        #### Add <R>, <R2> etc. edge between nodes
+        # head_nodes = []
+        # for i, node in enumerate(list(G.nodes(data=False))):
+        #     if 'obj' in node:
+        #         head_nodes.append(node)
+        # print(f"head_nodes = {head_nodes}")
+
+        edgelist = G.edges(data=True)
+
+        ## Draw ##
+
+        # Render (MatPlotlib)
+        plt.axis('on' if plot_box == True else "off")
+        # fig, axs = plt.subplots(1, 2)
+        # axs[1].set_title(f"{doc}")
+        fig, ax = plt.subplots(1, 1)
+        ax.set_title(ax_title, wrap=True)
+
+        nx.draw_networkx_nodes(G, pos, node_size=nsz, node_color=nc)
+        nx.draw_networkx_nodes(G, pos_shadow, node_size=nsz, node_color='k', alpha=0.2)
+
+        nx.draw_networkx_edges(G, pos, edgelist=edgelist)
+        nx.draw_networkx_labels(G, pos, labels=labels, font_size=font_size, font_color='k', font_family='sans-serif')
+        if show_edge_labels:
+            nx.draw_networkx_edge_labels(G, pos, edge_labels=edge_labels, label_pos=0.5, font_size=8)
+
+        if save_file_path is not None:
+            plt.savefig(save_file_path)
+        # if pygraphviz_enabled:
+        #   nx.write_dot(G, 'file.dot')
+        # See: https://stackoverflow.com/questions/37920935/matplotlib-cant-find-font
+        # for findfont errors
+
+        plt.show()
+
+        return G
+
+    # ----------------------- END: VISUALIZER METHODS --------------------------------------- #
