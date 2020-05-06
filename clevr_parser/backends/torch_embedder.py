@@ -212,7 +212,7 @@ class TorchEmbedder(EmbedderBackend):
         return matching_pairs, unmatched_pairs
 
     @classmethod
-    def get_torch_geometric_edge_index(cls, G: nx.Graph, nodelist=None):
+    def get_nx_graph_edge_indices(cls, G: nx.Graph, nodelist=None):
         """
         Returns edge_indices in a Graph in sparse COO format from a given graph
         :param G: A Graph
@@ -246,7 +246,7 @@ class TorchEmbedder(EmbedderBackend):
         G = nx.convert_node_labels_to_integers(G)
         #G = G.to_directed() if not nx.is_directed(G) else G
         # edge_index = torch.tensor(list(G.edges)).t().contiguous()
-        edge_index = self.get_torch_geometric_edge_index(G)
+        edge_index = self.get_nx_graph_edge_indices(G)
 
         data = {}
         #data = collections.Counter()
@@ -303,7 +303,7 @@ class TorchEmbedder(EmbedderBackend):
 
         X = self.get_embeddings(G, doc, embd_dim=embd_dim, embedding_type=embedding_type)
         X = torch.from_numpy(X).float()
-        edge_index = self.get_torch_geometric_edge_index(G)
+        edge_index = self.get_nx_graph_edge_indices(G)
 
         data = self.from_networkx(G)
         data.x = X
