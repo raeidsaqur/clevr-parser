@@ -68,6 +68,7 @@ class MatplotlibVisualizer(VisualizerBackend):
         attr_nodes = list(filter(_is_attr_node, NV))
         assert len(NDV) == len(head_nodes) + len(attr_nodes)
 
+        assert layout in ['graphviz', 'circular'], "Only 'graphviz' and 'circular' are supported"
         if layout == 'graphviz':
             from networkx.drawing.nx_agraph import graphviz_layout
             pos = graphviz_layout(G, prog='neato')
@@ -78,7 +79,7 @@ class MatplotlibVisualizer(VisualizerBackend):
                 x = v[0] + shift_amount
                 y = v[1] - shift_amount
                 pos_shadow[k] = (x, y)
-        else:
+        elif layout == 'circular':
             pos = cls.get_positions(G, head_nodes, attr_nodes)
 
             # Create position copies for shadows, and shift shadows
@@ -150,3 +151,34 @@ class MatplotlibVisualizer(VisualizerBackend):
         plt.show()
 
         return G
+
+    @classmethod
+    def get_positions(cls, G, head_nodes, attr_nodes):
+        '''
+        Arranges only the head nodes in a circular layout, and
+        attribute nodes in a random layout. Then creates a spring
+        layout on top of that
+
+        Arguments:
+            G: the networkx graph
+            head_nodes: head_nodes of the graph
+            attr_nodes: attribute nodes of the graph
+
+        Returns:
+            The positions to be fed to spring layout
+        '''
+        # Generate the subgraph containing only the head nodes
+        head_subgraph = G.subgraph(head_nodes)
+
+        # Generate layouts for the head nodes and attribute nodes
+        head_pos = nx.circular_layout(head_subgraph, scale=1.5)
+        random_pos = nx.random_layout(G)
+
+        # Assign polar coordinates in a sequential fashion
+        for node, sub_node in zip(head_nodes, head_subgraph.nodes):
+            random_pos[node] = head_pos[sub_node]
+
+        # Create a spring layout
+        pos = nx.spring_layout(G, k=1, pos=random_pos, fixed=head_nodes)
+
+        return pos        
