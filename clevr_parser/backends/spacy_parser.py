@@ -746,13 +746,6 @@ class SpacyParser(ParserBackend):
         except ImportError as ie:
             logger.error("Could not import displacy for visualization")
 
-    @staticmethod
-    def __locate_noun(chunks, i):
-        for j, c in enumerate(chunks):
-            if c.start <= i < c.end:
-                return j
-        return None
-
     @classmethod
     def filter_clevr_objs(cls, ents: Tuple) -> Tuple:
         return cls.filter_ents_by_labels(ents, ['CLEVR_OBJ', 'CLEVR_OBJS'])
