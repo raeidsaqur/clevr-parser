@@ -285,10 +285,10 @@ class TorchEmbedder(EmbedderBackend):
 
         return data
 
-    def get_torch_geometric_data_for_clevr_graph(self, G: nx.MultiGraph, doc, label=None, pos=None,
-                                                 embd_dim=96, embedding_type=None, is_cuda=False):
+    def get_pyg_data_from_nx(self, G: nx.MultiGraph, doc, label=None, pos=None,
+                             embd_dim=96, embedding_type=None, is_cuda=False):
         """
-        Wrapper function for torch_geometric.Data
+        Creates a `torch_geometric.Data` data from G
         :param G:
         :param pos (Tensor, optional): Node position matrix with shape
             :obj:`[num_nodes, num_dimensions]`. (default: :obj:`None`)
@@ -325,6 +325,61 @@ class TorchEmbedder(EmbedderBackend):
         #_data = torch_geometric.data.Data(x=X, edge_index=edge_index, y=label, pos=pos)
 
         return data
+
+    def get_edge_attr_feature_matrix(self, G:nx.MultiGraph, doc,
+                                     embed_dim=96, embedding_type=None, **kwargs):
+        """ Edge feature matrix wish shape [num_edges, edge_feat_dim]"""
+        assert G is not None
+        EDV = G.edges(data=True); EV = G.edges(data=False)
+        Ne = len(EDV)
+        M = embed_dim
+
+    def get_node_feature_matrix(self, G:nx.MultiGraph, doc, embd_dim=96,
+                                embedding_type=None, **kwargs):
+        """
+        Returns X with shape [num_nodes, node_feat_dim]
+        """
+        assert G is not None
+        NDV = G.nodes(data=True); NV = G.nodes(data=False)
+        _is_head_node = lambda x: 'obj' in x
+        head_nodes = list(filter(_is_head_node, NV))
+
+        objs = self.clevr_parser.filter_clevr_objs(doc.ents)
+
+        N = len(NDV)
+        M = embd_dim
+        feat_mats = []
+        for i, entity in enumerate(objs):
+            if entity.label_ not in ('CLEVR_OBJS', 'CLEVR_OBJ'):
+                continue
+            ent_mat = self.clevr_parser.get_clevr_entity_matrix_embedding(entity, dim=96, include_obj_node_emd=True)
+            feat_mats.append(ent_mat)
+            head_node = G.nodes.get(head_nodes[i])
+            pos = head_node.get('pos')  # pos = (x,y,z): Tuple[float]
+            # TODO: what's the best way to encode this pos in the feat_mats?
+
+        if len(feat_mats) > 1:
+            feat_mats = reduce(lambda a, b: np.vstack((a, b)), feat_mats)
+        else:
+            feat_mats = feat_mats[0]
+
+        assert feat_mats.shape == (N, M)
+
+        ## HACK RS: Inject spatial info Add spatial, matching RE, pos if available
+        spatial_ents = self.clevr_parser.filter_spatial_re(doc.ents)
+        for i, entity in enumerate(spatial_ents):
+            ent_vec = entity.vector.reshape(1, -1)  # (1, 96)
+            feat_mats = np.vstack((feat_mats, ent_vec))
+        matching_ents = self.clevr_parser.filter_matching_re(doc.ents)
+        for i, entity in enumerate(matching_ents):
+            ent_vec = entity.vector.reshape(1, -1)  # (1, 96)
+            feat_mats = np.vstack((feat_mats, ent_vec))
+        ## HACK END ########
+        # if as_torch:
+        #     feat_mat = torch.from_numpy(feat_mat).float().to(device)
+        return feat_mats
+
+
 
 
     def get_embeddings(self, G: nx.MultiGraph, doc, embd_dim=96,
