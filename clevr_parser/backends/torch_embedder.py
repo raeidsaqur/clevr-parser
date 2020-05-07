@@ -421,8 +421,6 @@ class TorchEmbedder(EmbedderBackend):
         return feat_mats
 
 
-
-
     def get_embeddings(self, G: nx.MultiGraph, doc, embd_dim=96,
                        embedding_type=None, **kwargs) -> np.ndarray:
         """
@@ -449,6 +447,9 @@ class TorchEmbedder(EmbedderBackend):
         of nodes in the graph and M corresopnds to the embd_sz (default = 96)
         Note: the head_node ('obj' node) will be a mean of all attrs vecs (of embd_sz)
         """
+        import warnings
+        warnings.warn("Deprecated: use `get_node_feature_matrix` instead",
+                DeprecationWarning, stacklevel=2)
         assert G is not None
         NDV = G.nodes(data=True)
         NV = G.nodes(data=False)
