@@ -19,11 +19,16 @@ from .spacy_parser import SpacyParser
 
 from functools import reduce
 from operator import itemgetter
+import collections
 from typing import List, Dict, Tuple, Sequence
 import copy
 import logging
 logger = logging.getLogger(__name__)
-import os
+
+import numpy as np
+import scipy.sparse as sp
+
+import torch
 
 try:
     import matplotlib
@@ -32,15 +37,6 @@ try:
     import networkx as nx
 except ImportError as ie:
     logger.error(f"Install NetworkX: {ie.name}")
-
-import collections
-import numpy as np
-import scipy.sparse as sp
-
-import torch
-import scipy.sparse
-import networkx as nx
-
 
 __all__ = ['TorchEmbedder']
 
@@ -65,7 +61,6 @@ class TorchEmbedder(EmbedderBackend):
     @clevr_parser.setter
     def clevr_parser(self, cp):
         self.__clevr_parser = cp
-
 
     ## Functions for Graph Embeddings ##
     def connect_matching_pair_edges(self, Gu: nx.MultiGraph,
@@ -231,14 +226,18 @@ class TorchEmbedder(EmbedderBackend):
 
         return edge_index
 
-    # Base: torch_geometric.utils.convert.py
     def from_networkx(self, G):
         r"""Converts a :obj:`networkx.Graph` or :obj:`networkx.DiGraph` to a
         :class:`torch_geometric.data.Data` instance.
-
+        # Modified from: torch_geometric.utils.convert.py
         Args:
             G (networkx.Graph or networkx.DiGraph): A networkx graph.
         """
+        try:
+            import torch_geometric
+        except ImportError as ie:
+            logger.error(ie)
+
         vocab = load_vocab(path="../data/reason/clevr_h5/clevr_vocab.json")
         q2t = vocab['question_token_to_idx']
         # value = q2t[value] if q2t.get(value) else value
@@ -269,13 +268,6 @@ class TorchEmbedder(EmbedderBackend):
                         data[key] += [value]
                     else:
                         data[key] = [value]
-
-
-        # for key, item in data.items():
-        #     try:
-        #         data[key] = torch.tensor(item)
-        #     except ValueError:
-        #         pass
 
         #data['edge_index'] = edge_index.view(2, -1)
         data['edge_index'] = edge_index
@@ -332,12 +324,22 @@ class TorchEmbedder(EmbedderBackend):
         EDV = G.edges(data=True); EV = G.edges(data=False)
         E = len(EDV)
         M = embed_dim
+        token2vec = {}
+        # RS Hack:
+        # token pos not delineated, duplicates are overridden
+        for token in doc:
+            token2vec[token.text] = token.vector
         feat_mats = []
-        data = collections.defaultdict(list)  # accumlate edge data first
+        #data = collections.defaultdict(list)  # accumlate edge data first
         for i, (_, _, feat_dict) in enumerate(EDV):
             for key, value in feat_dict.items():
-                data[key].append(value)
-
+                #data[key] = value
+                #data[key].append(value)
+                v_embd = token2vec[value]
+                logger.debug(f"value = {value}\n v_embd = {v_embd}")
+                feat_mats.append(v_embd)
+        """
+        unique_values = set(reduce(lambda x1, x2: x1 + x2, data.values))
         # tokenize and get embeddings for edge data
         for key, item in data.items():
             try:
@@ -353,17 +355,27 @@ class TorchEmbedder(EmbedderBackend):
         # data['edge_index'] = edge_index.view(2, -1)
         # data = torch_geometric.data.Data.from_dict(data)
         # data.num_nodes = G.number_of_nodes()
+        """
+        if len(feat_mats) > 1:
+            feat_mats = reduce(lambda a, b: np.vstack((a, b)), feat_mats)
+        else:
+            feat_mats = feat_mats[0]
 
-        # assert feat_mats.shape == (E, M)
+        if kwargs.get('as_torch'):
+            feat_mats = torch.from_numpy(feat_mats).float()
+            if kwargs.get('is_cuda'):
+                device = 'cuda' if torch.cuda.is_available() else 'cpu'
+                feat_mats = feat_mats.to(device)
+
+        assert feat_mats.shape == (E, M)
         return feat_mats
-
-
 
     def get_node_feature_matrix(self, G:nx.MultiGraph, doc, embd_dim=96,
                                 embedding_type=None, **kwargs):
         """
         Returns X with shape [num_nodes, node_feat_dim]
         """
+
         assert G is not None
         NDV = G.nodes(data=True); NV = G.nodes(data=False)
         _is_head_node = lambda x: 'obj' in x
@@ -400,8 +412,12 @@ class TorchEmbedder(EmbedderBackend):
         #     ent_vec = entity.vector.reshape(1, -1)  # (1, 96)
         #     feat_mats = np.vstack((feat_mats, ent_vec))
         # ## HACK END ########
-        # if as_torch:
-        #     feat_mat = torch.from_numpy(feat_mat).float().to(device)
+        if kwargs.get('as_torch'):
+            feat_mats = torch.from_numpy(feat_mats).float()
+            if kwargs.get('is_cuda'):
+                device = 'cuda' if torch.cuda.is_available() else 'cpu'
+                feat_mats = feat_mats.to(device)
+
         return feat_mats
 
 
