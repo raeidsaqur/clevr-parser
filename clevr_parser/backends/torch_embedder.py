@@ -330,8 +330,34 @@ class TorchEmbedder(EmbedderBackend):
         """ Edge feature matrix wish shape [num_edges, edge_feat_dim]"""
         assert G is not None
         EDV = G.edges(data=True); EV = G.edges(data=False)
-        Ne = len(EDV)
+        E = len(EDV)
         M = embed_dim
+        feat_mats = []
+        data = collections.defaultdict(list)  # accumlate edge data first
+        for i, (_, _, feat_dict) in enumerate(EDV):
+            for key, value in feat_dict.items():
+                data[key].append(value)
+
+        # tokenize and get embeddings for edge data
+        for key, item in data.items():
+            try:
+                print("embed here")
+                data[key] = torch.tensor(item)
+            except ValueError:
+                pass
+
+        G = nx.convert_node_labels_to_integers(G)
+        G = G.to_directed() if not nx.is_directed(G) else G
+        edge_index = torch.tensor(list(G.edges)).t().contiguous()
+
+        # data['edge_index'] = edge_index.view(2, -1)
+        # data = torch_geometric.data.Data.from_dict(data)
+        # data.num_nodes = G.number_of_nodes()
+
+        # assert feat_mats.shape == (E, M)
+        return feat_mats
+
+
 
     def get_node_feature_matrix(self, G:nx.MultiGraph, doc, embd_dim=96,
                                 embedding_type=None, **kwargs):
@@ -364,16 +390,16 @@ class TorchEmbedder(EmbedderBackend):
 
         assert feat_mats.shape == (N, M)
 
-        ## HACK RS: Inject spatial info Add spatial, matching RE, pos if available
-        spatial_ents = self.clevr_parser.filter_spatial_re(doc.ents)
-        for i, entity in enumerate(spatial_ents):
-            ent_vec = entity.vector.reshape(1, -1)  # (1, 96)
-            feat_mats = np.vstack((feat_mats, ent_vec))
-        matching_ents = self.clevr_parser.filter_matching_re(doc.ents)
-        for i, entity in enumerate(matching_ents):
-            ent_vec = entity.vector.reshape(1, -1)  # (1, 96)
-            feat_mats = np.vstack((feat_mats, ent_vec))
-        ## HACK END ########
+        # ## HACK RS: Inject spatial info Add spatial, matching RE, pos if available
+        # spatial_ents = self.clevr_parser.filter_spatial_re(doc.ents)
+        # for i, entity in enumerate(spatial_ents):
+        #     ent_vec = entity.vector.reshape(1, -1)  # (1, 96)
+        #     feat_mats = np.vstack((feat_mats, ent_vec))
+        # matching_ents = self.clevr_parser.filter_matching_re(doc.ents)
+        # for i, entity in enumerate(matching_ents):
+        #     ent_vec = entity.vector.reshape(1, -1)  # (1, 96)
+        #     feat_mats = np.vstack((feat_mats, ent_vec))
+        # ## HACK END ########
         # if as_torch:
         #     feat_mat = torch.from_numpy(feat_mat).float().to(device)
         return feat_mats
