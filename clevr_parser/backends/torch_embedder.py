@@ -207,23 +207,6 @@ class TorchEmbedder(EmbedderBackend):
 
         return edge_index
 
-    def get_pyg_datalist_from_nx(self, graphs:List[nx.Graph], docs, labels=None, poslist=None, **kwargs):
-        """
-        Creates and returns a PyG datalist from a list of graphs and corresponding Spacy `Doc`objects
-        :param Gss:
-        :param docs:
-        :param labels:
-        :return: List[Data]
-        """
-        datalist = []
-        for i, (G, doc) in enumerate(zip(graphs, docs)):
-            label = labels[i] if labels else None
-            pos = poslist[i] if poslist else None
-            data = self.get_pyg_data_from_nx(G, doc, label, pos, **kwargs)
-            datalist.append(data)
-
-        return datalist
-
     def get_pyg_data_from_nx(self, G: nx.Graph, doc, label=None, pos=None,
                              embd_dim=96, embedding_type=None, is_cuda=False, **kwargs):
         """
@@ -250,6 +233,78 @@ class TorchEmbedder(EmbedderBackend):
             device = 'cuda'
             data = data.to(device)
         return data
+
+    def get_pyg_pair_data_from_nx(self, Gs: nx.Graph, s_doc, Gt:nx.Graph, t_doc, label=None, pos=None,
+                             embd_dim=96, embedding_type=None, is_cuda=False, **kwargs):
+        """
+        Creates a pair_data where each pair_data sample contains (data_s, data_t) from Gs, Gt
+        :param Gs: source graph
+        :param Gt: target graph
+        :return: Pair data :Data:
+        """
+        try:
+            import re
+            import torch
+            import torch_geometric
+            from torch_geometric.data import Data
+        except ImportError as ie:
+            logger.error(f'{ie}')
+
+        class PairData(Data):
+            def __inc__(self, key, value):
+                if bool(re.search("^edge_[\w]_s$", key)):
+                    return self.x_s.size(0)
+                if bool(re.search("^edge_[\w]*_t$", key)):
+                    return self.x_t.size(0)
+                else:
+                    return 0
+
+        data_s = self.get_pyg_data_from_nx(Gs, s_doc, label=label, embd_dim=embd_dim, is_cuda=is_cuda)
+        data_t = self.get_pyg_data_from_nx(Gt, t_doc, label=label, embd_dim=embd_dim, is_cuda=is_cuda)
+        x_s, ei_s, ea_s = data_s.x, data_s.edge_index, data_s.edge_attr
+        x_t, ei_t, ea_t = data_t.x, data_t.edge_index, data_t.edge_attr
+        pair_data = PairData(edge_index_s=ei_s, edge_attr_s=ea_s, x_s=x_s,
+                             edge_index_t=ei_t, edge_attr_t=ea_t, x_t=x_t)
+        if is_cuda and torch.cuda.is_available():
+            device = 'cuda'
+            pair_data = pair_data.to(device)
+
+        return pair_data
+
+    def get_pyg_datalist_from_nx(self, graphs:List[nx.Graph], docs, labels=None, poslist=None, **kwargs)-> List:
+        """
+        Creates and returns a PyG datalist from a list of graphs and corresponding Spacy `Doc`objects
+        :param Gss:
+        :param docs:
+        :param labels:
+        :return: List[Data]
+        """
+        datalist = []
+        for i, (G, doc) in enumerate(zip(graphs, docs)):
+            label = labels[i] if labels else None
+            pos = poslist[i] if poslist else None
+            data = self.get_pyg_data_from_nx(G, doc, label, pos, **kwargs)
+            datalist.append(data)
+
+        return datalist
+
+    def get_pyg_pair_datalist_from_nx(self, Gss:List[nx.Graph], s_docs, Gts:List[nx.Graph], t_docs,
+                                      labels=None, **kwargs)-> List:
+        """
+        Creates and returns a PyG paired datalist from a list of source, taget graphs and corresponding
+        To create a Batch from pair_datalist, use:
+        ```batch = Batch.from_data_list(pair_datalist, follow_batch=['x_s', 'x_t']) ```
+        Spacy `Doc`objects
+        :return: List[Data]
+        """
+        datalist = []
+        for i, (Gs, s_doc, Gt, t_doc) in enumerate(zip(Gss, s_docs, Gts, t_docs)):
+            label = labels[i] if labels else None
+            #pos = poslist[i] if poslist else None
+            pair_data = self.get_pyg_pair_data_from_nx(Gs, s_doc, Gt, t_doc, **kwargs)
+            datalist.append(pair_data)
+
+        return datalist
 
     def get_edge_attr_feature_matrix(self, G:nx.MultiGraph, doc,
                                      embd_dim=96, embedding_type=None, **kwargs):
