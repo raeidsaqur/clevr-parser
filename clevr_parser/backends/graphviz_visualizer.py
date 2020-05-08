@@ -49,63 +49,139 @@ class GraphvizVisualizer(VisualizerBackend):
         return cls.draw_graph_graphviz(G, *args, **kwargs)
 
     @classmethod
-    def draw_graph_graphviz(cls, G, pos=None, plot_box=False, ax_title=None):
+    def draw_graph_graphviz(cls, G, save_file_path, en_graphs=None,
+                            pos=None,
+                            plot_box=False, ax_title=None,
+                            head_node_label=True, attr_node_label=False,
+                            show_edge_labels=False,
+                            hnode_sz=0.5, anode_sz=0.5,
+                            format='svg', dpi='100'):
         import random
         from networkx.drawing.nx_agraph import graphviz_layout
-
+        
+        # Get the nodes and edges
         NDV = G.nodes(data=True)
         NV = G.nodes(data=False)
-        print(NDV)
-        print(NV)
         EV = G.edges(data=False)
         EDV = G.edges(data=True)
 
-        is_head_node = lambda x: 'obj' in x
-        is_snode = lambda x: 'Gs' in x
-        is_tnode = lambda x: 'Gt' in x
+        # Classify into head nodes and attribute nodes
+        _is_head_node = lambda x: 'obj' in x
+        _is_attr_node = lambda x: 'obj' not in x
+        head_nodes = list(filter(_is_head_node, NV))
+        attr_nodes = list(filter(_is_attr_node, NV))
 
-        # Desiderata:
-        # Draw the head_nodes a little larger, node_size=60 for hnodes, and 40 for anodes
-        # Color the Gs, Gt nodes differently or shape (node_shape)
-
-        # nsz = [60 if is_head_node(node) else 40 for node in NV]
-        # ncol = ['tab:purple' if is_snode(node) else 'tab:blue' for node in NV]
-        # nshape = ['8' if is_head_node(node) else 'o' for node in NV]
-
-        plt.figure(1, figsize=(8, 8))
-        plt.axis('on' if plot_box == True else "off")
-        plt.title(ax_title)
-        if pos is None:
-            pos = graphviz_layout(G, prog='neato')
-
-        pos_shadow = copy.deepcopy(pos)
-        shift_amount = 0.001
-        for k, v in pos_shadow.items():
-            x = v[0] + shift_amount
-            y = v[1] - shift_amount
-            pos_shadow[k] = (x, y)
-            # pos_shadow[idx][0] += shift_amount
-            # pos_shadow[idx][1] -= shift_amount
-
-        # C = (G.subgraph(c) for c in nx.connected_components(G))
-        # for g in C:
-        #     c = [random.random()] * nx.number_of_nodes(g)  # random color..
-        #     nx.draw(g, pos, node_size=40, node_color=c, vmin=0.0, vmax=1.0, with_labels=False)
-
-        for n in NV:
-            g = G.subgraph(n)
-            nsz = 1200 if is_head_node(n) else 700
-            # ncol = 'tab:purple' if is_snode(n) else 'tab:blue'
-            # ref: https://matplotlib.org/examples/color/named_colors.html
-            # ncol = 'b' if is_snode(n) else 'darkmagenta'
-            ncol = 'b' if is_snode(n) else 'teal'
-            # marker ref: https://matplotlib.org/api/markers_api.html#module-matplotlib.markers
-            nshape = 'D' if is_head_node(n) else 'o'
-            nx.draw(g, pos, node_size=nsz, node_color=ncol, node_shape=nshape, with_labels=True)
-            nx.draw(g, pos_shadow, node_size=nsz, node_color='k', node_shape=nshape, alpha=0.2)
-
-        nx.draw_networkx_edges(G, pos, edgelist=EDV)
-        # nx.draw(G, pos, node_size=nsz, node_color=ncol, node_shape=nshape, vmin=0.0, vmax=1.0, with_labels=False)
-        plt.show()
+        # Instantiate a graph and set a high dpi
+        A = pgv.AGraph(dpi = dpi, label=ax_title, labelloc='top')
+        
+        # Add nodes
+        for node in NDV:
+            # Get the graphviz attributes for the node
+            attributes = cls.get_graphviz_attribute(node, EDV, anode_sz)
+            if _is_head_node(node[0]):
+                if head_node_label:
+                    A.add_node(node[0], width=hnode_sz, height=hnode_sz, fixedsize=True, **attributes)
+                else:
+                    A.add_node(node[0], width=hnode_sz, height=hnode_sz, fixedsize=True, **attributes, label='')
+            else:
+                if attr_node_label:
+                    A.add_node(node[0], fixedsize=True, **attributes)
+                else:
+                    A.add_node(node[0], fixedsize=True, **attributes, label='')
+        
+        # Add edges
+        for edge in EDV:
+            if show_edge_labels:
+                if next(iter(edge[2])) in ['matching_re', 'spatial_re']:
+                    A.add_edge(edge[0], edge[1], label=edge[2][next(iter(edge[2]))])
+                else:
+                    A.add_edge(edge[0], edge[1], label=next(iter(edge[2])))
+            else:
+                A.add_edge(edge[0], edge[1])
+        
+        # Save the image
+        A.draw(path=save_file_path, format=format, prog='neato')       
 
         return G
+
+    @classmethod
+    def get_graphviz_attribute(cls, node, EDV=None, anode_sz=None):
+        '''
+        Returns the corresponding graphviz attribute to use
+
+        Arguments:
+            node:
+            EDV:
+            anode_sz:
+
+        Returns:
+            (shape, fillcolor, style, size)
+        '''
+
+        # Default node attributes
+        default_shape = 'diamond'
+        default_color = 'yellow'
+        default_style = 'filled'
+
+        # Head node attributes
+        head_shape = 'doublecircle'
+        head_color = 'aquamarine'
+        head_style = 'filled'
+
+        def get_color():
+            '''
+            Return the color of node to which the attribute is associated
+            '''
+            # Get the head node
+            head_node = [u for u,v,d in EDV
+                        if v == node[0] and 'obj' in u]
+            assert len(head_node) == 1, "Attribute attached to two head nodes"
+            head_node = head_node[0]
+
+            # Get the associated color if it exists
+            color = [d['color'] for u,v,d in EDV
+                        if u == head_node and 'color' in d]
+            if color:
+                return color[0]
+            else:
+                return default_color
+
+        
+        shape_attr = {
+            'cylinder': 'cylinder',
+            'cylinders': 'cylinder',
+            'cube': 'square',
+            'cubes': 'square',
+            'sphere': 'circle',
+            'spheres': 'circle',
+            'thing': 'hexagon',
+            'things': 'hexagon',
+            'default': 'circle'
+        }
+
+        material_attr = {
+            'metal': ':white',
+            'rubber': '',
+            'default': ''
+        }
+
+        size_attr = {
+            'large': 1.2,
+            'big': 1.2,
+            'small': 0.5,
+            'tiny': 0.5,
+            'default': 0.5
+        }
+
+        if 'CLEVR_OBJ' in node[1]['label']:
+            return {'shape':head_shape, 'fillcolor':head_color, 'style':head_style}
+        elif node[1]['label'] == 'shape':
+            return {'shape':shape_attr.get(node[1]['val'], shape_attr['default']), 'fillcolor':get_color(), 'style':default_style, 'width':anode_sz, 'height':anode_sz}
+        elif node[1]['label'] == 'color':
+            return {'shape':default_shape, 'fillcolor':node[1]['val'], 'style':default_style, 'width':anode_sz, 'height':anode_sz}
+        elif node[1]['label'] == 'material':
+            return {'shape':default_shape, 'fillcolor':get_color()+material_attr.get(node[1]['val'], material_attr['default']), 'style':default_style, 'width':anode_sz, 'height':anode_sz}
+        elif node[1]['label'] == 'size':
+            return {'shape':default_shape, 'fillcolor':get_color(), 'style':default_style, 'width':size_attr.get(node[1]['val'], size_attr['default']), 'height':size_attr.get(node[1]['val'], size_attr['default'])}
+        else:
+            return {'shape':default_shape, 'fillcolor':get_color(), 'style':default_style}

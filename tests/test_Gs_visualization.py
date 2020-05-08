@@ -37,7 +37,14 @@ def gviz_visualizer():
     gviz_visualizer = clevr_parser.Visualizer(backend='graphviz').get_backend(identifier='graphviz')
     return gviz_visualizer
 
-def test_visualize_and_mat_spa(parser, plt_visualizer, gviz_visualizer):
+@pytest.fixture(scope="module")
+def create_output_dir():
+    dir_name = 'tests_output'
+    if not os.path.exists(dir_name):
+        os.makedirs(dir_name)
+    return dir_name
+
+def test_visualize_and_mat_spa(parser, plt_visualizer, gviz_visualizer, create_output_dir):
     # for dist in ['val']:
     for dist in ['train', 'val']:
         s_ams = get_s_sample("and_mat_spa", dist)
@@ -49,7 +56,12 @@ def test_visualize_and_mat_spa(parser, plt_visualizer, gviz_visualizer):
         G = plt_visualizer.draw_graph(Gs, doc=doc, ax_title=ax_title)
         assert G is not None
 
-def test_visualize_or_mat_spa(parser, plt_visualizer, gviz_visualizer):
+        # Test graphviz
+        G = gviz_visualizer.draw_graph(Gs,\
+             save_file_path=os.path.join(create_output_dir, "and_mat_spa"+dist+".svg"), ax_title=ax_title)
+        assert G is not None
+
+def test_visualize_or_mat_spa(parser, plt_visualizer, gviz_visualizer, create_output_dir):
     for dist in ['train', 'val']:
         s_oms = get_s_sample("or_mat_spa", dist)
         print(f"s_oms_{dist} = {s_oms}")
@@ -59,3 +71,8 @@ def test_visualize_or_mat_spa(parser, plt_visualizer, gviz_visualizer):
         #G = parser.draw_graph_testing(Gs, en_graphs, ax_title=ax_title, doc=doc)
         G = plt_visualizer.draw_graph(Gs, doc=doc, ax_title=ax_title)
         assert G is not None
+
+        # Test graphviz
+        G = gviz_visualizer.draw_graph(Gs,\
+             save_file_path=os.path.join(create_output_dir, "or_mat_spa"+dist+".svg"), ax_title=ax_title)
+        assert G is not None        
