@@ -41,7 +41,7 @@ except ImportError as ie:
 import numpy as np
 np.random.seed(42)
 import scipy.sparse as sp
-
+import warnings
 
 @Parser.register_backend
 class SpacyParser(ParserBackend):
@@ -873,6 +873,8 @@ class SpacyParser(ParserBackend):
 
     @classmethod
     def plot_graph(cls, G, nodelist, labels, edgelist, edge_labels, nsz, nc, font_size=12, show_edge_labels=True):
+        warnings.warn("Deprecated: use visualizer class methods instead",
+                      DeprecationWarning, stacklevel=2)
         pos = nx.spring_layout(G)
         nx.draw_networkx_nodes(G, pos, node_size=nsz, node_color=nc)
         nx.draw_networkx_edges(G, pos, edgelist=edgelist)
@@ -882,6 +884,8 @@ class SpacyParser(ParserBackend):
 
     @classmethod
     def plot_entity_graph_dict(cls, entity_graph, font_size=12, show_edge_labels=True):
+        warnings.warn("Deprecated: use visualizer class methods instead",
+                      DeprecationWarning, stacklevel=2)
         en_graph_vals = ['graph', 'nodelist', 'labels', 'edgelist', 'edge_labels', 'nsz', 'nc']
         G, nodelist, labels, edgelist, edge_labels, nsz, nc = list(map(lambda x: entity_graph[x], en_graph_vals))
 
@@ -909,6 +913,8 @@ class SpacyParser(ParserBackend):
         Issues:
         1. Need to encode the positional information in image scene
         """
+        warnings.warn("Deprecated: use visualizer class methods instead",
+                      DeprecationWarning, stacklevel=2)
         graph, doc = self.get_doc_from_img_scene(scene)
 
         if graph is None and doc.contains("SKIP"):
@@ -931,6 +937,8 @@ class SpacyParser(ParserBackend):
     @classmethod
     def draw_clevr_obj_graph(cls, text_scene_graph, doc,
                              **kwargs):
+        warnings.warn("Deprecated: use visualizer class methods instead",
+                      DeprecationWarning, stacklevel=2)
         ax_title = f"{doc}"
         G, en_graphs = cls.get_nx_graph_from_doc(doc)
         G = cls.draw_graph(G, en_graphs, ax_title=ax_title, **kwargs)
@@ -947,6 +955,8 @@ class SpacyParser(ParserBackend):
                    ax_title=None,
                    debug=False):
 
+        warnings.warn("Deprecated: use visualizer class methods instead",
+                      DeprecationWarning, stacklevel=2)
         ### Nodes
         NDV = G.nodes(data=True)
         NV = G.nodes(data=False)
