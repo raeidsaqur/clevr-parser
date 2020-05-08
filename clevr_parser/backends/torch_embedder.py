@@ -33,10 +33,22 @@ try:
     import pygraphviz as pgv
     import networkx as nx
     import torch
+    import re
+    import torch_geometric
+    from torch_geometric.data import Data
 except ImportError as ie:
-    logger.error(f"Install NetworkX: {ie.name}")
+    logger.error(f"Some required modules couldn't be imported: {ie.name}")
 
 __all__ = ['TorchEmbedder']
+
+class PairData(Data):
+    def __inc__(self, key, value):
+        if bool(re.search("^edge_[\w]_s$", key)):
+            return self.x_s.size(0)
+        if bool(re.search("^edge_[\w]*_t$", key)):
+            return self.x_t.size(0)
+        else:
+            return 0
 
 @Embedder.register_backend
 class TorchEmbedder(EmbedderBackend):
@@ -242,23 +254,6 @@ class TorchEmbedder(EmbedderBackend):
         :param Gt: target graph
         :return: Pair data :Data:
         """
-        try:
-            import re
-            import torch
-            import torch_geometric
-            from torch_geometric.data import Data
-        except ImportError as ie:
-            logger.error(f'{ie}')
-
-        class PairData(Data):
-            def __inc__(self, key, value):
-                if bool(re.search("^edge_[\w]_s$", key)):
-                    return self.x_s.size(0)
-                if bool(re.search("^edge_[\w]*_t$", key)):
-                    return self.x_t.size(0)
-                else:
-                    return 0
-
         data_s = self.get_pyg_data_from_nx(Gs, s_doc, label=label, embd_dim=embd_dim, is_cuda=is_cuda)
         data_t = self.get_pyg_data_from_nx(Gt, t_doc, label=label, embd_dim=embd_dim, is_cuda=is_cuda)
         x_s, ei_s, ea_s = data_s.x, data_s.edge_index, data_s.edge_attr
