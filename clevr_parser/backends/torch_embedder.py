@@ -39,7 +39,7 @@ try:
 except ImportError as ie:
     logger.error(f"Some required modules couldn't be imported: {ie.name}")
 
-__all__ = ['TorchEmbedder']
+__all__ = ['TorchEmbedder', 'PairData']
 
 class PairData(Data):
     def __inc__(self, key, value):
