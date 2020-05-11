@@ -137,7 +137,7 @@ class SpacyParser(ParserBackend):
                 logger.info(f'{sentence} contains plural, skipping all CLEVR_OBJS as an edge case')
                 return None, f"SKIP_img {index}_{filename}"
 
-        graph, en_graphs = self.get_nx_graph_from_doc(doc, **kwargs)
+        graph, _ = self.get_nx_graph_from_doc(doc, **kwargs)
 
         if self.has_spatial:
             spatial_res = self.filter_spatial_re(doc.ents)
@@ -428,23 +428,14 @@ class SpacyParser(ParserBackend):
                               is_directed_graph=False,
                               is_attr_name_node_label=False,
                               head_node_prefix=None,
-                              hnode_sz=1200, anode_sz=700,
-                              hnode_col='tab:blue', anode_col='tab:red',
-                              is_return_list=False,
-                              is_debug=False, **kwargs):
+                              **kwargs):
         """
         The atomic graph constructor.
         :param entity: atomic CLEVR Object
         :param ent_num: the id of the object in context of the full graph
         :param is_attr_name_node_label:
         :param head_node_prefix:
-        :param hnode_sz:
-        :param anode_sz:
-        :param hnode_col:
-        :param anode_col:
-        :param is_return_list:
-        :param is_debug:
-        :return:
+        :return: :obj: `nx.MultiGraph` or `nx.MultiDiGraph`
         """
         obj_vals = (entity.label_, entity.text)
         node_keys = ('label', 'val')
@@ -469,14 +460,13 @@ class SpacyParser(ParserBackend):
         if is_attr_name_node_label:
             labels = dict(map(lambda x: (x[0], x[1]['label']), nodelist))
         else:
-            # print(nodelist[0])
             labels = dict(map(lambda x: (x[0], x[1]['label']), [nodelist[0]]))
             a_labels = dict(map(lambda x: (x[0], x[1]['val']), nodelist[1:]))
             labels.update(a_labels)
 
         # Edge List & Labels:
         edgelist = []       # Redundant, this is EDV G.edges(data=True)
-        edge_labels = {}  # edge_labels = {(u, v): d for u, v, d in G.edges(data=True)}
+        edge_labels = {}    # edge_labels = {(u, v): d for u, v, d in G.edges(data=True)}
         _e_fn = lambda x: tuple((head_node_id, x[0], {x[1]['label']: x[1]['val']}))
         for i, node in enumerate(nodelist):
             if node[0] == head_node_id:
@@ -490,15 +480,7 @@ class SpacyParser(ParserBackend):
         G.add_nodes_from(nodelist)
         G.add_edges_from(edgelist)
 
-        l = len(nodelist) - 1
-        nsz = [hnode_sz]
-        nsz.extend([anode_sz] * l)
-        nc = [hnode_col]
-        nc.extend([anode_col] * l)
-
-        if is_return_list:
-            [G, nodelist, labels, edgelist, edge_labels, nsz, nc]
-        return G, nodelist, labels, edgelist, edge_labels, nsz, nc
+        return [G, labels, edgelist, edge_labels]
 
     def get_docs_from_nx_graph(cls, G: nx.Graph) -> List:
         nodes: nx.NodeDataView = G.nodes(data=True)
@@ -647,7 +629,7 @@ class SpacyParser(ParserBackend):
             # print(f"Processing graph {en_graph_key} ... ")
             pos_i = pos[i] if pos is not None else None
             _g = cls.get_graph_from_entity(en, head_node_prefix=head_node_prefix,
-                                           ent_num=i + 1, is_return_list=True, pos=pos_i)
+                                           ent_num=i + 1, pos=pos_i)
             if isinstance(_g[0], nx.Graph):
                 graphs.append(_g[0])
             assert len(en_graph_vals) == len(_g)
