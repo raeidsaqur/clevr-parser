@@ -123,7 +123,8 @@ class SpacyParser(ParserBackend):
     def model(self, model):
         self.__model = model
 
-    def parse(self, sentence: str, index=0, filename=None, return_doc=True, skip_plurals=False, **kwargs):
+    def parse(self, sentence: str, index=0, filename=None, return_doc=True,
+                skip_plurals=False, is_directed_graph=False, **kwargs):
         """
             The spaCy-based parser parse the sentence into scene graphs based on the dependency parsing
             of the sentence by spaCy.
@@ -137,7 +138,7 @@ class SpacyParser(ParserBackend):
                 logger.info(f'{sentence} contains plural, skipping all CLEVR_OBJS as an edge case')
                 return None, f"SKIP_img {index}_{filename}"
 
-        graph, _ = self.get_nx_graph_from_doc(doc, **kwargs)
+        graph, _ = self.get_nx_graph_from_doc(doc, is_directed_graph=is_directed_graph, **kwargs)
 
         if self.has_spatial:
             spatial_res = self.filter_spatial_re(doc.ents)
@@ -407,6 +408,7 @@ class SpacyParser(ParserBackend):
         :param kwargs:
         :return:
         """
+        is_directed_graph = kwargs.get('is_directed_graph')
         scene_img_idx = scene["image_index"]
         scene_img_fn = scene["image_filename"]
         pos = self.get_pos_from_img_scene(scene, *args, *kwargs)
@@ -414,12 +416,12 @@ class SpacyParser(ParserBackend):
         if caption is None:
             return None, f"SKIP_{scene_img_idx}_{scene_img_fn}"
 
-        # graph, doc = self.parse(caption, return_doc=True)
         graph, doc = self.parse(caption,
                                     index=scene_img_idx,
                                    filename=scene_img_fn,
                                    return_doc=True,
-                                   pos=pos)
+                                   pos=pos,
+                                   is_directed_graph=is_directed_graph)
         return graph, doc
 
 
@@ -465,7 +467,7 @@ class SpacyParser(ParserBackend):
             labels.update(a_labels)
 
         # Edge List & Labels:
-        edgelist = []       # Redundant, this is EDV G.edges(data=True)
+        edgelist = []       # Later accessed using: EDV G.edges(data=True)
         edge_labels = {}    # edge_labels = {(u, v): d for u, v, d in G.edges(data=True)}
         _e_fn = lambda x: tuple((head_node_id, x[0], {x[1]['label']: x[1]['val']}))
         for i, node in enumerate(nodelist):
@@ -480,7 +482,7 @@ class SpacyParser(ParserBackend):
         G.add_nodes_from(nodelist)
         G.add_edges_from(edgelist)
 
-        return [G, labels, edgelist, edge_labels]
+        return [G, labels, edge_labels]
 
     def get_docs_from_nx_graph(cls, G: nx.Graph) -> List:
         nodes: nx.NodeDataView = G.nodes(data=True)
@@ -596,7 +598,7 @@ class SpacyParser(ParserBackend):
         return G
 
     @classmethod
-    def get_nx_graph_from_doc(cls, doc, head_node_prefix=None, **kwargs):
+    def get_nx_graph_from_doc(cls, doc, is_directed_graph=False, head_node_prefix=None, **kwargs):
         """
         :param doc: doc obtained upon self.nlp(caption|text) contains doc.entities as clevr objs
         :return: a composed NX graph of all clevr objects along with pertinent info in en_graphs
@@ -620,7 +622,7 @@ class SpacyParser(ParserBackend):
             assert len(pos) == nco  # each clevr_obj and corresponding pos
 
         en_graph_keys = list(range(1, nco + 1))
-        en_graph_vals = ['graph', 'nodelist', 'labels', 'edgelist', 'edge_labels', 'nsz', 'nc']
+        en_graph_vals = ['graph', 'labels', 'edge_labels']
         en_graphs = dict.fromkeys(en_graph_keys)
 
         graphs = []  # list of all graphs corresponding to each entity
@@ -628,7 +630,7 @@ class SpacyParser(ParserBackend):
             en_graph_key = en_graph_keys[i]
             # print(f"Processing graph {en_graph_key} ... ")
             pos_i = pos[i] if pos is not None else None
-            _g = cls.get_graph_from_entity(en, head_node_prefix=head_node_prefix,
+            _g = cls.get_graph_from_entity(en, is_directed_graph=is_directed_graph, head_node_prefix=head_node_prefix,
                                            ent_num=i + 1, pos=pos_i)
             if isinstance(_g[0], nx.Graph):
                 graphs.append(_g[0])
