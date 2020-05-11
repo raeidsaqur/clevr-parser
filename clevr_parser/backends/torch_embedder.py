@@ -328,7 +328,7 @@ class TorchEmbedder(EmbedderBackend):
             if kwargs.get('is_cuda'):
                 device = 'cuda' if torch.cuda.is_available() else 'cpu'
                 feat_mats = feat_mats.to(device)
-        assert feat_mats.shape == (E, M)
+        #assert feat_mats.shape == (E, M)
         return feat_mats
 
     def get_node_feature_matrix(self, G:nx.MultiGraph, doc, embd_dim=96,
