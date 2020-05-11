@@ -25,6 +25,7 @@ import numpy as np
 import scipy.sparse as sp
 
 import logging
+logging.basicConfig(level=logging.INFO, format='%(asctime)s %(message)s')
 logger = logging.getLogger(__name__)
 
 try:
@@ -315,7 +316,7 @@ class TorchEmbedder(EmbedderBackend):
         for i, (_, _, feat_dict) in enumerate(EDV):
             for key, value in feat_dict.items():
                 v_embd = token2vec[value]
-                logger.debug(f"value = {value}\n v_embd = {v_embd}")
+                #logger.debug(f"value = {value}\n v_embd = {v_embd}")
                 feat_mats.append(v_embd)
         #unique_values = set(reduce(lambda x1, x2: x1 + x2, data.values))
         if len(feat_mats) > 1:
