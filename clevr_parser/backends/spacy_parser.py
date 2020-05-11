@@ -41,7 +41,7 @@ except ImportError as ie:
 import numpy as np
 np.random.seed(42)
 import scipy.sparse as sp
-
+import warnings
 
 @Parser.register_backend
 class SpacyParser(ParserBackend):
@@ -123,7 +123,8 @@ class SpacyParser(ParserBackend):
     def model(self, model):
         self.__model = model
 
-    def parse(self, sentence: str, index=0, filename=None, return_doc=True, skip_plurals=False, **kwargs):
+    def parse(self, sentence: str, index=0, filename=None, return_doc=True,
+                skip_plurals=False, is_directed_graph=False, **kwargs):
         """
             The spaCy-based parser parse the sentence into scene graphs based on the dependency parsing
             of the sentence by spaCy.
@@ -137,7 +138,7 @@ class SpacyParser(ParserBackend):
                 logger.info(f'{sentence} contains plural, skipping all CLEVR_OBJS as an edge case')
                 return None, f"SKIP_img {index}_{filename}"
 
-        graph, en_graphs = self.get_nx_graph_from_doc(doc, **kwargs)
+        graph, _ = self.get_nx_graph_from_doc(doc, is_directed_graph=is_directed_graph, **kwargs)
 
         if self.has_spatial:
             spatial_res = self.filter_spatial_re(doc.ents)
@@ -407,6 +408,7 @@ class SpacyParser(ParserBackend):
         :param kwargs:
         :return:
         """
+        is_directed_graph = kwargs.get('is_directed_graph')
         scene_img_idx = scene["image_index"]
         scene_img_fn = scene["image_filename"]
         pos = self.get_pos_from_img_scene(scene, *args, *kwargs)
@@ -414,12 +416,12 @@ class SpacyParser(ParserBackend):
         if caption is None:
             return None, f"SKIP_{scene_img_idx}_{scene_img_fn}"
 
-        # graph, doc = self.parse(caption, return_doc=True)
         graph, doc = self.parse(caption,
                                     index=scene_img_idx,
                                    filename=scene_img_fn,
                                    return_doc=True,
-                                   pos=pos)
+                                   pos=pos,
+                                   is_directed_graph=is_directed_graph)
         return graph, doc
 
 
@@ -428,23 +430,14 @@ class SpacyParser(ParserBackend):
                               is_directed_graph=False,
                               is_attr_name_node_label=False,
                               head_node_prefix=None,
-                              hnode_sz=1200, anode_sz=700,
-                              hnode_col='tab:blue', anode_col='tab:red',
-                              is_return_list=False,
-                              is_debug=False, **kwargs):
+                              **kwargs):
         """
         The atomic graph constructor.
         :param entity: atomic CLEVR Object
         :param ent_num: the id of the object in context of the full graph
         :param is_attr_name_node_label:
         :param head_node_prefix:
-        :param hnode_sz:
-        :param anode_sz:
-        :param hnode_col:
-        :param anode_col:
-        :param is_return_list:
-        :param is_debug:
-        :return:
+        :return: :obj: `nx.MultiGraph` or `nx.MultiDiGraph`
         """
         obj_vals = (entity.label_, entity.text)
         node_keys = ('label', 'val')
@@ -469,14 +462,13 @@ class SpacyParser(ParserBackend):
         if is_attr_name_node_label:
             labels = dict(map(lambda x: (x[0], x[1]['label']), nodelist))
         else:
-            # print(nodelist[0])
             labels = dict(map(lambda x: (x[0], x[1]['label']), [nodelist[0]]))
             a_labels = dict(map(lambda x: (x[0], x[1]['val']), nodelist[1:]))
             labels.update(a_labels)
 
         # Edge List & Labels:
-        edgelist = []       # Redundant, this is EDV G.edges(data=True)
-        edge_labels = {}  # edge_labels = {(u, v): d for u, v, d in G.edges(data=True)}
+        edgelist = []       # Later accessed using: EDV G.edges(data=True)
+        edge_labels = {}    # edge_labels = {(u, v): d for u, v, d in G.edges(data=True)}
         _e_fn = lambda x: tuple((head_node_id, x[0], {x[1]['label']: x[1]['val']}))
         for i, node in enumerate(nodelist):
             if node[0] == head_node_id:
@@ -490,15 +482,7 @@ class SpacyParser(ParserBackend):
         G.add_nodes_from(nodelist)
         G.add_edges_from(edgelist)
 
-        l = len(nodelist) - 1
-        nsz = [hnode_sz]
-        nsz.extend([anode_sz] * l)
-        nc = [hnode_col]
-        nc.extend([anode_col] * l)
-
-        if is_return_list:
-            [G, nodelist, labels, edgelist, edge_labels, nsz, nc]
-        return G, nodelist, labels, edgelist, edge_labels, nsz, nc
+        return [G, labels, edge_labels]
 
     def get_docs_from_nx_graph(cls, G: nx.Graph) -> List:
         nodes: nx.NodeDataView = G.nodes(data=True)
@@ -614,7 +598,7 @@ class SpacyParser(ParserBackend):
         return G
 
     @classmethod
-    def get_nx_graph_from_doc(cls, doc, head_node_prefix=None, **kwargs):
+    def get_nx_graph_from_doc(cls, doc, is_directed_graph=False, head_node_prefix=None, **kwargs):
         """
         :param doc: doc obtained upon self.nlp(caption|text) contains doc.entities as clevr objs
         :return: a composed NX graph of all clevr objects along with pertinent info in en_graphs
@@ -638,7 +622,7 @@ class SpacyParser(ParserBackend):
             assert len(pos) == nco  # each clevr_obj and corresponding pos
 
         en_graph_keys = list(range(1, nco + 1))
-        en_graph_vals = ['graph', 'nodelist', 'labels', 'edgelist', 'edge_labels', 'nsz', 'nc']
+        en_graph_vals = ['graph', 'labels', 'edge_labels']
         en_graphs = dict.fromkeys(en_graph_keys)
 
         graphs = []  # list of all graphs corresponding to each entity
@@ -646,8 +630,8 @@ class SpacyParser(ParserBackend):
             en_graph_key = en_graph_keys[i]
             # print(f"Processing graph {en_graph_key} ... ")
             pos_i = pos[i] if pos is not None else None
-            _g = cls.get_graph_from_entity(en, head_node_prefix=head_node_prefix,
-                                           ent_num=i + 1, is_return_list=True, pos=pos_i)
+            _g = cls.get_graph_from_entity(en, is_directed_graph=is_directed_graph, head_node_prefix=head_node_prefix,
+                                           ent_num=i + 1, pos=pos_i)
             if isinstance(_g[0], nx.Graph):
                 graphs.append(_g[0])
             assert len(en_graph_vals) == len(_g)
@@ -847,32 +831,9 @@ class SpacyParser(ParserBackend):
     # ----------------------- VISUALIZER METHODS --------------------------------------- #
     # Deprecated: Migrated to visualizer backend. TODO: Remove
     @classmethod
-    def plot_graph_graphviz(cls, G):
-        try:
-            import random
-            from networkx.drawing.nx_agraph import graphviz_layout
-            from networkx.algorithms.isomorphism.isomorph import (
-                graph_could_be_isomorphic as isomorphic,
-            )
-            from networkx.generators.atlas import graph_atlas_g
-        except ImportError as ie:
-            logger.error(f"Install pygraphviz and graphviz: {ie}")
-
-        # print(f"graph has {nx.number_of_nodes(G)} nodes with {nx.number_of_edges(G)} edges")
-        # print(nx.number_strongly_connected_components(G), "connected components")
-
-        plt.figure(1, figsize=(8, 8))
-        # layout graphs with positions using graphviz neato
-        pos = graphviz_layout(G, prog="neato")
-        # color nodes the same in each connected subgraph
-        C = (G.subgraph(c) for c in nx.strongly_connected_components(G))
-        for g in C:
-            c = [random.random()] * nx.number_of_nodes(g)  # random color...
-            nx.draw(g, pos, node_size=40, node_color=c, vmin=0.0, vmax=1.0, with_labels=False)
-        plt.show()
-
-    @classmethod
     def plot_graph(cls, G, nodelist, labels, edgelist, edge_labels, nsz, nc, font_size=12, show_edge_labels=True):
+        warnings.warn("Deprecated: use visualizer class methods instead",
+                      DeprecationWarning, stacklevel=2)
         pos = nx.spring_layout(G)
         nx.draw_networkx_nodes(G, pos, node_size=nsz, node_color=nc)
         nx.draw_networkx_edges(G, pos, edgelist=edgelist)
@@ -882,6 +843,8 @@ class SpacyParser(ParserBackend):
 
     @classmethod
     def plot_entity_graph_dict(cls, entity_graph, font_size=12, show_edge_labels=True):
+        warnings.warn("Deprecated: use visualizer class methods instead",
+                      DeprecationWarning, stacklevel=2)
         en_graph_vals = ['graph', 'nodelist', 'labels', 'edgelist', 'edge_labels', 'nsz', 'nc']
         G, nodelist, labels, edgelist, edge_labels, nsz, nc = list(map(lambda x: entity_graph[x], en_graph_vals))
 
@@ -909,6 +872,8 @@ class SpacyParser(ParserBackend):
         Issues:
         1. Need to encode the positional information in image scene
         """
+        warnings.warn("Deprecated: use visualizer class methods instead",
+                      DeprecationWarning, stacklevel=2)
         graph, doc = self.get_doc_from_img_scene(scene)
 
         if graph is None and doc.contains("SKIP"):
@@ -926,107 +891,6 @@ class SpacyParser(ParserBackend):
             'debug': debug
         }
         G = self.__class__.draw_clevr_obj_graph(graph, doc, **kwargs)
-        return G
-
-    @classmethod
-    def draw_clevr_obj_graph(cls, text_scene_graph, doc,
-                             **kwargs):
-        ax_title = f"{doc}"
-        G, en_graphs = cls.get_nx_graph_from_doc(doc)
-        G = cls.draw_graph(G, en_graphs, ax_title=ax_title, **kwargs)
-        return G
-
-    @classmethod
-    def draw_graph(cls, G, en_graphs=None, doc=None,
-                   hnode_sz=1200, anode_sz=700,
-                   hnode_col='tab:blue', anode_col='tab:red',
-                   font_size=12,
-                   show_edge_labels=True,
-                   plot_box=False,
-                   save_file_path=None,
-                   ax_title=None,
-                   debug=False):
-
-        ### Nodes
-        NDV = G.nodes(data=True)
-        NV = G.nodes(data=False)
-        _is_head_node = lambda x: 'obj' in x
-        _is_attr_node = lambda x: 'obj' not in x
-        head_nodes = list(filter(_is_head_node, NV))
-        attr_nodes = list(filter(_is_attr_node, NV))
-        assert len(NDV) == len(head_nodes) + len(attr_nodes)
-
-        pos = cls.get_positions(G, head_nodes, attr_nodes)
-
-        # Create position copies for shadows, and shift shadows
-        # See: https://gist.github.com/jg-you/144a35013acba010054a2cc4a93b07c7
-        pos_shadow = copy.deepcopy(pos)
-        shift_amount = 0.001
-        for idx in pos_shadow:
-            pos_shadow[idx][0] += shift_amount
-            pos_shadow[idx][1] -= shift_amount
-
-        nsz = [hnode_sz if 'obj' in node else anode_sz for node in G.nodes]
-        # nsz2 = list(map(lambda node: hnode_sz if 'obj' in node else anode_sz, G.nodes))
-        nc = [hnode_col if 'obj' in node else anode_col for node in G.nodes]
-        #### Node Labels: Label head nodes as obj or obj{i}, and attr nodes with their values:
-        _label = lambda node: node[1]['val'] if 'obj' not in node[0] else node[0]
-        _labels = list(map(_label, G.nodes(data=True)))
-        labels = dict(zip(list(G.nodes), _labels))
-
-        ### Edges
-        #### Edge Labels
-        edge_labels = {}  # edge_labels = {(u, v): d for u, v, d in G.edges(data=True)}
-        # edge_labels = [{(u,v): d for u,v,d in G.edges(data=True)}]
-        for u, v, d in G.edges(data=True):
-            edge_labels.update({(u, v): d})
-            # edge_labels.update(d)
-
-        # for k, v in en_graphs.items():
-        #     edge_labels.update(v['edge_labels'])
-
-        # Extract relations if doc is passed to the function
-        # This will be used instead of <R[NUMBER]>
-        # relations = cls.extract_spatial_relations(doc)
-        relations = None  # should be already added before reaching draw (in parse)
-        # Check that the number of relations is 1 less than the number of nodes, if relations is not None
-        assert relations is None or len(relations) == len(head_nodes) - 1
-
-        #### Add <R>, <R2> etc. edge between nodes
-        # head_nodes = []
-        # for i, node in enumerate(list(G.nodes(data=False))):
-        #     if 'obj' in node:
-        #         head_nodes.append(node)
-        # print(f"head_nodes = {head_nodes}")
-
-        edgelist = G.edges(data=True)
-
-        ## Draw ##
-
-        # Render (MatPlotlib)
-        plt.axis('on' if plot_box == True else "off")
-        # fig, axs = plt.subplots(1, 2)
-        # axs[1].set_title(f"{doc}")
-        fig, ax = plt.subplots(1, 1)
-        ax.set_title(ax_title, wrap=True)
-
-        nx.draw_networkx_nodes(G, pos, node_size=nsz, node_color=nc)
-        nx.draw_networkx_nodes(G, pos_shadow, node_size=nsz, node_color='k', alpha=0.2)
-
-        nx.draw_networkx_edges(G, pos, edgelist=edgelist)
-        nx.draw_networkx_labels(G, pos, labels=labels, font_size=font_size, font_color='k', font_family='sans-serif')
-        if show_edge_labels:
-            nx.draw_networkx_edge_labels(G, pos, edge_labels=edge_labels, label_pos=0.5, font_size=8)
-
-        if save_file_path is not None:
-            plt.savefig(save_file_path)
-        # if pygraphviz_enabled:
-        #   nx.write_dot(G, 'file.dot')
-        # See: https://stackoverflow.com/questions/37920935/matplotlib-cant-find-font
-        # for findfont errors
-
-        plt.show()
-
         return G
 
     # ----------------------- END: VISUALIZER METHODS --------------------------------------- #

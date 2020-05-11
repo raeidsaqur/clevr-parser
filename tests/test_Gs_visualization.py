@@ -14,6 +14,7 @@ np = pytest.importorskip('numpy')
 import os, sys, platform
 import json
 import matplotlib.pyplot as plt
+from itertools import product
 
 import clevr_parser
 from clevr_parser.utils import *
@@ -45,14 +46,12 @@ def create_output_dir():
     return dir_name
 
 def test_visualize_and_mat_spa(parser, plt_visualizer, gviz_visualizer, create_output_dir):
-    # for dist in ['val']:
-    for dist in ['train', 'val']:
+
+    for dist, is_directed_graph in product(['train', 'val'], [True, False]):
         s_ams = get_s_sample("and_mat_spa", dist)
         print(f"s_ams_{dist} = {s_ams}")
-        Gs, doc = parser.parse(s_ams, return_doc=True)
+        Gs, doc = parser.parse(s_ams, return_doc=True, is_directed_graph=is_directed_graph)
         ax_title = f"{doc}"
-        _, en_graphs = parser.get_nx_graph_from_doc(doc)
-        # G = parser.draw_graph_testing(Gs, en_graphs, doc=doc, ax_title=ax_title )
         G = plt_visualizer.draw_graph(Gs, doc=doc, ax_title=ax_title)
         assert G is not None
 
@@ -62,13 +61,11 @@ def test_visualize_and_mat_spa(parser, plt_visualizer, gviz_visualizer, create_o
         assert G is not None
 
 def test_visualize_or_mat_spa(parser, plt_visualizer, gviz_visualizer, create_output_dir):
-    for dist in ['train', 'val']:
+    for dist, is_directed_graph in product(['train', 'val'], [True, False]):
         s_oms = get_s_sample("or_mat_spa", dist)
         print(f"s_oms_{dist} = {s_oms}")
-        Gs, doc = parser.parse(s_oms, return_doc=True)
+        Gs, doc = parser.parse(s_oms, return_doc=True, is_directed_graph=is_directed_graph)
         ax_title = f"{doc}"
-        _, en_graphs = parser.get_nx_graph_from_doc(doc)
-        #G = parser.draw_graph_testing(Gs, en_graphs, ax_title=ax_title, doc=doc)
         G = plt_visualizer.draw_graph(Gs, doc=doc, ax_title=ax_title)
         assert G is not None
 
