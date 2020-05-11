@@ -108,7 +108,7 @@ class TorchEmbedder(EmbedderBackend):
                     continue
                 # Check label equality only, 'val' equality already verified
                 ns_label = NDV[ns]['label']
-                logger.debug(f'Source attr node label = {ns_label}')
+                #logger.debug(f'Source attr node label = {ns_label}')
                 # TODO: potential issue here, Nt should always have a matching attr node
                 for nt in filter(lambda x: NDV[x]['label'] == ns_label, Nt):
                     if not Gu.has_edge(ns, nt):
