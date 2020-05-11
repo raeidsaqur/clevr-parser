@@ -40,16 +40,51 @@ try:
 except ImportError as ie:
     logger.error(f"Some required modules couldn't be imported: {ie.name}")
 
-__all__ = ['TorchEmbedder', 'PairData']
+__all__ = ['TorchEmbedder', 'ClevrData', 'PairData']
+
+# Hook classes for debugging and alterations #
+class ClevrData(Data):
+    r"""Data for handling clevr data specific quirks (like edge_attrs)"""
+    def __init__(self, src=None, **kwargs):
+        super(ClevrData, self).__init__(**kwargs)
+        self.src = src      # 'Gs' | 'Gt'
+
+    def __cat_dim__(self, key, value):
+        r"""Returns the dimension for which :obj:`value` of attribute
+        :obj:`key` will get concatenated when creating batches.
+
+        .. note::
+
+            This method is for internal use only, and should only be overridden
+            if the batch concatenation process is corrupted for a specific data
+            attribute.
+        """
+        # `*index*` and `*face*` should be concatenated in the last dimension,
+        # everything else in the first dimension.
+        # N.b this is because edge_index and face has shame [n, num_edges|faces]
+        # want to cat along the num_edges dim or -1
+        return -1 if bool(re.search('(index|face)', key)) else 0
+
+    def __inc__(self, key, value):
+        r"""" Increment both edge_index and edge_attr  """
+        # Only `*index*` and `*face*` should be cumulatively summed up when
+        # creating batches.
+        return self.num_nodes if bool(re.search('(index|face)', key)) else 0
+
 
 class PairData(Data):
+    """ For data sample with both Gs, Gt data"""
     def __inc__(self, key, value):
-        if bool(re.search("^edge_[\w]_s$", key)):
+        #if bool(re.search("^edge_[\w]_s$", key)):
+        if bool(re.search('index_s', key)):
             return self.x_s.size(0)
-        if bool(re.search("^edge_[\w]*_t$", key)):
+        #if bool(re.search("^edge_[\w]*_t$", key)):
+        if bool(re.search('index_t', key)):
             return self.x_t.size(0)
         else:
             return 0
+
+# END: Hook classes for debugging and alterations #
 
 @Embedder.register_backend
 class TorchEmbedder(EmbedderBackend):
@@ -241,7 +276,8 @@ class TorchEmbedder(EmbedderBackend):
         edge_index = self.get_nx_graph_edge_indices(G)
         edge_attr = self.get_edge_attr_feature_matrix(G, doc, embd_dim=embd_dim,
                                                       as_torch=True, is_cuda=is_cuda)
-        data = Data(x=X, edge_index=edge_index, edge_attr=edge_attr, y=label)
+        # data = Data(x=X, edge_index=edge_index, edge_attr=edge_attr, y=label)
+        data = ClevrData(x=X, edge_index=edge_index, edge_attr=edge_attr, y=label)
         if is_cuda and torch.cuda.is_available():
             device = 'cuda'
             data = data.to(device)

@@ -27,18 +27,20 @@ from tests import TEMPLATES, get_s_sample
 
 from typing import *
 
+def get_plt_visualizer():
+    plt_visualizer = clevr_parser.Visualizer(backend='matplotlib').get_backend(identifier='matplotlib')
+    return plt_visualizer
+
 def demo_closure(parser):
     q = "Is there a blue thing that is the same size as the brown shiny object in front of the gray matte sphere?"
     _, doc = parser.parse(q)
     parser.visualize(doc, dep=False)
 
-
-def demo_G_text(parser, text=None):
+def demo_G_text(parser, plt_visualizer, text=None):
     text = "Is the gray matte object the same size as the green rubber cylinder" if text is None else text
-    q_graph, q_doc = parser.parse(text, return_doc=True)
-    ax_title = f"{q_doc}"
-    G_text, en_graphs = parser.get_nx_graph_from_doc(q_doc)
-    G = parser.draw_graph(G_text, en_graphs, ax_title=ax_title)
+    Gs, doc = parser.parse(text, return_doc=True)
+    ax_title = f"{doc}"
+    plt_visualizer.draw_graph(Gs, doc=doc, ax_title=ax_title)
 
 
 def demo_G_scene(parser, gfp):
@@ -47,36 +49,32 @@ def demo_G_scene(parser, gfp):
     g = groundings[0]
     G_img = parser.draw_clevr_img_scene_graph(g)
 
-def demo_Gs_spatial_relation(parser, text=None):
+def demo_Gs_spatial_relation(parser, plt_visualizer, text=None):
     text = "The sphere is behind a rubber cylinder right of a metal cube" if text is None else text
-    q_graph, q_doc = parser.parse(text, return_doc=True)
+    Gs, doc = parser.parse(text, return_doc=True)
     #parser.visualize(q_doc)
-    ax_title = f"{q_doc}"
-    G_text, en_graphs = parser.get_nx_graph_from_doc(q_doc)
-    G = parser.draw_graph(G_text, en_graphs, ax_title=ax_title, doc=q_doc)
+    ax_title = f"{doc}"
+    plt_visualizer.draw_graph(Gs, doc, ax_title)
 
-def demo_visualize_and_mat_spa(parser):
+def demo_visualize_and_mat_spa(parser, plt_visualizer):
     # for dist in ['val']:
     for dist in ['train', 'val']:
         s_ams = get_s_sample("and_mat_spa", dist)
         print(f"s_ams_{dist} = {s_ams}")
         Gs, doc = parser.parse(s_ams, return_doc=True)
         ax_title = f"{doc}"
-        _, en_graphs = parser.get_nx_graph_from_doc(doc)
-        G = parser.draw_graph(Gs, en_graphs, doc=doc, ax_title=ax_title )
-        assert G is not None
+        plt_visualizer.draw_graph(Gs, doc, ax_title)
 
-def demo_visualize_or_mat_spa(parser):
+def demo_visualize_or_mat_spa(parser, plt_visualizer):
     for dist in ['train', 'val']:
         s_oms = get_s_sample("or_mat_spa", dist)
         print(f"s_oms_{dist} = {s_oms}")
         Gs, doc = parser.parse(s_oms, return_doc=True)
         ax_title = f"{doc}"
-        _, en_graphs = parser.get_nx_graph_from_doc(doc)
-        G = parser.draw_graph(Gs, en_graphs, ax_title=ax_title, doc=doc)
-        assert G is not None
+        plt_visualizer.draw_graph(Gs, doc, ax_title)
 
-def demo_visualize_Gt(parser, fp, img_fn=None, img_idx=None):
+
+def demo_visualize_Gt(parser, plt_visualizer, fp, img_fn=None, img_idx=None):
     """ Demo of a image scene graph generation """
     # fp = "../data/CLEVR_v1.0/scenes_parsed/train_scenes_parsed.json"
     fp = "../data/CLEVR_v1.0/scenes_parsed/val_scenes_parsed.json"
@@ -96,22 +94,22 @@ def demo_visualize_Gt(parser, fp, img_fn=None, img_idx=None):
         print(f"AssertionError Encountered: {ae}")
         print(f"[{img_fn}] Excluding images with > 10 objects")
     ax_title = f"{t_doc}"
-    Gt, en_graphs = parser.get_nx_graph_from_doc(t_doc)
-    parser.draw_graph(Gt, en_graphs, ax_title=ax_title)
+    plt_visualizer.draw_graph(Gt, t_doc, ax_title)
 
 def main():
     clevr_img_name = lambda split, i: f"CLEVR_{split}_{i:06d}.png"
-    #clevrr_baseline_qp = "../data/CLEVRR_v1.0/questions/CLEVRR_compare_baseline_questions.json"
     image_grounding_parsed_gp = "../data/CLEVR_v1.0/scenes_parsed/val_scenes_parsed.json"
     parser = clevr_parser.Parser(backend='spacy', model='en_core_web_sm',
                                  has_spatial=True,
                                  has_matching=True).get_backend(identifier='spacy')
+
+    plt_visualizer = get_plt_visualizer()
     #s_ams_bline = get_s_sample(template="and_mat_spa", dist="train")
     # demo_Gs_spatial_relation(parser, text=s_ams_bline)
     # demo_visualize_and_mat_spa(parser)
     #demo_visualize_or_mat_spa(parser)
     # CLEVR_val_000015.png
-    demo_visualize_Gt(parser, image_grounding_parsed_gp, img_idx=15)
+    demo_visualize_Gt(parser, plt_visualizer, image_grounding_parsed_gp, img_idx=15)
     print("done")
 
 
