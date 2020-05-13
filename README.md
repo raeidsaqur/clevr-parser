@@ -1,4 +1,8 @@
+<div align="center">
+  ![Logo](imgs/clevr-parser_logo@2x.png)
+</div>
 ![Logo](imgs/clevr-parser_logo@2x.png)
+
 
 # CLEVR Graph Parser Library 
 **CLEVR-Parser** is a graph parser for the CLEVR dataset. Code currrently under review stage - soon to be released. 
