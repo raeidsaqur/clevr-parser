@@ -276,6 +276,7 @@ class TorchEmbedder(EmbedderBackend):
         edge_index = self.get_nx_graph_edge_indices(G)
         edge_attr = self.get_edge_attr_feature_matrix(G, doc, embd_dim=embd_dim,
                                                       as_torch=True, is_cuda=is_cuda)
+        # RuntimeError: Edge indices and edge attributes hold a differing number of edges, found torch.Size([2, 1]) and torch.Size([96])
         # data = Data(x=X, edge_index=edge_index, edge_attr=edge_attr, y=label)
         data = ClevrData(x=X, edge_index=edge_index, edge_attr=edge_attr, y=label)
         if is_cuda and torch.cuda.is_available():
@@ -358,13 +359,19 @@ class TorchEmbedder(EmbedderBackend):
         if len(feat_mats) > 1:
             feat_mats = reduce(lambda a, b: np.vstack((a, b)), feat_mats)
         else:
-            feat_mats = feat_mats[0]
+            feat_mats = feat_mats[0].reshape((1, -1))
         if kwargs.get('as_torch'):
             feat_mats = torch.from_numpy(feat_mats).float()
             if kwargs.get('is_cuda'):
                 device = 'cuda' if torch.cuda.is_available() else 'cpu'
                 feat_mats = feat_mats.to(device)
-        #assert feat_mats.shape == (E, M)
+        try:
+            # Ensure single edges are properly reshaped
+            assert feat_mats.shape == (E, M)
+        except AssertionError as ae:
+            ## RuntimeError: Edge indices and edge attributes hold a differing number of edges,
+            ## found torch.Size([2, 1]) and torch.Size([96])
+            logger.debug(f"{ae}\n feat_mats.shape = {feat_mats.shape}")
         return feat_mats
 
     def get_node_feature_matrix(self, G:nx.MultiGraph, doc, embd_dim=96,
