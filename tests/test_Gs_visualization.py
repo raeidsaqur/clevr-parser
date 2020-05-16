@@ -57,7 +57,7 @@ def test_visualize_and_mat_spa(parser, plt_visualizer, gviz_visualizer, create_o
 
         # Test graphviz
         G = gviz_visualizer.draw_graph(Gs,\
-             save_file_path=os.path.join(create_output_dir, "and_mat_spa"+dist+".svg"), ax_title=ax_title)
+             save_file_path=os.path.join(create_output_dir, "and_mat_spa_"+dist+".svg"), ax_title=ax_title)
         assert G is not None
 
 def test_visualize_or_mat_spa(parser, plt_visualizer, gviz_visualizer, create_output_dir):
@@ -71,5 +71,5 @@ def test_visualize_or_mat_spa(parser, plt_visualizer, gviz_visualizer, create_ou
 
         # Test graphviz
         G = gviz_visualizer.draw_graph(Gs,\
-             save_file_path=os.path.join(create_output_dir, "or_mat_spa"+dist+".svg"), ax_title=ax_title)
+             save_file_path=os.path.join(create_output_dir, "or_mat_spa_"+dist+".svg"), ax_title=ax_title)
         assert G is not None        
