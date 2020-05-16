@@ -36,34 +36,8 @@ class GraphvizVisualizer(VisualizerBackend):
     """
     __identifier__ = 'graphviz'
 
-    def __init__(self, parser=None, embedder=None, **kwargs):
+    def __init__(self, **kwargs):
         super().__init__()
-        _parser = parser
-        _embedder = embedder
-        if not _parser:
-            _parser = Parser(backend="spacy", model='en_core_web_sm',
-                                has_spatial=True,
-                                has_matching=True).get_backend(identifier='spacy')
-        if not _embedder:
-            _embedder = Embedder(backend='torch', parser=_parser).get_backend(identifier='torch')
-        self.__clevr_parser = _parser
-        self.__embedder = _embedder
-
-    @property
-    def clevr_parser(self):
-        return self.__clevr_parser
-
-    @clevr_parser.setter
-    def clevr_parser(self, cp):
-        self.__clevr_parser = cp
-
-    @property
-    def embedder(self):
-        return self.__embedder
-
-    @embedder.setter
-    def embedder(self, e):
-        self.__embedder = e
 
     @classmethod
     def draw_graph(cls, G: nx.Graph, *args, **kwargs):
