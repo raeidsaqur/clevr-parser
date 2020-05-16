@@ -148,20 +148,33 @@ class GraphvizVisualizer(VisualizerBackend):
 
         
         shape_attr = {
+            # Cylinder
             'cylinder': 'cylinder',
             'cylinders': 'cylinder',
+            # Cube
             'cube': 'square',
             'cubes': 'square',
+            'block': 'square',
+            'blocks': 'square',
+            # Sphere
             'sphere': 'circle',
             'spheres': 'circle',
+            'ball': 'circle',
+            'balls': 'circle',
+            # Thing
             'thing': 'hexagon',
             'things': 'hexagon',
+            'object': 'hexagon',
+            'objects': 'hexagon',
             'default': 'circle'
         }
 
         material_attr = {
             'metal': ':white',
+            'metallic': ':white',
+            'shiny': ':white',
             'rubber': '',
+            'matte': '',
             'default': ''
         }
 
