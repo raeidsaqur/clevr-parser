@@ -12,6 +12,9 @@
 from ..visualizer import Visualizer, get_default_visualizer
 from .backend import VisualizerBackend
 from ..utils import *
+from .. import Embedder
+from .torch_embedder import TorchEmbedder
+from .spacy_parser import SpacyParser
 from typing import List, Dict, Tuple, Sequence
 import logging
 logger = logging.getLogger(__name__)
@@ -109,7 +112,7 @@ class GraphvizVisualizer(VisualizerBackend):
         return G
 
     @classmethod
-    def draw_graph_graphviz_Gu(cls, G, save_file_path, en_graphs=None,
+    def draw_graph_graphviz_Gu(cls, G, ls, rs, save_file_path, en_graphs=None,
                             pos=None,
                             plot_box=False, ax_title=None,
                             head_node_label=True, attr_node_label=False,
@@ -118,6 +121,10 @@ class GraphvizVisualizer(VisualizerBackend):
                             format='svg', dpi='100'):
         import random
         from networkx.drawing.nx_agraph import graphviz_layout
+
+        # Connect the corresponding nodes on the source and target side
+        embedder = Embedder(backend='torch', parser=SpacyParser()).get_backend(identifier='torch')
+        G = embedder.connect_matching_pair_edges(G, ls, rs)
         
         # Get the nodes and edges
         NDV = G.nodes(data=True)

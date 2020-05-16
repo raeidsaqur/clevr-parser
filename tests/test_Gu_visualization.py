@@ -65,7 +65,7 @@ def test_visualize_Gu(parser, plt_visualizer, gviz_visualizer, create_output_dir
     Gs, s_doc = parser.parse(s_ams_val, return_doc=True)
 
     # Get full graph composed of Gs, Gt #
-    Gu, left_part, right_part = parser_utils.compose_multimodal_graphs(Gs, Gt, connect_obj_nodes=True)
+    Gu, left_part, right_part = parser_utils.compose_multimodal_graphs(Gs, Gt)
     """
     RS Notes:
     print(Gu.nodes(data=True))
@@ -88,6 +88,6 @@ def test_visualize_Gu(parser, plt_visualizer, gviz_visualizer, create_output_dir
     """
     ax_title = f"{s_doc}"
     # Test graphviz
-    G = gviz_visualizer.draw_graph(Gu,\
-            save_file_path=os.path.join(create_output_dir, "and_mat_spa_"+split+".svg"), ax_title=ax_title)
+    G = gviz_visualizer.draw_graph(Gu, left_part, right_part,\
+            save_file_path=os.path.join(create_output_dir, "and_mat_spa_"+split+".png"), ax_title=ax_title, format='png')
     assert G is not None
