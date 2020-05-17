@@ -12,6 +12,8 @@
 from ..visualizer import Visualizer, get_default_visualizer
 from .backend import VisualizerBackend
 from ..utils import *
+from .. import Embedder
+from .. import Parser
 from typing import List, Dict, Tuple, Sequence
 import logging
 logger = logging.getLogger(__name__)
@@ -34,7 +36,7 @@ class GraphvizVisualizer(VisualizerBackend):
     """
     __identifier__ = 'graphviz'
 
-    def __init__(self):
+    def __init__(self, **kwargs):
         super().__init__()
 
     @classmethod
@@ -43,10 +45,14 @@ class GraphvizVisualizer(VisualizerBackend):
         :param G: The input Graph of type nx.MultiGraph (undirectional)
                   or nx.MultiDiGraph (Directional)
         :param args: Additional args
-        :param kwargs: Additoinal kw arguments like pos (for image_scene_graphs), ax_title etc.
+        :param kwargs: Additional kw arguments like pos (for image_scene_graphs), ax_title etc.
         :return:
         """
-        return cls.draw_graph_graphviz(G, *args, **kwargs)
+        # Detect if Gu is being drawn or Gs/Gt
+        if all([('Gs' in node or 'Gt' in node) for node in tuple(G.nodes())]):
+            return cls.draw_graph_graphviz_Gu(G, *args, **kwargs)
+        else:
+            return cls.draw_graph_graphviz(G, *args, **kwargs)
 
     @classmethod
     def draw_graph_graphviz(cls, G, save_file_path, en_graphs=None,
@@ -61,15 +67,11 @@ class GraphvizVisualizer(VisualizerBackend):
         
         # Get the nodes and edges
         NDV = G.nodes(data=True)
-        NV = G.nodes(data=False)
-        EV = G.edges(data=False)
         EDV = G.edges(data=True)
 
         # Classify into head nodes and attribute nodes
         _is_head_node = lambda x: 'obj' in x
         _is_attr_node = lambda x: 'obj' not in x
-        head_nodes = list(filter(_is_head_node, NV))
-        attr_nodes = list(filter(_is_attr_node, NV))
 
         # Instantiate a graph and set a high dpi
         A = pgv.AGraph(dpi = dpi, label=ax_title, labelloc='top')
@@ -78,6 +80,8 @@ class GraphvizVisualizer(VisualizerBackend):
         for node in NDV:
             # Get the graphviz attributes for the node
             attributes = cls.get_graphviz_attribute(node, EDV, anode_sz)
+
+            # Add the node
             if _is_head_node(node[0]):
                 if head_node_label:
                     A.add_node(node[0], width=hnode_sz, height=hnode_sz, fixedsize=True, **attributes)
@@ -92,10 +96,14 @@ class GraphvizVisualizer(VisualizerBackend):
         # Add edges
         for edge in EDV:
             if show_edge_labels:
-                if next(iter(edge[2])) in ['matching_re', 'spatial_re']:
-                    A.add_edge(edge[0], edge[1], label=edge[2][next(iter(edge[2]))])
+                # If edge lable is empty, don't print it
+                if not edge[2]:
+                    A.add_edge(edge[0], edge[1])
                 else:
-                    A.add_edge(edge[0], edge[1], label=next(iter(edge[2])))
+                    if next(iter(edge[2])) in ['matching_re', 'spatial_re']:
+                        A.add_edge(edge[0], edge[1], label=edge[2][next(iter(edge[2]))])
+                    else:
+                        A.add_edge(edge[0], edge[1], label=next(iter(edge[2])))
             else:
                 A.add_edge(edge[0], edge[1])
         
@@ -105,7 +113,84 @@ class GraphvizVisualizer(VisualizerBackend):
         return G
 
     @classmethod
-    def get_graphviz_attribute(cls, node, EDV=None, anode_sz=None):
+    def draw_graph_graphviz_Gu(cls, G, ls, rs, save_file_path, en_graphs=None,
+                            pos=None,
+                            plot_box=False, ax_title=None,
+                            head_node_label=True, attr_node_label=False,
+                            show_edge_labels=False,
+                            hnode_sz=0.5, anode_sz=0.5,
+                            format='svg', dpi='100'):
+        import random
+        from networkx.drawing.nx_agraph import graphviz_layout
+
+        # Connect the corresponding nodes on the source and target side
+        graph_parser = Parser(backend="spacy", model='en_core_web_sm',
+                                           has_spatial=True,
+                                           has_matching=True).get_backend(identifier='spacy')
+        embedder = Embedder(backend='torch', parser=graph_parser).get_backend(identifier='torch')
+        G = embedder.connect_matching_pair_edges(G, ls, rs)
+        
+        # Get the nodes and edges
+        NDV = G.nodes(data=True)
+        EDV = G.edges(data=True)
+
+        # Classify into head nodes and attribute nodes
+        _is_head_node = lambda x: 'obj' in x
+        _is_attr_node = lambda x: 'obj' not in x
+
+        # Classify into source nodes and target nodes
+        _is_source_node = lambda x: 'Gs' in x
+        _is_target_node = lambda x: 'Gt' in x      
+
+        # Instantiate a graph and set a high dpi
+        A = pgv.AGraph(dpi = dpi, label=ax_title, labelloc='top')
+        
+        # Add nodes
+        for node in NDV:
+            # Get the graphviz attributes for the node
+            if _is_source_node(node[0]):
+                attributes = cls.get_graphviz_attribute(node, EDV, anode_sz, isGs=True)
+            else:
+                attributes = cls.get_graphviz_attribute(node, EDV, anode_sz)
+            
+            # Add the node
+            if _is_head_node(node[0]):
+                if head_node_label:
+                    A.add_node(node[0], width=hnode_sz, height=hnode_sz, fixedsize=True, **attributes, label=node[0].split('-')[-1])
+                else:
+                    A.add_node(node[0], width=hnode_sz, height=hnode_sz, fixedsize=True, **attributes, label='')
+            else:
+                # Draw only target side attribute nodes
+                if _is_attr_node(node[0]) and _is_target_node(node[0]):
+                    if attr_node_label:
+                        A.add_node(node[0], fixedsize=True, **attributes, label=node[0].split('-')[-1])
+                    else:
+                        A.add_node(node[0], fixedsize=True, **attributes, label='')
+        
+        # Add edges
+        for edge in EDV:
+            # Don't draw source side node-attribute edges
+            if (_is_attr_node(edge[0]) and _is_source_node(edge[1])) or (_is_source_node(edge[0]) and _is_attr_node(edge[1])):
+                continue
+            if show_edge_labels:
+                # If edge lable is empty, don't print it
+                if not edge[2]:
+                    A.add_edge(edge[0], edge[1])
+                else:
+                    if next(iter(edge[2])) in ['matching_re', 'spatial_re']:
+                        A.add_edge(edge[0], edge[1], label=edge[2][next(iter(edge[2]))])
+                    else:
+                        A.add_edge(edge[0], edge[1], label=next(iter(edge[2])))
+            else:
+                A.add_edge(edge[0], edge[1])
+        
+        # Save the image
+        A.draw(path=save_file_path, format=format, prog='neato')       
+
+        return G
+
+    @classmethod
+    def get_graphviz_attribute(cls, node, EDV=None, anode_sz=None, isGs=False):
         '''
         Returns the corresponding graphviz attribute to use
 
@@ -113,6 +198,7 @@ class GraphvizVisualizer(VisualizerBackend):
             node:
             EDV:
             anode_sz:
+            isGs: If it is a node from Gs when Gu is being drawn
 
         Returns:
             (shape, fillcolor, style, size)
@@ -124,9 +210,14 @@ class GraphvizVisualizer(VisualizerBackend):
         default_style = 'filled'
 
         # Head node attributes
-        head_shape = 'doublecircle'
-        head_color = 'aquamarine'
-        head_style = 'filled'
+        if isGs:
+            head_shape = 'doublecircle'
+            head_color = 'coral'
+            head_style = 'filled'
+        else:
+            head_shape = 'doublecircle'
+            head_color = 'aquamarine'
+            head_style = 'filled'
 
         def get_color():
             '''
@@ -148,20 +239,33 @@ class GraphvizVisualizer(VisualizerBackend):
 
         
         shape_attr = {
+            # Cylinder
             'cylinder': 'cylinder',
             'cylinders': 'cylinder',
+            # Cube
             'cube': 'square',
             'cubes': 'square',
+            'block': 'square',
+            'blocks': 'square',
+            # Sphere
             'sphere': 'circle',
             'spheres': 'circle',
+            'ball': 'circle',
+            'balls': 'circle',
+            # Thing
             'thing': 'hexagon',
             'things': 'hexagon',
+            'object': 'hexagon',
+            'objects': 'hexagon',
             'default': 'circle'
         }
 
         material_attr = {
             'metal': ':white',
+            'metallic': ':white',
+            'shiny': ':white',
             'rubber': '',
+            'matte': '',
             'default': ''
         }
 

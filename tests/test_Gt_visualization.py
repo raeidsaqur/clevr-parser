@@ -34,9 +34,16 @@ def gviz_visualizer():
     gviz_visualizer = clevr_parser.Visualizer(backend='graphviz').get_backend(identifier='graphviz')
     return gviz_visualizer
 
+@pytest.fixture(scope="module")
+def create_output_dir():
+    dir_name = 'tests_output'
+    if not os.path.exists(dir_name):
+        os.makedirs(dir_name)
+    return dir_name 
+
 clevr_img_name = lambda split, i: f"CLEVR_{split}_{i:06d}.png"
 
-def test_visualize_Gt(parser, plt_visualizer, gviz_visualizer):
+def test_visualize_Gt(parser, plt_visualizer, gviz_visualizer, create_output_dir):
     """ Presumes image scene graphs are available in designated folder """
     img_idx = 15; split = 'val'
     img_fn = clevr_img_name(split, img_idx)
@@ -51,3 +58,8 @@ def test_visualize_Gt(parser, plt_visualizer, gviz_visualizer):
     ax_title = f"{t_doc}"
     G = plt_visualizer.draw_graph(Gt, doc=t_doc, ax_title=ax_title)
     assert G is not None
+
+    # Test graphviz
+    G = gviz_visualizer.draw_graph(Gt,\
+            save_file_path=os.path.join(create_output_dir, "Gt_"+split+".svg"), ax_title=ax_title)
+    assert G is not None     

@@ -35,9 +35,16 @@ def gviz_visualizer():
     gviz_visualizer = clevr_parser.Visualizer(backend='graphviz').get_backend(identifier='graphviz')
     return gviz_visualizer
 
+@pytest.fixture(scope="module")
+def create_output_dir():
+    dir_name = 'tests_output'
+    if not os.path.exists(dir_name):
+        os.makedirs(dir_name)
+    return dir_name    
+
 clevr_img_name = lambda split, i: f"CLEVR_{split}_{i:06d}.png"
 
-def test_visualize_Gu(parser, plt_visualizer, gviz_visualizer):
+def test_visualize_Gu(parser, plt_visualizer, gviz_visualizer, create_output_dir):
     """ Presumes image scene graphs are available in designated folder """
     ## Get Image Graph (Gt) ##
     img_idx = 19; split = 'val'
@@ -58,28 +65,12 @@ def test_visualize_Gu(parser, plt_visualizer, gviz_visualizer):
     Gs, s_doc = parser.parse(s_ams_val, return_doc=True)
 
     # Get full graph composed of Gs, Gt #
-    Gu, left_part, right_part = parser_utils.compose_multimodal_graphs(Gs, Gt, connect_obj_nodes=True)
-    Gu_NDV = Gu(data=True)
-    print(Gu_NDV)
-    """
-    RS Notes:
-    Gs has 10 nodes, Gt has 20 nodes, Gu has (10 + 20) 30 nodes
-    The visualization task is to draw this composed graph. N.b. the node labes are prefixed with 'Gs' 'Gt' 
-    Also, maybe the left (source) and right (target) partitions can be helpful for setting up the layout?
-    
-    [('Gs-obj', {'label': 'CLEVR_OBJ', 'val': 'thing'}), ('Gs-<S>', {'label': 'shape', 'val': 'thing'}), 
-    ('Gs-obj2', {'label': 'CLEVR_OBJ', 'val': 'big yellow object'}), ('Gs-<Z2>', {'label': 'size', 'val': 'big'}), 
-    ('Gs-<C2>', {'label': 'color', 'val': 'yellow'}), ('Gs-<S2>', {'label': 'shape', 'val': 'object'}), 
-    ...
-    ('Gt-obj', {'label': 'CLEVR_OBJ', 'val': 'small brown metal cube', 'pos': (0.9492958188056946, 0.14152207970619202, 
-    0.35215944051742554)}), ('Gt-<Z>', {'label': 'size', 'val': 'small'}), ('Gt-<C>', {'label': 'color', 'val': 'brown'}), 
-    ('Gt-<M>', {'label': 'material', 'val': 'metal'}), ('Gt-<S>', {'label': 'shape', 'val': 'cube'}), 
-    ('Gt-obj2',  
-    ....
-    ('Gt-<C4>', {'label': 'color', 'val': 'yellow'}), 
-    ('Gt-<M4>', {'label': 'material', 'val': 'metal'}), 
-    ('Gt-<S4>', {'label': 'shape', 'val': 'cube'})]
-    """
+    Gu, left_part, right_part = parser_utils.compose_multimodal_graphs(Gs, Gt)
+
     ax_title = f"{s_doc}"
-    #G = plt_visualizer.draw_graph(Gu, doc=t_doc, ax_title=ax_title)
-    assert Gu is not None
+
+    # Test graphviz
+    G = gviz_visualizer.draw_graph(Gu, left_part, right_part,\
+            save_file_path=os.path.join(create_output_dir, "and_mat_spa_"+split+".svg"),\
+            ax_title=ax_title, format='svg', attr_node_label=True, show_edge_labels=True)
+    assert G is not None
