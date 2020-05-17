@@ -13,8 +13,7 @@ from ..visualizer import Visualizer, get_default_visualizer
 from .backend import VisualizerBackend
 from ..utils import *
 from .. import Embedder
-from .torch_embedder import TorchEmbedder
-from .spacy_parser import SpacyParser
+from .. import Parser
 from typing import List, Dict, Tuple, Sequence
 import logging
 logger = logging.getLogger(__name__)
@@ -37,7 +36,7 @@ class GraphvizVisualizer(VisualizerBackend):
     """
     __identifier__ = 'graphviz'
 
-    def __init__(self):
+    def __init__(self, **kwargs):
         super().__init__()
 
     @classmethod
@@ -123,7 +122,10 @@ class GraphvizVisualizer(VisualizerBackend):
         from networkx.drawing.nx_agraph import graphviz_layout
 
         # Connect the corresponding nodes on the source and target side
-        embedder = Embedder(backend='torch', parser=SpacyParser()).get_backend(identifier='torch')
+        graph_parser = Parser(backend="spacy", model='en_core_web_sm',
+                                           has_spatial=True,
+                                           has_matching=True).get_backend(identifier='spacy')
+        embedder = Embedder(backend='torch', parser=graph_parser).get_backend(identifier='torch')
         G = embedder.connect_matching_pair_edges(G, ls, rs)
         
         # Get the nodes and edges
