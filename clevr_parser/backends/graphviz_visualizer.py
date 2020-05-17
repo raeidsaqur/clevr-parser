@@ -67,15 +67,11 @@ class GraphvizVisualizer(VisualizerBackend):
         
         # Get the nodes and edges
         NDV = G.nodes(data=True)
-        NV = G.nodes(data=False)
-        EV = G.edges(data=False)
         EDV = G.edges(data=True)
 
         # Classify into head nodes and attribute nodes
         _is_head_node = lambda x: 'obj' in x
         _is_attr_node = lambda x: 'obj' not in x
-        head_nodes = list(filter(_is_head_node, NV))
-        attr_nodes = list(filter(_is_attr_node, NV))
 
         # Instantiate a graph and set a high dpi
         A = pgv.AGraph(dpi = dpi, label=ax_title, labelloc='top')
@@ -84,6 +80,8 @@ class GraphvizVisualizer(VisualizerBackend):
         for node in NDV:
             # Get the graphviz attributes for the node
             attributes = cls.get_graphviz_attribute(node, EDV, anode_sz)
+
+            # Add the node
             if _is_head_node(node[0]):
                 if head_node_label:
                     A.add_node(node[0], width=hnode_sz, height=hnode_sz, fixedsize=True, **attributes)
@@ -98,10 +96,14 @@ class GraphvizVisualizer(VisualizerBackend):
         # Add edges
         for edge in EDV:
             if show_edge_labels:
-                if next(iter(edge[2])) in ['matching_re', 'spatial_re']:
-                    A.add_edge(edge[0], edge[1], label=edge[2][next(iter(edge[2]))])
+                # If edge lable is empty, don't print it
+                if not edge[2]:
+                    A.add_edge(edge[0], edge[1])
                 else:
-                    A.add_edge(edge[0], edge[1], label=next(iter(edge[2])))
+                    if next(iter(edge[2])) in ['matching_re', 'spatial_re']:
+                        A.add_edge(edge[0], edge[1], label=edge[2][next(iter(edge[2]))])
+                    else:
+                        A.add_edge(edge[0], edge[1], label=next(iter(edge[2])))
             else:
                 A.add_edge(edge[0], edge[1])
         
@@ -130,21 +132,15 @@ class GraphvizVisualizer(VisualizerBackend):
         
         # Get the nodes and edges
         NDV = G.nodes(data=True)
-        NV = G.nodes(data=False)
-        EV = G.edges(data=False)
         EDV = G.edges(data=True)
 
         # Classify into head nodes and attribute nodes
         _is_head_node = lambda x: 'obj' in x
         _is_attr_node = lambda x: 'obj' not in x
-        head_nodes = list(filter(_is_head_node, NV))
-        attr_nodes = list(filter(_is_attr_node, NV))
 
         # Classify into source nodes and target nodes
         _is_source_node = lambda x: 'Gs' in x
-        _is_target_node = lambda x: 'Gt' in x
-        source_nodes = list(filter(_is_source_node, NV))
-        target_nodes = list(filter(_is_target_node, NV))        
+        _is_target_node = lambda x: 'Gt' in x      
 
         # Instantiate a graph and set a high dpi
         A = pgv.AGraph(dpi = dpi, label=ax_title, labelloc='top')
@@ -152,17 +148,22 @@ class GraphvizVisualizer(VisualizerBackend):
         # Add nodes
         for node in NDV:
             # Get the graphviz attributes for the node
-            attributes = cls.get_graphviz_attribute(node, EDV, anode_sz)
+            if _is_source_node(node[0]):
+                attributes = cls.get_graphviz_attribute(node, EDV, anode_sz, isGs=True)
+            else:
+                attributes = cls.get_graphviz_attribute(node, EDV, anode_sz)
+            
+            # Add the node
             if _is_head_node(node[0]):
                 if head_node_label:
-                    A.add_node(node[0], width=hnode_sz, height=hnode_sz, fixedsize=True, **attributes)
+                    A.add_node(node[0], width=hnode_sz, height=hnode_sz, fixedsize=True, **attributes, label=node[0].split('-')[-1])
                 else:
                     A.add_node(node[0], width=hnode_sz, height=hnode_sz, fixedsize=True, **attributes, label='')
             else:
                 # Draw only target side attribute nodes
                 if _is_attr_node(node[0]) and _is_target_node(node[0]):
                     if attr_node_label:
-                        A.add_node(node[0], fixedsize=True, **attributes)
+                        A.add_node(node[0], fixedsize=True, **attributes, label=node[0].split('-')[-1])
                     else:
                         A.add_node(node[0], fixedsize=True, **attributes, label='')
         
@@ -172,10 +173,14 @@ class GraphvizVisualizer(VisualizerBackend):
             if (_is_attr_node(edge[0]) and _is_source_node(edge[1])) or (_is_source_node(edge[0]) and _is_attr_node(edge[1])):
                 continue
             if show_edge_labels:
-                if next(iter(edge[2])) in ['matching_re', 'spatial_re']:
-                    A.add_edge(edge[0], edge[1], label=edge[2][next(iter(edge[2]))])
+                # If edge lable is empty, don't print it
+                if not edge[2]:
+                    A.add_edge(edge[0], edge[1])
                 else:
-                    A.add_edge(edge[0], edge[1], label=next(iter(edge[2])))
+                    if next(iter(edge[2])) in ['matching_re', 'spatial_re']:
+                        A.add_edge(edge[0], edge[1], label=edge[2][next(iter(edge[2]))])
+                    else:
+                        A.add_edge(edge[0], edge[1], label=next(iter(edge[2])))
             else:
                 A.add_edge(edge[0], edge[1])
         
@@ -185,7 +190,7 @@ class GraphvizVisualizer(VisualizerBackend):
         return G
 
     @classmethod
-    def get_graphviz_attribute(cls, node, EDV=None, anode_sz=None):
+    def get_graphviz_attribute(cls, node, EDV=None, anode_sz=None, isGs=False):
         '''
         Returns the corresponding graphviz attribute to use
 
@@ -193,6 +198,7 @@ class GraphvizVisualizer(VisualizerBackend):
             node:
             EDV:
             anode_sz:
+            isGs: If it is a node from Gs when Gu is being drawn
 
         Returns:
             (shape, fillcolor, style, size)
@@ -204,9 +210,14 @@ class GraphvizVisualizer(VisualizerBackend):
         default_style = 'filled'
 
         # Head node attributes
-        head_shape = 'doublecircle'
-        head_color = 'aquamarine'
-        head_style = 'filled'
+        if isGs:
+            head_shape = 'doublecircle'
+            head_color = 'coral'
+            head_style = 'filled'
+        else:
+            head_shape = 'doublecircle'
+            head_color = 'aquamarine'
+            head_style = 'filled'
 
         def get_color():
             '''
