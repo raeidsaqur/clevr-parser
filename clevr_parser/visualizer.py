@@ -16,8 +16,8 @@ def _load_backends():
 class Visualizer(object):
     """
     Example::
-    >>> visualizer = Visualzier(backend, **init_kwargs)
-    >>> graph = visualzier.draw_graph(Gs)
+    >>> visualizer = Visualizer(backend, **init_kwargs)
+    >>> graph = visualizer.draw_graph(Gs)
     """
     _default_backend = 'matplotlib'
     _backend_registry = dict()
