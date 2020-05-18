@@ -16,3 +16,5 @@ from .matplotlib_visualizer import *
 from .torch_embedder import *
 from .custom_components_clevr import *
 
+# EmbeddingVisualizer
+from .tsne_embedding_visualizer import *
