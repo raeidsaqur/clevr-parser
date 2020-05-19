@@ -31,13 +31,13 @@ logger = logging.getLogger(__name__)
 import os
 
 try:
-    import matplotlib
-    import matplotlib.pyplot as plt
     import pygraphviz as pgv
-    import networkx as nx
 except ImportError as ie:
-    logger.error(f"Install NetworkX: {ie.name}")
+    logger.error(f"Failed to install pygraphviz. Import error: {ie}")
 
+import matplotlib
+import matplotlib.pyplot as plt
+import networkx as nx
 import numpy as np
 np.random.seed(42)
 import scipy.sparse as sp

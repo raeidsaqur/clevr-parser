@@ -31,7 +31,6 @@ logger = logging.getLogger(__name__)
 try:
     import matplotlib
     import matplotlib.pyplot as plt
-    import pygraphviz as pgv
     import networkx as nx
     import torch
     import re
