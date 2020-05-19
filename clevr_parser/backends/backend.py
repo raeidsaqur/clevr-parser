@@ -11,12 +11,12 @@
 
 from abc import ABC, abstractmethod, abstractproperty
 
-__all__ = ['ParserBackend', 'EmbedderBackend', 'VisualizerBackend']
+__all__ = ['ParserBackend', 'EmbedderBackend', 'VisualizerBackend', 'EmbeddingVisualizerBackend']
 
 class ParserBackend(object):
     """
-    Based class for all parser backends. This class
-    specifies the methods that should be override by subclasses.
+    Base class for all parser backends. This class
+    specifies the methods that should be overriden by subclasses.
     """
     def __init__(self, *args, **kwargs):
         super().__init__()
@@ -26,8 +26,8 @@ class ParserBackend(object):
 
 class EmbedderBackend(object):
     """
-    Based class for all embedder backends. This class
-    specifies the methods that should be override by subclasses.
+    Base class for all embedder backends. This class
+    specifies the methods that should be overriden by subclasses.
     """
     def __init__(self, *args, **kwargs):
         super().__init__()
@@ -41,8 +41,8 @@ class EmbedderBackend(object):
 
 class VisualizerBackend(ABC):
     """
-    Based class for all visualizer backends. This class
-    specifies the methods that should be override by subclasses.
+    Base class for all visualizer backends. This class
+    specifies the methods that should be overriden by subclasses.
     """
     def __init__(self, *args, **kwargs):
         super().__init__()
@@ -50,4 +50,17 @@ class VisualizerBackend(ABC):
     @classmethod
     @abstractmethod
     def draw_graph(cls, G, *args, **kwargs):
+        raise NotImplementedError()
+
+class EmbeddingVisualizerBackend(ABC):
+    """
+    Base class for all embedding_visualizer backends. This class
+    specifies the methods that should be overriden by subclasses.
+    """
+    def __init__(self, *args, **kwargs):
+        super().__init__()
+
+    @classmethod
+    @abstractmethod
+    def draw_embeddings(cls, vectors, *args, **kwargs):
         raise NotImplementedError()

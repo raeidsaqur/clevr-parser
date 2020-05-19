@@ -1,23 +1,23 @@
 #! /usr/bin/env python3
 # -*- coding: utf-8 -*-
-# File: visualizer.py
-# Author: Raeid Saqur
-# Email: rsaqur@cs.princeton.edu
-# Created on: 2020-05-02
+# File: embedding_visualizer.py
+# Author: Ameet Deshpande
+# Email: asd@cs.princeton.edu
+# Created on: 2020-05-17
 # 
 # This file is part of CLEVR-PARSER
 # Distributed under terms of the MIT License
 
-__all__ = ['Visualizer', 'get_default_visualizer', 'draw_graph']
+__all__ = ['EmbeddingVisualizer', 'get_default_embedding_visualizer', 'draw_embeddings']
 
 def _load_backends():
     from . import backends
 
-class Visualizer(object):
+class EmbeddingVisualizer(object):
     """
     Example::
-    >>> visualizer = Visualizer(backend, **init_kwargs)
-    >>> graph = visualizer.draw_graph(Gs)
+    >>> visualizer = EmbeddingVisualizer(backend, **init_kwargs)
+    >>> graph = visualizer.draw_embeddings(vectors)
     """
     _default_backend = 'matplotlib'
     _backend_registry = dict()
@@ -52,27 +52,27 @@ class Visualizer(object):
         return self._inst
 
     @classmethod
-    def draw_graph(cls, G, *args, **kwargs):
+    def draw_embeddings(cls, vectors, *args, **kwargs):
         """
         Draw a Graph from text or image scene
-        :param G (nx.Graph): the input graph
+        :param vectors (numpy.ndarray): A 2-D matrix with each row containing one embedding
         :param kwargs:
         :return: Embeddings
         """
-        return cls.unwrapped.draw_graph(G, *args, **kwargs)
+        return cls.unwrapped.draw_embeddings(vectors, *args, **kwargs)
 
     @classmethod
     def register_backend(cls, backend):
         """
         Register a class as the backend. The backend should implement a
-        method named `draw_graph` having the following signature:
-        `draw_graph(G, <other_args>, <other_keyword_args>)`.
+        method named `draw_embeddings` having the following signature:
+        `draw_embeddings(vectors, <other_args>, <other_keyword_args>)`.
 
-        To register your customized backend as the visualizer, use this class
+        To register your customized backend as the embedding_visualizer, use this class
         method as a decorator on your class.
 
         Example::
-        >>> @Visualizer.register_backend
+        >>> @EmbeddingVisualizer.register_backend
         >>> class CustomizedBackend(Backend):
         >>>     # Your implementation follows...
         >>>     pass
@@ -93,22 +93,21 @@ class Visualizer(object):
             return _backend(**kwargs)
 
 # --------------------------------------------------------------------------#
-_default_visualizer = None
+_default_embedding_visualizer = None
 
-def get_default_visualizer():
+def get_default_embedding_visualizer():
     """
-    Get the default visualizer (Global singleton)
+    Get the default embedding_visualizer (Global singleton)
     """
-    global _default_visualizer
-    if _default_visualizer is None:
-        _default_visualizer = Visualizer()
-    return _default_visualizer
+    global _default_embedding_visualizer
+    if _default_embedding_visualizer is None:
+        _default_embedding_visualizer = EmbeddingVisualizer()
+    return _default_embedding_visualizer
 
-def draw_graph(G, *args, **kwargs):
+def draw_embeddings(G, *args, **kwargs):
     """
-    Please note that the default visualizer is a singleton. Thus,
-    if you are using a stateful visualizer, you need to be careful about sharing
-    this visualizer everywhere.
+    Please note that the default embedding_visualizer is a singleton. Thus,
+    if you are using a stateful embedding_visualizer, you need to be careful about sharing
+    this embedding_visualizer everywhere.
     """
-    return get_default_visualizer().draw_graph(G, *args, **kwargs)
-
+    return get_default_embedding_visualizer().draw_embeddings(G, *args, **kwargs)
