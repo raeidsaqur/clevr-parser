@@ -313,7 +313,7 @@ def load_grounding_for_questionObj(qObj:Dict, fp) -> Dict:
     scene = list(filter(lambda g: g['image_filename'] == qObj['image_filename']))
     return scene[0]
 
-def load_grounding_for_img_idx(idx:str, fp):
+def load_grounding_for_img_idx(idx:int, fp):
     groundings = load_groundings_from_path(fp)
     grounding = list(filter(lambda x: x['image_index'] == idx, groundings))[0]
     return grounding

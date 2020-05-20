@@ -29,62 +29,16 @@ import logging
 logging.basicConfig(level=logging.INFO, format='%(asctime)s %(message)s')
 logger = logging.getLogger(__name__)
 
+import networkx as nx
+import re
 try:
-    import matplotlib
-    import matplotlib.pyplot as plt
-    import networkx as nx
     import torch
-    import re
     import torch_geometric
     from torch_geometric.data import Data
 except ImportError as ie:
     logger.error(f"Some required modules couldn't be imported: {ie.name}")
 
-__all__ = ['TorchEmbedder', 'ClevrData', 'PairData']
-
-# Hook classes for debugging and alterations #
-class ClevrData(Data):
-    r"""Data for handling clevr data specific quirks (like edge_attrs)"""
-    def __init__(self, src=None, **kwargs):
-        super(ClevrData, self).__init__(**kwargs)
-        self.src = src      # 'Gs' | 'Gt'
-
-    def __cat_dim__(self, key, value):
-        r"""Returns the dimension for which :obj:`value` of attribute
-        :obj:`key` will get concatenated when creating batches.
-
-        .. note::
-
-            This method is for internal use only, and should only be overridden
-            if the batch concatenation process is corrupted for a specific data
-            attribute.
-        """
-        # `*index*` should be concatenated in the last dimension,
-        # everything else in the first dimension.
-        # N.b this is because edge_index has shape [n, num_edges|faces]
-        # want to cat along the num_edges dim or -1
-        return -1 if bool(re.search('(index|face)', key)) else 0
-
-    def __inc__(self, key, value):
-        r"""" Increment both edge_index and edge_attr  """
-        # Only `*index*` and `*face*` should be cumulatively summed up when
-        # creating batches.
-        return self.num_nodes if bool(re.search('(index|face)', key)) else 0
-
-
-class PairData(Data):
-    """ For data sample with both Gs, Gt data"""
-    def __inc__(self, key, value):
-        #if bool(re.search("^edge_[\w]_s$", key)):
-        if bool(re.search('index_s', key)):
-            return self.x_s.size(0)
-        #if bool(re.search("^edge_[\w]*_t$", key)):
-        if bool(re.search('index_t', key)):
-            return self.x_t.size(0)
-        else:
-            return 0
-
-# END: Hook classes for debugging and alterations #
+__all__ = ['TorchEmbedder']
 
 @Embedder.register_backend
 class TorchEmbedder(EmbedderBackend):
@@ -120,7 +74,7 @@ class TorchEmbedder(EmbedderBackend):
         return self._embed(Gs, s_doc, *args, **kwargs)
 
     def embed_t(self, img_idx: int, img_scene_path: str, *args, **kwargs):
-        img_scene = load_grounding_for_img_idx(str(img_idx), img_scene_path)
+        img_scene = load_grounding_for_img_idx(img_idx, img_scene_path)
         try:
             Gt, t_doc = self.clevr_parser.get_doc_from_img_scene(img_scene)
         except FileNotFoundError as fne:
@@ -130,9 +84,9 @@ class TorchEmbedder(EmbedderBackend):
         return self._embed(Gt, t_doc, *args, **kwargs)
 
     def _embed(self, G, doc, *args, **kwargs):
-        X = self.get_node_feature_matrix(G, doc)
-        edge_index = self.get_nx_graph_edge_indices(G)
-        edge_attr = self.get_edge_attr_feature_matrix(G, doc)
+        X = self.get_node_feature_matrix(G, doc, **kwargs)
+        edge_index = self.get_nx_graph_edge_indices(G, **kwargs)
+        edge_attr = self.get_edge_attr_feature_matrix(G, doc, **kwargs)
         return X, edge_index, edge_attr
 
     # --------------------------- Concrete Embedder Specific Methods --------------------------------- #
@@ -295,7 +249,6 @@ class TorchEmbedder(EmbedderBackend):
         try:
             import torch
             import torch_geometric
-            from torch_geometric.data import Data
         except ImportError as ie:
             logger.error(f'{ie}')
 
@@ -306,7 +259,7 @@ class TorchEmbedder(EmbedderBackend):
                                                       as_torch=True, is_cuda=is_cuda)
         # RuntimeError: Edge indices and edge attributes hold a differing number of edges, found torch.Size([2, 1]) and torch.Size([96])
         # data = Data(x=X, edge_index=edge_index, edge_attr=edge_attr, y=label)
-        data = ClevrData(x=X, edge_index=edge_index, edge_attr=edge_attr, y=label)
+        data = torch_geometric.data.Data(x=X, edge_index=edge_index, edge_attr=edge_attr, y=label)
         if is_cuda and torch.cuda.is_available():
             device = 'cuda'
             data = data.to(device)
@@ -417,11 +370,11 @@ class TorchEmbedder(EmbedderBackend):
         for i, entity in enumerate(objs):
             if entity.label_ not in ('CLEVR_OBJS', 'CLEVR_OBJ'):
                 continue
-            ent_mat = self.clevr_parser.get_clevr_entity_matrix_embedding(entity, dim=96, include_obj_node_emd=True)
-            feat_mats.append(ent_mat)
             head_node = G.nodes.get(head_nodes[i])
             pos = head_node.get('pos')  # pos = (x,y,z): Tuple[float]
             # TODO: what's the best way to encode this pos in the feat_mats?
+            ent_mat = self.clevr_parser.get_clevr_entity_matrix_embedding(entity, dim=96, include_obj_node_emd=True)
+            feat_mats.append(ent_mat)
         if len(feat_mats) > 1:
             feat_mats = reduce(lambda a, b: np.vstack((a, b)), feat_mats)
         else:
