@@ -9,7 +9,7 @@
 # Distributed under terms of the MIT license.
 # https://github.com/raeidsaqur/clevr-parser
 
-__all__ = ['Embedder', 'get_default_embedder', 'embed', 'get_embeddings']
+__all__ = ['Embedder', 'get_default_embedder', 'embed_s', 'embed_t']
 
 def _load_backends():
     from . import backends
@@ -18,7 +18,7 @@ class Embedder(object):
     """
     Example::
     >>> embedder = Embedder(backend, **init_kwargs)
-    >>> graph = embedder.embed('A woman is playing the piano,')
+    >>> graph = embedder.embed_s('Thre is a large red rubber ball to the right of a green cylinder')
     """
 
     _default_backend = 'torch'
@@ -54,34 +54,76 @@ class Embedder(object):
         """
         return self._inst
 
-    def embed(self, sentence, **kwargs):
+    def embed_s(self, sentence, *args, **kwargs):
         """
-        Parse a sentence into a scene graph.
+        This call parses a sentence into a scene graph using the `parser.parse(..)`
+        command. Based on the parser's LM, provides feature embeddings for
+        the graph nodes, edge attributes and edge indices.
+
+        These outputs (X, e_i, e_attr) can be readily used for further training using
+        any GNN training framework of choice, for e.g. `torch_geometric`.
+
+        For e.g., a ConcreteEmbedder extension can have a function with:
+        ```
+        data = torch_geometric.Data(x=X, edge_index=e_i, edge_attr=e_attr)
+        ```
+        Returns a tuple (X, edge_idx, edge_attr)
 
         Args:
             sentence (str): the input sentence.
 
         Returns:
-            graph (dict): the embedd scene graph. Please refer to the
+            X: the node feature embeddings of shape [V, dim]
+            e_i: the edge indices of shape [2, E]
+            e_attr: the edge attr feature embeddings of shape [E, dim]
+
             README file for the specification of the return value.
         """
-        return self.unwrapped.embed(sentence, **kwargs)
+        return self.unwrapped.embed_s(sentence, *args, **kwargs)
 
-    def get_embeddings(self, G, **kwargs):
+    def embed_t(self, img_idx:int, img_scene_path:str, *args, **kwargs):
         """
-        Parser a Graph into Embeddings
-        :param G (nx.Graph): the input graph
-        :param kwargs:
-        :return: Embeddings
+        This call parses a image scene graph (obtained by the idx and scene graph path) to
+         embeddings (based on the parser's LM), provides feature embeddings for
+        the graph nodes, edge attributes and edge indices.
+
+        These outputs (X, e_i, e_attr) can be readily used for further training using
+        any GNN training framework of choice, for e.g. `torch_geometric`.
+
+        For e.g., a ConcreteEmbedder extension can have a function with:
+        ```
+        data = torch_geometric.Data(x=X, edge_index=e_i, edge_attr=e_attr)
+        ```
+        Returns a tuple (X, edge_idx, edge_attr)
+
+        Args:
+            img_idx (int): imgage index
+            img_scene_path (str): the path to the image scene graph
+
+        Returns:
+            X: the node feature embeddings of shape [V, dim]
+            e_i: the edge indices of shape [2, E]
+            e_attr: the edge attr feature embeddings of shape [E, dim]
+
+            README file for the specification of the return value.
         """
-        return self.unwrapped.get_embeddings(G, **kwargs)
+        return self.unwrapped.embed_t(img_idx, img_scene_path, *args, **kwargs)
+
+    # def get_embeddings(self, G, **kwargs):
+    #     """
+    #     Parser a Graph into Embeddings
+    #     :param G (nx.Graph): the input graph
+    #     :param kwargs:
+    #     :return: Embeddings
+    #     """
+    #     return self.unwrapped.get_embeddings(G, **kwargs)
 
     @classmethod
     def register_backend(cls, backend):
         """
         Register a class as the backend. The backend should implement a
-        method named `embed` having the following signature:
-        `embed(sentence, <other_keyward_arguments>)`.
+        method named `embed_s` having the following signature:
+        `embed_s(sentence, <other_keyward_arguments>)`.
 
         To register your customized backend as the embedder, use this class
         method as a decorator on your class.
@@ -111,7 +153,6 @@ class Embedder(object):
 # --------------------------------------------------------------------------#
 _default_embedder = None
 
-
 def get_default_embedder():
     """
     Get the default embedder.
@@ -123,8 +164,7 @@ def get_default_embedder():
         _default_embedder = Embedder()
     return _default_embedder
 
-
-def embed(sentence, **kwargs):
+def embed_s(sentence, *args, **kwargs):
     """
     Parse the sentence using the default embedder. This ia an easy-to-use
     feature for those who do not want to configure their own embedders
@@ -134,17 +174,23 @@ def embed(sentence, **kwargs):
     if you are using a stateful embedder, you need to be careful about sharing
     this embedder everywhere.
     """
-    return get_default_embedder().embed(sentence, **kwargs)
+    return get_default_embedder().embed_s(sentence, *args, **kwargs)
 
-def get_embeddings(G, **kwargs):
+def embed_t(img_idx, img_scene_path, *args, **kwargs):
     """
-    Parse the Graph using the default embedder. This ia an easy-to-use
-    feature for those who do not want to configure their own embedders
-    and want to use the embedder at different places in their codes.
+    See @embed_s for ref.
+    """
+    return get_default_embedder().embed_t(img_idx,img_scene_path, *args, **kwargs)
 
-    Please note that the default embedder is a singleton. Thus,
-    if you are using a stateful embedder, you need to be careful about sharing
-    this embedder everywhere.
-    """
-    return get_default_embedder().get_embeddings(G, **kwargs)
+# def get_embeddings(G, *args, **kwargs):
+#     """
+#     Parse the Graph using the default embedder. This ia an easy-to-use
+#     feature for those who do not want to configure their own embedders
+#     and want to use the embedder at different places in their codes.
+#
+#     Please note that the default embedder is a singleton. Thus,
+#     if you are using a stateful embedder, you need to be careful about sharing
+#     this embedder everywhere.
+#     """
+#     return get_default_embedder().get_embeddings(G, *args, **kwargs)
 
