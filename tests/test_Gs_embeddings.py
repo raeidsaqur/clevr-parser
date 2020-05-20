@@ -14,71 +14,78 @@ if nb_dir not in sys.path:
 import clevr_parser
 from clevr_parser.utils import *
 
-import matplotlib.pyplot as plt
+# ------ 1obj -------- #
+# Captions for 1obj_train: CLEVR_train_000000.png
+cap_1obj_train_00 = 'A large rubber purple sphere'
+cap_1obj_train_00B = 'A rubber purple sphere'
 
 # Captions for 2obj_train_000001A
 cap_2obj_1a = 'A small red rubber cylinder is behind a large brown metal sphere'
 cap_2obj_1b = 'The large brown metal sphere has a small red rubber cylinder to the right'
 cap_2obj_1c = 'The large brown metal sphere is in front of a small red rubber cylinder'
 
-# ------ 1obj -------- #
-# Captions for 1obj_train: CLEVR_train_000000.png
-cap_1obj_train_00 = 'A large rubber purple sphere'
-cap_1obj_train_00B = 'A rubber purple sphere'
 
 @pytest.fixture(scope="module")
 def parser():
     parser = clevr_parser.Parser(backend='spacy', model='en_core_web_sm',
                                  has_spatial=True,
-                                 has_matching=False).get_backend(identifier='spacy')
+                                 has_matching=True).get_backend(identifier='spacy')
     return parser
 
+@pytest.fixture(scope="module")
+def embedder(parser):
+    embedder = clevr_parser.Embedder(backend='torch', parser=parser).get_backend(identifier='torch')
+    return embedder
 
-def test_parser_1obj_graph_embedding(parser):
-    caption = "small red rubber ball"
-    Gs, doc = parser.parse(caption, return_doc=True)
+def test_parser_1obj_graph_embedding(parser, embedder):
+    s = "small red rubber ball"
+    Gs, doc = parser.parse(s, return_doc=True)
+    dim = 96
+    N, M = len(Gs.nodes()), dim
+
+    Xs, ei, e_attr = embedder.embed_s(s)
+    assert Xs is not None
+    assert Xs.shape == (N, M)
+    if e_attr is not None:
+        assert e_attr.shape == (len(Gs.edges()), M)
+
+def test_parser_2obj_graph_embedding(parser, embedder):
+    s = "There is a green metal block; the tiny metal thing is to the left of it"
+    Gs, doc = parser.parse(s, return_doc=True)
     dim = 96
     nodes = Gs.nodes(data=True)
     N = len(nodes)
     M = dim
-    feat_mat = parser.get_embeddings(Gs, doc, embd_dim=dim)
-    assert feat_mat is not None
-    assert feat_mat.shape == (N, M)
 
+    Xs, ei, e_attr = embedder.embed_s(s)
+    assert Xs is not None
+    assert Xs.shape == (N, M)
+    if e_attr is not None:
+        assert e_attr.shape == (len(Gs.edges()), M)
 
-def test_parser_2obj_graph_embedding(parser):
-    caption = "There is a green metal block; the tiny metal thing is to the left of it"
-    Gs, doc = parser.parse(caption, return_doc=True)
-    dim = 96
-    nodes = Gs.nodes(data=True)
-    N = len(nodes)
-    M = dim
-    feat_mat = parser.get_embeddings(Gs, doc, embd_dim=dim)
-    assert feat_mat is not None
-    assert feat_mat.shape == (N, M)
-
-def test_parser_1obj_embedding_ordering(parser):
+def test_parser_1obj_embedding_ordering(parser, embedder):
     '''
     The embedding ordering should be: <obj>, <Z>, <C>, <M>, <S>
     '''
-    caption = "small red rubber ball"   # <Z> <C> <M> <S>
-    caption2 = "red rubber small ball"  # <C> <M> <Z> <S>
-    Gs, doc = parser.parse(caption, return_doc=True)
-    Gs2, doc2 = parser.parse(caption2, return_doc=True)
+    s = "small red rubber ball"   # <Z> <C> <M> <S>
+    s2 = "red rubber small ball"  # <C> <M> <Z> <S>
+    Gs, doc = parser.parse(s, return_doc=True)
+    Gs2, doc2 = parser.parse(s2, return_doc=True)
     dim = 96
     nodes = Gs.nodes(data=True)
-    N = len(nodes); M = dim
-    feat_mat = parser.get_embeddings(Gs, doc, embd_dim=dim)
+    N, M = len(nodes), dim
+
+    Xs, ei, e_attr = embedder.embed_s(s)
+    Xs2, ei2, e_attr2 = embedder.embed_s(s2)
 
     nodes2 = Gs2.nodes(data=True)
     N2 = len(nodes2)
     assert N == N2
-    feat_mat2 = parser.get_embeddings(Gs2, doc2, embd_dim=dim)
     eps = 1e-4
-    delta = np.subtract(feat_mat, feat_mat2)
+    delta = np.subtract(Xs, Xs2)
     delta = delta.sum()
 
-    assert feat_mat.shape == (N, M)
-    assert feat_mat2.shape == (N2, M)
+    assert Xs.shape == (N, M)
+    assert Xs2.shape == (N2, M)
 
 

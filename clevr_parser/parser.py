@@ -20,7 +20,7 @@ class Parser(object):
     """
     Example::
     >>> parser = Parser(backend, **init_kwargs)
-    >>> graph = parser.parse('A woman is playing the piano,')
+    >>> graph = parser.parse('Thre is a large red rubber ball to the right of a green cylinder')
     """
 
     _default_backend = 'spacy'
@@ -56,7 +56,7 @@ class Parser(object):
         """
         return self._inst
 
-    def parse(self, sentence, **kwargs):
+    def parse(self, sentence, *args, **kwargs):
         """
         Parse a sentence into a scene graph.
 
@@ -67,7 +67,7 @@ class Parser(object):
             graph (dict): the parsed scene graph. Please refer to the
             README file for the specification of the return value.
         """
-        return self.unwrapped.parse(sentence, **kwargs)
+        return self.unwrapped.parse(sentence, *args, **kwargs)
 
     @classmethod
     def register_backend(cls, backend):
@@ -115,7 +115,7 @@ def get_default_parser():
     return _default_parser
 
 
-def parse(sentence, **kwargs):
+def parse(sentence, *args, **kwargs):
     """
     Parse the sentence using the default parser. This ia an easy-to-use
     feature for those who do not want to configure their own parsers
@@ -125,5 +125,5 @@ def parse(sentence, **kwargs):
     if you are using a stateful parser, you need to be careful about sharing
     this parser everywhere.
     """
-    return get_default_parser().parse(sentence, **kwargs)
+    return get_default_parser().parse(sentence, *args, **kwargs)
 

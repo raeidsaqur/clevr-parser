@@ -10,6 +10,7 @@
 # https://github.com/raeidsaqur/clevr-parser
 
 from abc import ABC, abstractmethod, abstractproperty
+from typing import *
 
 __all__ = ['ParserBackend', 'EmbedderBackend', 'VisualizerBackend', 'EmbeddingVisualizerBackend']
 
@@ -21,7 +22,8 @@ class ParserBackend(object):
     def __init__(self, *args, **kwargs):
         super().__init__()
 
-    def parse(self, sentence):
+    @abstractmethod
+    def parse(self, sentence, *args, **kwargs):
         raise NotImplementedError()
 
 class EmbedderBackend(object):
@@ -33,11 +35,17 @@ class EmbedderBackend(object):
         super().__init__()
         #super(EmbedderBackend, self).__init__()
 
-    def embed(self, sentence):
-        raise NotImplementedError()
+    @abstractmethod
+    def embed_s(self, sentence, *args, **kwargs):
+        raise NotImplementedError
 
-    def get_embeddings(self, G):
-        raise NotImplementedError()
+    @abstractmethod
+    def embed_t(self, img_idx:int, img_scene_path:str, *args, **kwargs):
+        raise NotImplementedError
+
+    # @abstractmethod
+    # def get_embeddings(self, G, *args, **kwargs):
+    #     raise NotImplementedError()
 
 class VisualizerBackend(ABC):
     """

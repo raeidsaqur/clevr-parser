@@ -13,7 +13,8 @@ from .. import database
 from ..embedder import Embedder
 from ..parser import  Parser, get_default_parser
 from .backend import EmbedderBackend, ParserBackend
-from ..utils import *
+# from ..utils import *
+from ..utils import load_grounding_for_img_idx
 from .spacy_parser import SpacyParser
 
 from functools import reduce
@@ -31,7 +32,6 @@ logger = logging.getLogger(__name__)
 try:
     import matplotlib
     import matplotlib.pyplot as plt
-    import pygraphviz as pgv
     import networkx as nx
     import torch
     import re
@@ -59,9 +59,9 @@ class ClevrData(Data):
             if the batch concatenation process is corrupted for a specific data
             attribute.
         """
-        # `*index*` and `*face*` should be concatenated in the last dimension,
+        # `*index*` should be concatenated in the last dimension,
         # everything else in the first dimension.
-        # N.b this is because edge_index and face has shame [n, num_edges|faces]
+        # N.b this is because edge_index has shape [n, num_edges|faces]
         # want to cat along the num_edges dim or -1
         return -1 if bool(re.search('(index|face)', key)) else 0
 
@@ -108,6 +108,34 @@ class TorchEmbedder(EmbedderBackend):
     def clevr_parser(self, cp):
         self.__clevr_parser = cp
 
+    # --------------------------- Interface Methods --------------------------------------- #
+    def embed_s(self, sentence, *args, **kwargs):
+        s = sentence
+        try:
+            Gs, s_doc = self.clevr_parser.parse(s, return_doc=True)
+        except ValueError as ve:
+            logger.error(f"ValueError Encountered: {ve}")
+            return None
+
+        return self._embed(Gs, s_doc, *args, **kwargs)
+
+    def embed_t(self, img_idx: int, img_scene_path: str, *args, **kwargs):
+        img_scene = load_grounding_for_img_idx(str(img_idx), img_scene_path)
+        try:
+            Gt, t_doc = self.clevr_parser.get_doc_from_img_scene(img_scene)
+        except FileNotFoundError as fne:
+            logger.error(fne)
+            return None
+
+        return self._embed(Gt, t_doc, *args, **kwargs)
+
+    def _embed(self, G, doc, *args, **kwargs):
+        X = self.get_node_feature_matrix(G, doc)
+        edge_index = self.get_nx_graph_edge_indices(G)
+        edge_attr = self.get_edge_attr_feature_matrix(G, doc)
+        return X, edge_index, edge_attr
+
+    # --------------------------- Concrete Embedder Specific Methods --------------------------------- #
     ## Functions for Graph Embeddings ##
     def connect_matching_pair_edges(self, Gu: nx.MultiGraph,
                                     ls, rs, obj_node_id='obj',
@@ -235,7 +263,7 @@ class TorchEmbedder(EmbedderBackend):
         return matching_pairs, unmatched_pairs
 
     @classmethod
-    def get_nx_graph_edge_indices(cls, G: nx.Graph, nodelist=None):
+    def get_nx_graph_edge_indices(cls, G: nx.Graph, nodelist=None, **kwargs):
         """
         Returns edge_indices in a Graph in sparse COO format from a given graph
         :param G: A Graph
@@ -346,7 +374,7 @@ class TorchEmbedder(EmbedderBackend):
         EDV, EV = G.edges(data=True), G.edges(data=False)
         E, M = len(EDV), embd_dim
         token2vec = {}
-        # RS Hack: token pos not delineated, duplicates are overridden
+        # RS N.b.: Gt side token 'pos' are captured in node attr, duplicates are overridden
         for token in doc:
             token2vec[token.text] = token.vector
         feat_mats = []

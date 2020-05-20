@@ -18,12 +18,12 @@ from typing import List, Dict, Tuple, Sequence
 import logging
 logger = logging.getLogger(__name__)
 import copy
+import networkx as nx
 
 try:
     import matplotlib
     import matplotlib.pyplot as plt
     import pygraphviz as pgv
-    import networkx as nx
 except ImportError as ie:
     logger.error(f"Install NetworkX: {ie.name}")
 
