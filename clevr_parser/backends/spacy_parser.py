@@ -26,7 +26,6 @@ import copy
 import logging
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s %(message)s")
-logging.getLogger('matplotlib').setLevel(logging.ERROR)
 logger = logging.getLogger(__name__)
 import os
 
@@ -35,8 +34,6 @@ try:
 except ImportError as ie:
     logger.error(f"Failed to install pygraphviz. Import error: {ie}")
 
-import matplotlib
-import matplotlib.pyplot as plt
 import networkx as nx
 import numpy as np
 np.random.seed(42)
