@@ -66,7 +66,8 @@ class TorchEmbedder(EmbedderBackend):
     def embed_s(self, sentence, *args, **kwargs):
         s = sentence
         try:
-            Gs, s_doc = self.clevr_parser.parse(s, return_doc=True)
+            Gs, s_doc = self.clevr_parser.parse(s, return_doc=True,
+                                                is_directed_graph=True)
         except ValueError as ve:
             logger.error(f"ValueError Encountered: {ve}")
             return None
@@ -76,7 +77,8 @@ class TorchEmbedder(EmbedderBackend):
     def embed_t(self, img_idx: int, img_scene_path: str, *args, **kwargs):
         img_scene = load_grounding_for_img_idx(img_idx, img_scene_path)
         try:
-            Gt, t_doc = self.clevr_parser.get_doc_from_img_scene(img_scene)
+            Gt, t_doc = self.clevr_parser.get_doc_from_img_scene(img_scene,
+                                                is_directed_graph=True)
         except FileNotFoundError as fne:
             logger.error(fne)
             return None
@@ -321,7 +323,7 @@ class TorchEmbedder(EmbedderBackend):
         return datalist
 
     def get_edge_attr_feature_matrix(self, G:nx.MultiGraph, doc,
-                                     embd_dim=96, embedding_type=None, **kwargs):
+                                     embd_dim=96, embedding_type=None, as_torch=True, **kwargs):
         """ Edge feature matrix wish shape [num_edges, edge_feat_dim]"""
         assert G is not None
         EDV, EV = G.edges(data=True), G.edges(data=False)
@@ -341,7 +343,7 @@ class TorchEmbedder(EmbedderBackend):
             feat_mats = reduce(lambda a, b: np.vstack((a, b)), feat_mats)
         else:
             feat_mats = feat_mats[0].reshape((1, -1))
-        if kwargs.get('as_torch'):
+        if as_torch:
             feat_mats = torch.from_numpy(feat_mats).float()
             if kwargs.get('is_cuda'):
                 device = 'cuda' if torch.cuda.is_available() else 'cpu'
@@ -356,7 +358,7 @@ class TorchEmbedder(EmbedderBackend):
         return feat_mats
 
     def get_node_feature_matrix(self, G:nx.MultiGraph, doc, embd_dim=96,
-                                embedding_type=None, **kwargs):
+                                embedding_type=None, as_torch=True, **kwargs):
         """
         Returns X with shape [num_nodes, node_feat_dim]
         """
@@ -381,7 +383,7 @@ class TorchEmbedder(EmbedderBackend):
             feat_mats = feat_mats[0]
 
         assert feat_mats.shape == (N, M)
-        if kwargs.get('as_torch'):
+        if as_torch:
             feat_mats = torch.from_numpy(feat_mats).float()
             if kwargs.get('is_cuda'):
                 device = 'cuda' if torch.cuda.is_available() else 'cpu'
