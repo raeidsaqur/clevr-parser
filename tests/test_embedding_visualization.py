@@ -11,6 +11,7 @@
 
 import pytest
 np = pytest.importorskip('numpy')
+from sklearn.datasets import make_blobs
 import os, sys, platform
 import json
 import matplotlib.pyplot as plt
@@ -21,7 +22,8 @@ import clevr_parser
 @pytest.fixture(scope="module")
 def random_vectors():
     # Generate and return random vectors
-    random_vectors = np.random.normal(size=(1000, 100))
+    # random_vectors = np.random.normal(size=(1000, 100))
+    random_vectors = make_blobs(n_samples=1000, n_features=100, centers=3)
     return random_vectors
 
 @pytest.fixture(scope="module")
@@ -30,5 +32,15 @@ def tsne_embedding_visualizer():
     return tsne_embedding_visualizer
 
 def test_tsne_embedding_visualizer(tsne_embedding_visualizer, random_vectors):
-    plt = tsne_embedding_visualizer.draw_embeddings(random_vectors)
-    assert plt is not None    
+    plt = tsne_embedding_visualizer.draw_embeddings(random_vectors[0])
+    assert plt is not None 
+
+def test_tsne_cluster_visualizer(tsne_embedding_visualizer, random_vectors):
+    # This function uses clustering to get the labels
+    plt = tsne_embedding_visualizer.draw_embeddings(random_vectors[0], show_clusters=True, n_clusters=3)
+    assert plt is not None
+
+def test_tsne_true_cluster_visualizer(tsne_embedding_visualizer, random_vectors):
+    # The function supplies the true cluster labels
+    plt = tsne_embedding_visualizer.draw_embeddings(random_vectors[0], labels=random_vectors[1], show_clusters=True, n_clusters=3)
+    assert plt is not None            

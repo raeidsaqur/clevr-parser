@@ -20,6 +20,9 @@ import copy
 import numpy as np
 from sklearn.manifold import TSNE
 
+# Imports for clustering
+from sklearn.cluster import KMeans
+
 try:
     import matplotlib
     import matplotlib.pyplot as plt
@@ -41,32 +44,76 @@ class tsneEmbeddingVisualizer(EmbeddingVisualizerBackend):
         super().__init__()
 
     @classmethod
-    def draw_embeddings(cls, vectors: np.ndarray, *args, **kwargs):
+    def draw_embeddings(cls, vectors: np.ndarray, show_clusters=False, *args, **kwargs):
         """
         :param vectors: 2-D matrix containing embeddings
         :param args: Additional args
         :param kwargs: Additoinal kw arguments like pos (for image_scene_graphs), ax_title etc.
         :return:
         """
-        return cls.draw_embeddings_tsne(vectors, *args, **kwargs)
+        if show_clusters==True:
+            return cls.draw_embeddings_tsne_cluster(vectors, *args, **kwargs)
+        else:
+            return cls.draw_embeddings_tsne(vectors, *args, **kwargs)
 
     @classmethod
-    def draw_embeddings_tsne(cls, vectors):
+    def get_tsne_embeddings(cls, vectors, random_state=42):
         """
         :param vectors: 2-D matrix containing embeddings
         :return:
         """
         # Instantiate object
-        tsne = TSNE(n_components=2)
+        tsne = TSNE(n_components=2, random_state=random_state)
 
         # Fit and transform the data
         embedded_vectors = tsne.fit_transform(vectors)
 
-        # Plot the embeddings
-        plt.scatter(embedded_vectors[:,0], embedded_vectors[:,1])
-        plt.title("t-SNE Visualization")
+        return embedded_vectors
+
+    @classmethod
+    def draw_embeddings_tsne(cls, vectors, labels=None,
+                             random_state=42,
+                             ax_title='t-SNE Visualization'):
+        """
+        :param vectors: 2-D matrix containing embeddings
+        :param labels: The labels for the vectors
+        :ax_title: 2-D matrix containing embeddings
+        :return: The plot
+        """
+        # Get the TSNE vectors
+        embedded_vectors = cls.get_tsne_embeddings(vectors, random_state)
+
+        # Plot based on the presence of labels
+        plt.scatter(embedded_vectors[:,0], embedded_vectors[:,1], c=labels)
+        plt.title(ax_title)
         plt.xlabel('Dimension 1')
         plt.ylabel('Dimension 2')
         plt.show()
 
         return plt
+
+    @classmethod
+    def draw_embeddings_tsne_cluster(cls, vectors, labels=None, n_clusters=3,
+                                     clustering_method='kmeans',
+                                     random_state=42,
+                                     ax_title='t-SNE Cluster Visualization'):
+        """
+        :param vectors: 2-D matrix containing embeddings
+        :param labels: The labels for the vectors
+        :param n_clusters: Number of cluster to divide the data into
+        :param clustering_method: Choose from kmeans
+        :return:
+        """
+        # If true labels are provided, plot them
+        if labels is not None:
+            return cls.draw_embeddings_tsne(vectors, labels)
+        else:
+            # Instantiate object
+            if clustering_method == 'kmeans':
+                clustering = KMeans(n_clusters=n_clusters, random_state=42)
+
+            # Fit and transform the data
+            cluster_labels = clustering.fit_predict(vectors)
+
+            # Plot the embeddings
+            return cls.draw_embeddings_tsne(vectors, cluster_labels)
