@@ -19,7 +19,7 @@ class EmbeddingVisualizer(object):
     >>> visualizer = EmbeddingVisualizer(backend, **init_kwargs)
     >>> graph = visualizer.draw_embeddings(vectors)
     """
-    _default_backend = 'matplotlib'
+    _default_backend = 'tsne'
     _backend_registry = dict()
 
     def __init__(self, backend=None, **kwargs):
