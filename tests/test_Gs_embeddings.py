@@ -37,11 +37,24 @@ def embedder(parser):
     embedder = clevr_parser.Embedder(backend='torch', parser=parser).get_backend(identifier='torch')
     return embedder
 
-def test_parser_1obj_graph_embedding(parser, embedder):
-    s = "small red rubber ball"
+def test_parser_1obj_1attr_graph_embedding(parser, embedder):
+    s = "thing"
+    is_padding_pos = False
     Gs, doc = parser.parse(s, return_doc=True)
     dim = 96
-    N, M = len(Gs.nodes()), dim
+    N, M = len(Gs.nodes()), (dim+3) if is_padding_pos else dim
+    Xs, ei, e_attr = embedder.embed_s(s, is_padding_pos=is_padding_pos)
+    assert Xs is not None
+    assert Xs.shape == (N, M)
+    if e_attr is not None:
+        assert e_attr.shape == (len(Gs.edges()), M)
+
+def test_parser_1obj_graph_embedding(parser, embedder):
+    s = "small red rubber ball"
+    is_padding_pos = True
+    Gs, doc = parser.parse(s, return_doc=True)
+    dim = 96
+    N, M = len(Gs.nodes()), (dim+3) if is_padding_pos else dim
 
     Xs, ei, e_attr = embedder.embed_s(s)
     assert Xs is not None
@@ -53,39 +66,39 @@ def test_parser_2obj_graph_embedding(parser, embedder):
     s = "There is a green metal block; the tiny metal thing is to the left of it"
     Gs, doc = parser.parse(s, return_doc=True)
     dim = 96
-    nodes = Gs.nodes(data=True)
-    N = len(nodes)
-    M = dim
-
-    Xs, ei, e_attr = embedder.embed_s(s)
-    assert Xs is not None
-    assert Xs.shape == (N, M)
-    if e_attr is not None:
-        assert e_attr.shape == (len(Gs.edges()), M)
+    N = len(Gs.nodes())
+    for is_padding_pos in [True, False]:
+        M = (dim+3) if is_padding_pos else dim
+        Xs, ei, e_attr = embedder.embed_s(s, embd_dim=dim, is_padding_pos=is_padding_pos)
+        assert Xs is not None
+        assert Xs.shape == (N, M)
+        if e_attr is not None:
+            assert e_attr.shape == (len(Gs.edges()), M)
 
 def test_parser_1obj_embedding_ordering(parser, embedder):
     '''
+    Permutation Equivariance Test
     The embedding ordering should be: <obj>, <Z>, <C>, <M>, <S>
     '''
     s = "small red rubber ball"   # <Z> <C> <M> <S>
     s2 = "red rubber small ball"  # <C> <M> <Z> <S>
+
     Gs, doc = parser.parse(s, return_doc=True)
     Gs2, doc2 = parser.parse(s2, return_doc=True)
     dim = 96
     nodes = Gs.nodes(data=True)
-    N, M = len(nodes), dim
 
-    Xs, ei, e_attr = embedder.embed_s(s)
-    Xs2, ei2, e_attr2 = embedder.embed_s(s2)
+    for is_padding_pos in [True, False]:
+        N, M = len(nodes), (dim+3) if is_padding_pos else dim
+        Xs, ei, e_attr = embedder.embed_s(s, embd_dim=dim, is_padding_pos=is_padding_pos)
+        Xs2, ei2, e_attr2 = embedder.embed_s(s2, embd_dim=dim, is_padding_pos=is_padding_pos)
 
-    nodes2 = Gs2.nodes(data=True)
-    N2 = len(nodes2)
-    assert N == N2
-    eps = 1e-4
-    delta = np.subtract(Xs, Xs2)
-    delta = delta.sum()
-
-    assert Xs.shape == (N, M)
-    assert Xs2.shape == (N2, M)
+        N2 = len(Gs2.nodes())
+        assert N == N2
+        # eps = 1e-4
+        # delta = np.subtract(Xs, Xs2)
+        # delta = delta.sum()
+        assert Xs.shape == (N, M)
+        assert Xs2.shape == (N2, M)
 
 
