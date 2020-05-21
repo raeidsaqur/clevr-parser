@@ -33,7 +33,7 @@ def tsne_embedding_visualizer():
 
 def test_tsne_embedding_visualizer(tsne_embedding_visualizer, random_vectors):
     plt = tsne_embedding_visualizer.draw_embeddings(random_vectors[0])
-    assert plt is not None 
+    assert plt is not None
 
 def test_tsne_cluster_visualizer(tsne_embedding_visualizer, random_vectors):
     # This function uses clustering to get the labels
@@ -43,4 +43,17 @@ def test_tsne_cluster_visualizer(tsne_embedding_visualizer, random_vectors):
 def test_tsne_true_cluster_visualizer(tsne_embedding_visualizer, random_vectors):
     # The function supplies the true cluster labels
     plt = tsne_embedding_visualizer.draw_embeddings(random_vectors[0], labels=random_vectors[1], show_clusters=True, n_clusters=3)
-    assert plt is not None            
+    assert plt is not None
+
+def test_neighbors(tsne_embedding_visualizer, random_vectors):
+    n_neighbors = 3
+
+    # The function supplies the true cluster labels
+    neighbors = tsne_embedding_visualizer.get_nearest_neighbors(random_vectors[0], n_neighbors=n_neighbors)
+    print(neighbors)
+    assert neighbors.shape == (random_vectors[0].shape[0], n_neighbors)
+
+    pivots = [0,3,5]
+    neighbors = tsne_embedding_visualizer.get_nearest_neighbors(random_vectors[0], n_neighbors=n_neighbors, pivots=pivots)
+    print(neighbors)
+    assert len(neighbors) == len(pivots) and (len(neighbors[pivots[0]]) == n_neighbors)
