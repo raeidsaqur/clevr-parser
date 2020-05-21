@@ -26,7 +26,6 @@ import copy
 import logging
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s %(message)s")
-logging.getLogger('matplotlib').setLevel(logging.ERROR)
 logger = logging.getLogger(__name__)
 import os
 
@@ -35,8 +34,6 @@ try:
 except ImportError as ie:
     logger.error(f"Failed to install pygraphviz. Import error: {ie}")
 
-import matplotlib
-import matplotlib.pyplot as plt
 import networkx as nx
 import numpy as np
 np.random.seed(42)
@@ -211,7 +208,9 @@ class SpacyParser(ParserBackend):
         assert doc_vector.shape[1] == embed_sz
         return doc_vector
 
-    def get_clevr_entity_matrix_embedding(self, entity, dim=96, include_obj_node_emd=True, embedding_type=None):
+    def get_clevr_entity_matrix_embedding(self, entity, dim=96,
+                                          include_obj_node_emd=True, embedding_type=None,
+                                                is_padding_pos=True, **kwargs):
         """
         Atomic function for generating matrix embedding from a doc entity:
 

@@ -5,7 +5,7 @@ import pytest
 np = pytest.importorskip('numpy')
 nx = pytest.importorskip('networkx')
 import os, sys, platform
-import json
+from itertools import product
 
 nb_dir = os.getcwd().split()[0]
 if nb_dir not in sys.path:
@@ -36,10 +36,15 @@ def test_Gt_embedding(parser, embedder):
     fp = "../data/CLEVR_v1.0/scenes_parsed/val_scenes_parsed.json"
     if not os.path.exists(fp):
         raise FileNotFoundError(f"{fp} does not exist")
+    is_padding_pos = True
     dim = 96
-    Xt, ei, e_attr = embedder.embed_t(img_idx, fp, embd_dim=dim)
-
-    assert Xt is not None
+    for is_padding_pos in [True, False]:
+        Xt, ei, e_attr = embedder.embed_t(img_idx, fp, embd_dim=dim, is_padding_pos=is_padding_pos)
+        M = (dim+3) if is_padding_pos else dim
+        assert Xt is not None
+        assert Xt.shape[1] == M
+        if e_attr is not None:
+            assert e_attr.shape[1] == M
 
 
 

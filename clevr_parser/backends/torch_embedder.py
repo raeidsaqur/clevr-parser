@@ -65,22 +65,26 @@ class TorchEmbedder(EmbedderBackend):
     # --------------------------- Interface Methods --------------------------------------- #
     def embed_s(self, sentence, *args, **kwargs):
         s = sentence
-        try:
-            Gs, s_doc = self.clevr_parser.parse(s, return_doc=True)
-        except ValueError as ve:
-            logger.error(f"ValueError Encountered: {ve}")
-            return None
-
+        Gs, s_doc = kwargs.get('Gs'), kwargs.get('s_doc')
+        if not (Gs and s_doc):
+            try:
+                Gs, s_doc = self.clevr_parser.parse(s, return_doc=True,
+                                                    is_directed_graph=True)
+            except ValueError as ve:
+                logger.error(f"ValueError Encountered: {ve}")
+                return None
         return self._embed(Gs, s_doc, *args, **kwargs)
 
     def embed_t(self, img_idx: int, img_scene_path: str, *args, **kwargs):
-        img_scene = load_grounding_for_img_idx(img_idx, img_scene_path)
+        img_scene = kwargs.get('img_scene')
+        if img_scene is None:
+            img_scene = load_grounding_for_img_idx(img_idx, img_scene_path)
         try:
-            Gt, t_doc = self.clevr_parser.get_doc_from_img_scene(img_scene)
+            Gt, t_doc = self.clevr_parser.get_doc_from_img_scene(img_scene,
+                                                is_directed_graph=True)
         except FileNotFoundError as fne:
             logger.error(fne)
             return None
-
         return self._embed(Gt, t_doc, *args, **kwargs)
 
     def _embed(self, G, doc, *args, **kwargs):
@@ -321,11 +325,12 @@ class TorchEmbedder(EmbedderBackend):
         return datalist
 
     def get_edge_attr_feature_matrix(self, G:nx.MultiGraph, doc,
-                                     embd_dim=96, embedding_type=None, **kwargs):
+                                     embd_dim=96, embedding_type=None, as_torch=True, is_padding_pos=True, **kwargs):
         """ Edge feature matrix wish shape [num_edges, edge_feat_dim]"""
         assert G is not None
         EDV, EV = G.edges(data=True), G.edges(data=False)
-        E, M = len(EDV), embd_dim
+        E = len(EDV)
+        M = (embd_dim+3) if is_padding_pos else embd_dim
         token2vec = {}
         # RS N.b.: Gt side token 'pos' are captured in node attr, duplicates are overridden
         for token in doc:
@@ -334,14 +339,17 @@ class TorchEmbedder(EmbedderBackend):
         for i, (_, _, feat_dict) in enumerate(EDV):
             for key, value in feat_dict.items():
                 v_embd = token2vec[value]
+                v_embd = v_embd.reshape((-1, embd_dim))
                 #logger.debug(f"value = {value}\n v_embd = {v_embd}")
+                if is_padding_pos:
+                    v_embd = np.pad(v_embd, ((0,0), (0, 3)), 'constant', constant_values=(0, 0.0))  # [1, embd_dim+3]
                 feat_mats.append(v_embd)
         #unique_values = set(reduce(lambda x1, x2: x1 + x2, data.values))
         if len(feat_mats) > 1:
             feat_mats = reduce(lambda a, b: np.vstack((a, b)), feat_mats)
         else:
             feat_mats = feat_mats[0].reshape((1, -1))
-        if kwargs.get('as_torch'):
+        if as_torch:
             feat_mats = torch.from_numpy(feat_mats).float()
             if kwargs.get('is_cuda'):
                 device = 'cuda' if torch.cuda.is_available() else 'cpu'
@@ -356,7 +364,7 @@ class TorchEmbedder(EmbedderBackend):
         return feat_mats
 
     def get_node_feature_matrix(self, G:nx.MultiGraph, doc, embd_dim=96,
-                                embedding_type=None, **kwargs):
+                                embedding_type=None, as_torch=True, is_padding_pos=True, **kwargs):
         """
         Returns X with shape [num_nodes, node_feat_dim]
         """
@@ -365,15 +373,23 @@ class TorchEmbedder(EmbedderBackend):
         _is_head_node = lambda x: 'obj' in x
         head_nodes = list(filter(_is_head_node, NV))
         objs = self.clevr_parser.filter_clevr_objs(doc.ents)
-        N, M = len(NDV), embd_dim
+        N, M = len(NDV), (embd_dim+3) if is_padding_pos else embd_dim
         feat_mats = []
         for i, entity in enumerate(objs):
             if entity.label_ not in ('CLEVR_OBJS', 'CLEVR_OBJ'):
                 continue
-            head_node = G.nodes.get(head_nodes[i])
-            pos = head_node.get('pos')  # pos = (x,y,z): Tuple[float]
-            # TODO: what's the best way to encode this pos in the feat_mats?
-            ent_mat = self.clevr_parser.get_clevr_entity_matrix_embedding(entity, dim=96, include_obj_node_emd=True)
+            ent_mat = self.clevr_parser.get_clevr_entity_matrix_embedding(entity, dim=embd_dim,
+                                                                          include_obj_node_emd=True,
+                                                                          is_padding_pos=is_padding_pos)
+            ent_mat = ent_mat.reshape((-1, embd_dim))
+            if is_padding_pos:
+                head_node = G.nodes.get(head_nodes[i])
+                pos = head_node.get('pos')  # pos = (x,y,z): Tuple[float]
+                if not pos:
+                    pos = (0.0, 0.0, 0.0)
+                pos = np.tile(np.asarray(pos, dtype=float), ent_mat.shape[0]).reshape(-1, 3)
+                # np.pad(ent_mat, ((0,0), (0, 3)), 'constant', constant_values=(0, 0.0) )
+                ent_mat = np.concatenate((ent_mat, pos), axis=1)        # [n, embd_dim+3]
             feat_mats.append(ent_mat)
         if len(feat_mats) > 1:
             feat_mats = reduce(lambda a, b: np.vstack((a, b)), feat_mats)
@@ -381,7 +397,7 @@ class TorchEmbedder(EmbedderBackend):
             feat_mats = feat_mats[0]
 
         assert feat_mats.shape == (N, M)
-        if kwargs.get('as_torch'):
+        if as_torch:
             feat_mats = torch.from_numpy(feat_mats).float()
             if kwargs.get('is_cuda'):
                 device = 'cuda' if torch.cuda.is_available() else 'cpu'
