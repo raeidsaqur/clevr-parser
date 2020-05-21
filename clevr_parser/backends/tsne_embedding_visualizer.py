@@ -57,13 +57,13 @@ class tsneEmbeddingVisualizer(EmbeddingVisualizerBackend):
             return cls.draw_embeddings_tsne(vectors, *args, **kwargs)
 
     @classmethod
-    def get_tsne_embeddings(cls, vectors):
+    def get_tsne_embeddings(cls, vectors, random_state=42):
         """
         :param vectors: 2-D matrix containing embeddings
         :return:
         """
         # Instantiate object
-        tsne = TSNE(n_components=2)
+        tsne = TSNE(n_components=2, random_state=random_state)
 
         # Fit and transform the data
         embedded_vectors = tsne.fit_transform(vectors)
@@ -71,7 +71,9 @@ class tsneEmbeddingVisualizer(EmbeddingVisualizerBackend):
         return embedded_vectors
 
     @classmethod
-    def draw_embeddings_tsne(cls, vectors, labels=None, ax_title='t-SNE Visualization'):
+    def draw_embeddings_tsne(cls, vectors, labels=None,
+                             random_state=42,
+                             ax_title='t-SNE Visualization'):
         """
         :param vectors: 2-D matrix containing embeddings
         :param labels: The labels for the vectors
@@ -79,7 +81,7 @@ class tsneEmbeddingVisualizer(EmbeddingVisualizerBackend):
         :return: The plot
         """
         # Get the TSNE vectors
-        embedded_vectors = cls.get_tsne_embeddings(vectors)
+        embedded_vectors = cls.get_tsne_embeddings(vectors, random_state)
 
         # Plot based on the presence of labels
         plt.scatter(embedded_vectors[:,0], embedded_vectors[:,1], c=labels)
@@ -91,21 +93,27 @@ class tsneEmbeddingVisualizer(EmbeddingVisualizerBackend):
         return plt
 
     @classmethod
-    def draw_embeddings_tsne_cluster(cls, vectors, n_clusters=3, clustering_method='kmeans', ax_title='t-SNE Cluster Visualization'):
+    def draw_embeddings_tsne_cluster(cls, vectors, labels=None, n_clusters=3,
+                                     clustering_method='kmeans',
+                                     random_state=42,
+                                     ax_title='t-SNE Cluster Visualization'):
         """
         :param vectors: 2-D matrix containing embeddings
+        :param labels: The labels for the vectors
         :param n_clusters: Number of cluster to divide the data into
         :param clustering_method: Choose from kmeans
         :return:
         """
-        # Instantiate object
-        if clustering_method == 'kmeans':
-            clustering = KMeans(n_clusters=n_clusters)
+        # If true labels are provided, plot them
+        if labels is not None:
+            return cls.draw_embeddings_tsne(vectors, labels)
+        else:
+            # Instantiate object
+            if clustering_method == 'kmeans':
+                clustering = KMeans(n_clusters=n_clusters, random_state=42)
 
-        # Fit and transform the data
-        labels = clustering.fit_predict(vectors)
+            # Fit and transform the data
+            cluster_labels = clustering.fit_predict(vectors)
 
-        # Plot the embeddings
-        plt = cls.draw_embeddings_tsne(vectors, labels)
-
-        return plt
+            # Plot the embeddings
+            return cls.draw_embeddings_tsne(vectors, cluster_labels)
