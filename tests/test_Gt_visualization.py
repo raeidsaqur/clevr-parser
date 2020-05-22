@@ -45,7 +45,7 @@ clevr_img_name = lambda split, i: f"CLEVR_{split}_{i:06d}.png"
 
 def test_visualize_Gt(parser, plt_visualizer, gviz_visualizer, create_output_dir):
     """ Presumes image scene graphs are available in designated folder """
-    img_idx = 15; split = 'val'
+    img_idx = 2; split = 'val'
     img_fn = clevr_img_name(split, img_idx)
     fp = "../data/CLEVR_v1.0/scenes_parsed/val_scenes_parsed.json"
     if not os.path.exists(fp):
@@ -61,5 +61,5 @@ def test_visualize_Gt(parser, plt_visualizer, gviz_visualizer, create_output_dir
 
     # Test graphviz
     G = gviz_visualizer.draw_graph(Gt,\
-            save_file_path=os.path.join(create_output_dir, "Gt_"+split+".svg"), ax_title=ax_title)
+            save_file_path = os.path.join(create_output_dir, f"Gt_{split}_{img_idx}.svg"), ax_title=ax_title)
     assert G is not None     
