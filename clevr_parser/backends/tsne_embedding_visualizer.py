@@ -22,6 +22,7 @@ from sklearn.manifold import TSNE
 
 # Imports for clustering
 from sklearn.cluster import KMeans
+from sklearn.neighbors import NearestNeighbors
 
 try:
     import matplotlib
@@ -117,3 +118,38 @@ class tsneEmbeddingVisualizer(EmbeddingVisualizerBackend):
 
             # Plot the embeddings
             return cls.draw_embeddings_tsne(vectors, cluster_labels)
+
+    @classmethod
+    def get_nearest_neighbors(cls, vectors, n_neighbors=2, pivots=None):
+        """
+        :param vectors: 2-D matrix containing embeddings
+        :param n_neighbors: Number of neighbors to return per data point
+        :param pivots: List of indices. If none returns a dict containing neighbors only for those indices
+        :return:
+        """
+        # Make sure the number of neighbors to return is less than or
+        # equal to the total neighbors
+        assert len(vectors) > n_neighbors, "Total neighbors is less than requested number of neighbors"
+
+        # Ensure all indices are within range
+        assert (pivots is None or np.all(np.array(pivots) < len(vectors))), "Illegal index requested"
+
+        # Instantiate object
+        NN = NearestNeighbors(n_neighbors=n_neighbors+1)
+
+        # Fit to the data
+        NN.fit(vectors)
+
+        # Get the neighbors
+        distances, indices = NN.kneighbors(vectors)
+
+        # Return the nearest neighbors
+        if pivots:
+            neighbors = {}
+            for idx in pivots:
+                # Attach all neighbors (the first one is always identity)
+                neighbors[idx] = indices[idx,1:]
+            return neighbors
+        else:
+            neighbors = indices[:,1:]
+            return neighbors         
