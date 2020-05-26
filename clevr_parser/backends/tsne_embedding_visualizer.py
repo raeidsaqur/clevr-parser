@@ -74,7 +74,7 @@ class tsneEmbeddingVisualizer(EmbeddingVisualizerBackend):
     @classmethod
     def draw_embeddings_tsne(cls, vectors, labels=None,
                              random_state=42,
-                             ax_title='t-SNE Visualization'):
+                             ax_title='t-SNE Visualization', *kwargs):
         """
         :param vectors: 2-D matrix containing embeddings
         :param labels: The labels for the vectors
@@ -97,7 +97,7 @@ class tsneEmbeddingVisualizer(EmbeddingVisualizerBackend):
     def draw_embeddings_tsne_cluster(cls, vectors, labels=None, n_clusters=3,
                                      clustering_method='kmeans',
                                      random_state=42,
-                                     ax_title='t-SNE Cluster Visualization'):
+                                     ax_title='t-SNE Cluster Visualization', **kwargs):
         """
         :param vectors: 2-D matrix containing embeddings
         :param labels: The labels for the vectors
@@ -117,7 +117,7 @@ class tsneEmbeddingVisualizer(EmbeddingVisualizerBackend):
             cluster_labels = clustering.fit_predict(vectors)
 
             # Plot the embeddings
-            return cls.draw_embeddings_tsne(vectors, cluster_labels, ax_title=ax_title)
+            return cls.draw_embeddings_tsne(vectors, cluster_labels, ax_title=ax_title, **kwargs)
 
     @classmethod
     def get_nearest_neighbors(cls, vectors, n_neighbors=2, pivots=None):
