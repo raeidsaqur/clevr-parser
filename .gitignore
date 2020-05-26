@@ -1,3 +1,4 @@
+tests/test_embd_viz.py
 tests_output
 demo/temp
 

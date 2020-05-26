@@ -117,7 +117,7 @@ class tsneEmbeddingVisualizer(EmbeddingVisualizerBackend):
             cluster_labels = clustering.fit_predict(vectors)
 
             # Plot the embeddings
-            return cls.draw_embeddings_tsne(vectors, cluster_labels)
+            return cls.draw_embeddings_tsne(vectors, cluster_labels, ax_title=ax_title)
 
     @classmethod
     def get_nearest_neighbors(cls, vectors, n_neighbors=2, pivots=None):
