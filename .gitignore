@@ -1,6 +1,8 @@
+tests/generate_embd_viz.py
 tests/test_embd_viz.py
 tests_output
 demo/temp
+embd_viz
 
 data
 #data/*

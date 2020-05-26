@@ -92,11 +92,11 @@ class tsneEmbeddingVisualizer(EmbeddingVisualizerBackend):
         plt.xlabel('Dimension 1')
         plt.ylabel('Dimension 2')
         plt.legend(handles=scatter.legend_elements()[0], labels=legend)
-        plt.show()
 
         if save_file_path is not None:
-            plt.savefig(save_file_path)        
+            plt.savefig(save_file_path)
 
+        plt.show()
         return plt
 
     @classmethod
