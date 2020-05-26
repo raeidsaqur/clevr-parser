@@ -74,7 +74,7 @@ class tsneEmbeddingVisualizer(EmbeddingVisualizerBackend):
     @classmethod
     def draw_embeddings_tsne(cls, vectors, labels=None,
                              random_state=42,
-                             ax_title='t-SNE Visualization', *kwargs):
+                             ax_title='t-SNE Visualization', **kwargs):
         """
         :param vectors: 2-D matrix containing embeddings
         :param labels: The labels for the vectors
