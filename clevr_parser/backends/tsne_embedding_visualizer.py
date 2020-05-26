@@ -74,7 +74,9 @@ class tsneEmbeddingVisualizer(EmbeddingVisualizerBackend):
     @classmethod
     def draw_embeddings_tsne(cls, vectors, labels=None,
                              random_state=42,
-                             ax_title='t-SNE Visualization', **kwargs):
+                             ax_title='t-SNE Visualization',
+                             save_file_path=None,
+                             legend=None):
         """
         :param vectors: 2-D matrix containing embeddings
         :param labels: The labels for the vectors
@@ -85,11 +87,15 @@ class tsneEmbeddingVisualizer(EmbeddingVisualizerBackend):
         embedded_vectors = cls.get_tsne_embeddings(vectors, random_state)
 
         # Plot based on the presence of labels
-        plt.scatter(embedded_vectors[:,0], embedded_vectors[:,1], c=labels)
+        scatter = plt.scatter(embedded_vectors[:,0], embedded_vectors[:,1], c=labels, label=legend)
         plt.title(ax_title)
         plt.xlabel('Dimension 1')
         plt.ylabel('Dimension 2')
+        plt.legend(handles=scatter.legend_elements()[0], labels=legend)
         plt.show()
+
+        if save_file_path is not None:
+            plt.savefig(save_file_path)        
 
         return plt
 
@@ -97,7 +103,9 @@ class tsneEmbeddingVisualizer(EmbeddingVisualizerBackend):
     def draw_embeddings_tsne_cluster(cls, vectors, labels=None, n_clusters=3,
                                      clustering_method='kmeans',
                                      random_state=42,
-                                     ax_title='t-SNE Cluster Visualization', **kwargs):
+                                     ax_title='t-SNE Cluster Visualization',
+                                     save_file_path=None,
+                                     legend=None):
         """
         :param vectors: 2-D matrix containing embeddings
         :param labels: The labels for the vectors
@@ -105,9 +113,13 @@ class tsneEmbeddingVisualizer(EmbeddingVisualizerBackend):
         :param clustering_method: Choose from kmeans
         :return:
         """
+        # Provide default legend if it is None
+        if legend is None:
+            legend = ['Cluster {}'.format(i+1) for i in range(n_clusters)]
+
         # If true labels are provided, plot them
         if labels is not None:
-            return cls.draw_embeddings_tsne(vectors, labels, ax_title=ax_title)
+            return cls.draw_embeddings_tsne(vectors, labels, ax_title=ax_title, save_file_path=save_file_path, legend=legend)
         else:
             # Instantiate object
             if clustering_method == 'kmeans':
@@ -117,7 +129,7 @@ class tsneEmbeddingVisualizer(EmbeddingVisualizerBackend):
             cluster_labels = clustering.fit_predict(vectors)
 
             # Plot the embeddings
-            return cls.draw_embeddings_tsne(vectors, cluster_labels, ax_title=ax_title, **kwargs)
+            return cls.draw_embeddings_tsne(vectors, cluster_labels, ax_title=ax_title, save_file_path=save_file_path, legend=legend)
 
     @classmethod
     def get_nearest_neighbors(cls, vectors, n_neighbors=2, pivots=None):
@@ -152,4 +164,4 @@ class tsneEmbeddingVisualizer(EmbeddingVisualizerBackend):
             return neighbors
         else:
             neighbors = indices[:,1:]
-            return neighbors         
+            return neighbors
