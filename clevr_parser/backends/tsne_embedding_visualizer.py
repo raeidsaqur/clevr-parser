@@ -107,7 +107,7 @@ class tsneEmbeddingVisualizer(EmbeddingVisualizerBackend):
         """
         # If true labels are provided, plot them
         if labels is not None:
-            return cls.draw_embeddings_tsne(vectors, labels)
+            return cls.draw_embeddings_tsne(vectors, labels, ax_title=ax_title)
         else:
             # Instantiate object
             if clustering_method == 'kmeans':
