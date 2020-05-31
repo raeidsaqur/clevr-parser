@@ -10,8 +10,6 @@
 # https://github.com/raeidsaqur/clevr-parser
 
 import os
-import json
-
 
 _caches = dict()
 
@@ -29,7 +27,6 @@ def load_list(filename):
 def is_phrasal_verb(verb):
     return verb in load_list('phrasal-verbs.txt')
 
-
 def is_phrasal_prep(prep):
     return prep in load_list('phrasal-preps.txt')
 
@@ -45,7 +42,6 @@ def is_attribute_relation(prep):
 def is_attribute_color(prep):
     return prep in load_list('color-attrs.txt')
 
-# TODO: should also load and check for synonyms (from synonyms.json)
 def is_attribute_size(prep):
     return prep in load_list('size-attrs.txt')
 
@@ -55,12 +51,8 @@ def is_attribute_material(prep):
 def is_attribute_shape(prep):
     return prep in load_list('shape-attrs.txt')
 
-
-
 def is_scene_noun(noun):
     head = noun.split(' ')[-1]
-    #TODO:RS (lift logic)
-    # s = load_list('clevr-scene-nouns.txt')
     s = load_list('scene-nouns.txt')
     return noun in s or head in s
 

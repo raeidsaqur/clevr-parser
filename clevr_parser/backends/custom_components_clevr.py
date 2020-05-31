@@ -18,27 +18,18 @@ Last tested with: v2.1.0
 
 from __future__ import unicode_literals, print_function
 
-import re
+import logging
 from itertools import permutations
 from typing import List, Dict
 
-from spacy.lang.en import English
-from spacy.matcher import PhraseMatcher
-from spacy.pipeline import EntityRuler, EntityLinker, EntityRecognizer
+from clevr_parser import setup_logging
+from clevr_parser.utils import *
+from spacy.pipeline import EntityRuler
 from spacy.tokens import Doc, Span, Token
 
-from clevr_parser.utils import *
-from clevr_parser import setup_logging
-import logging
 logger = setup_logging(__name__, log_level=logging.INFO)
 
 __all__ = ['CLEVRObjectRecognizer']
-
-"""
-ToDos:
- - Matcher should be used (Regex) for spatial phrases
- - Add Logging, remove print statements
-"""
 
 ## CLEVR ATTR Pattern Rules ##
 C = {"_": {"is_color": {"==": 1}}}

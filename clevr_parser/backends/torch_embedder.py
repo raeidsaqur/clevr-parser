@@ -9,28 +9,23 @@
 # Distributed under terms of the MIT license.
 # https://github.com/raeidsaqur/clevr-parser
 
-from .. import database
+import logging
+from functools import reduce
+from typing import List, Tuple
+
+import numpy as np
+
+from .backend import EmbedderBackend
+from .spacy_parser import SpacyParser
 from ..embedder import Embedder
-from ..parser import  Parser, get_default_parser
-from .backend import EmbedderBackend, ParserBackend
 # from ..utils import *
 from ..utils import load_grounding_for_img_idx
-from .spacy_parser import SpacyParser
 
-from functools import reduce
-from operator import itemgetter
-import collections
-from typing import List, Dict, Tuple, Sequence
-import copy
-import numpy as np
-import scipy.sparse as sp
-
-import logging
 logging.basicConfig(level=logging.INFO, format='%(asctime)s %(message)s')
 logger = logging.getLogger(__name__)
 
 import networkx as nx
-import re
+
 try:
     import torch
     import torch_geometric
@@ -110,9 +105,6 @@ class TorchEmbedder(EmbedderBackend):
         :param obj_node_id: the identifier determining a obj (or head) node
         :return: matching_pairs: List of matching pair tuples between Gs, Gt
         """
-        # matching_pairs: List[Tuple] = self.get_matching_pairs_in_bipartite_graph(Gu, ls, rs, obj_node_id)
-        # Bug FIX: Changed matching_pairs = [('Gs-obj', None), ('Gs-obj2', 'Gt-obj')]
-        # To: matching_pairs = [('Gs-obj2', 'Gt-obj')], unmatched_pairs = ['Gs-obj']
         matching_pairs, unmatched_pairs = self.get_matching_pairs_in_bipartite_graph(Gu, ls, rs, obj_node_id)
         NDV = Gu.nodes(data=True)
         # Connect the matching pairs if not connected #
@@ -359,7 +351,6 @@ class TorchEmbedder(EmbedderBackend):
             assert feat_mats.shape == (E, M)
         except AssertionError as ae:
             ## RuntimeError: Edge indices and edge attributes hold a differing number of edges,
-            ## found torch.Size([2, 1]) and torch.Size([96])
             logger.debug(f"{ae}\n feat_mats.shape = {feat_mats.shape}")
         return feat_mats
 
@@ -450,16 +441,13 @@ class TorchEmbedder(EmbedderBackend):
             feat_mats.append(ent_mat)
             head_node = G.nodes.get(head_nodes[i])
             pos = head_node.get('pos')          # pos = (x,y,z): Tuple[float]
-            #TODO: what's the best way to encode this pos in the feat_mats?
 
         if len(feat_mats) > 1:
             feat_mats = reduce(lambda a, b: np.vstack((a, b)), feat_mats)
         else:
             feat_mats = feat_mats[0]
-
         assert feat_mats.shape == (N, M)
 
-        ## HACK RS: Inject spatial info Add spatial, matching RE, pos if available
         spatial_ents = self.clevr_parser.filter_spatial_re(doc.ents)
         for i, entity in enumerate(spatial_ents):
             ent_vec = entity.vector.reshape(1, -1)   #(1, 96)
@@ -468,56 +456,9 @@ class TorchEmbedder(EmbedderBackend):
         for i, entity in enumerate(matching_ents):
             ent_vec = entity.vector.reshape(1, -1)  # (1, 96)
             feat_mats = np.vstack((feat_mats, ent_vec))
-        ## HACK END ########
-        # if as_torch:
-        #     feat_mat = torch.from_numpy(feat_mat).float().to(device)
+
         return feat_mats
 
-    # def from_networkx(self, G):
-    #     r"""Converts a :obj:`networkx.Graph` or :obj:`networkx.DiGraph` to a
-    #     :class:`torch_geometric.data.Data` instance.
-    #     # Modified from: torch_geometric.utils.convert.py
-    #     Args:
-    #         G (networkx.Graph or networkx.DiGraph): A networkx graph.
-    #     """
-    #     try:
-    #         import torch_geometric
-    #     except ImportError as ie:
-    #         logger.error(ie)
-    #     vocab = load_vocab(path="../data/reason/clevr_h5/clevr_vocab.json")
-    #     q2t = vocab['question_token_to_idx']
-    #     # value = q2t[value] if q2t.get(value) else value
-    #     G = nx.convert_node_labels_to_integers(G)
-    #     #G = G.to_directed() if not nx.is_directed(G) else G
-    #     # edge_index = torch.tensor(list(G.edges)).t().contiguous()
-    #     edge_index = self.get_nx_graph_edge_indices(G)
-    #     data = {}
-    #     #data = collections.Counter()
-    #     for i, (_, feat_dict) in enumerate(G.nodes(data=True)):
-    #         for key, value in feat_dict.items():
-    #             if i == 0:
-    #                 data[key] = [value]
-    #             else:
-    #                 if data.get(key):
-    #                     data[key] += [value]
-    #                 else:
-    #                     data[key] = [value]
-    #
-    #     for i, (_, _, feat_dict) in enumerate(G.edges(data=True)):
-    #         for key, value in feat_dict.items():
-    #             if i == 0:
-    #                 data[key] = [value]
-    #             else:
-    #                 if data.get(key):
-    #                     data[key] += [value]
-    #                 else:
-    #                     data[key] = [value]
-    #
-    #     #data['edge_index'] = edge_index.view(2, -1)
-    #     data['edge_index'] = edge_index
-    #     data = torch_geometric.data.Data.from_dict(data)
-    #     data.num_nodes = G.number_of_nodes()
-    #     return data
 
     ## End of Functions for Graph Embeddings ##
 

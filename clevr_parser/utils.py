@@ -10,13 +10,18 @@
 # https://github.com/raeidsaqur/clevr-parser
 
 import functools
-import tabulate
-from typing import List, Dict, Any, Collection, Set, Tuple
-import os,json
+import json
+import os
+from typing import List, Dict
+
 import spacy
+import sympy;
+import tabulate
 from spacy import displacy
+
 from .explacy import *
-import sympy; sympy.init_printing()
+
+sympy.init_printing()
 import numpy as np
 
 from matplotlib import pyplot, patches
@@ -66,8 +71,7 @@ def load_vocab(path):
 
 ### Networkx Library Extensions and Helpers ####
 import networkx as nx
-from networkx.algorithms import bipartite
-from networkx.linalg import adjacency_matrix, adj_matrix, laplacian_matrix, normalized_laplacian_matrix
+
 
 def combine_en_graphs(en_s:Dict, en_t:Dict) -> Dict:
     """ Remove: temporary helper for aiding with drawing"""
@@ -163,13 +167,11 @@ def trace(f, DEBUG=False):
 
 ### End Decorators ###
 
-#TODO: import graph library here
-@trace
+
 def toGraph(graph:Dict, id:int=0, file:str=None, caption:str=None, out=None):
     # Base graph lib https://github.com/networkx/networkx
     raise NotImplementedError
 
-@trace
 def toJSON(graph:Dict, id:int, file:str=None, caption:str=None, out=None):
     """
     Form and output a json object from the give graph.
@@ -190,7 +192,7 @@ def toJSON(graph:Dict, id:int, file:str=None, caption:str=None, out=None):
     }
     raise NotImplementedError
 
-@trace
+
 def print_parsed_caption(caption:str, nlp=None, visualize=False):
     assert caption is not None
     if nlp is None:
@@ -211,7 +213,7 @@ def visualize_parsed(doc, dep=False):
         displacy.render(doc, style='dep', jupyter=True, options={'distance': 70})
 
 
-@trace
+
 def tprint(graph, file=None, show_entities=True, show_relations=True):
     """
     Print a scene graph as a table.

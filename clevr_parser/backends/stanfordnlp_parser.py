@@ -9,13 +9,11 @@
 # Distributed under terms of the MIT license.
 # https://github.com/raeidsaqur/clevr-parser
 
-from .. import database
-from ..parser import Parser
 from .backend import ParserBackend
+from ..parser import Parser
 
 __all__ = ['StanfordnlpParser']
 
-from typing import Dict, Tuple, Sequence
 import logging
 logger = logging.getLogger(__name__)
 

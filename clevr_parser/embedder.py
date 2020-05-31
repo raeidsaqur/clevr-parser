@@ -181,16 +181,3 @@ def embed_t(img_idx, img_scene_path, *args, **kwargs):
     See @embed_s for ref.
     """
     return get_default_embedder().embed_t(img_idx,img_scene_path, *args, **kwargs)
-
-# def get_embeddings(G, *args, **kwargs):
-#     """
-#     Parse the Graph using the default embedder. This ia an easy-to-use
-#     feature for those who do not want to configure their own embedders
-#     and want to use the embedder at different places in their codes.
-#
-#     Please note that the default embedder is a singleton. Thus,
-#     if you are using a stateful embedder, you need to be careful about sharing
-#     this embedder everywhere.
-#     """
-#     return get_default_embedder().get_embeddings(G, *args, **kwargs)
-
