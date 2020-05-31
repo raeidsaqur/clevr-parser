@@ -9,12 +9,10 @@
 # Distributed under terms of the MIT license.
 # https://github.com/raeidsaqur/clevr-parser
 
-import pytest
 import clevr_parser
+import pytest
 from clevr_parser.utils import *
-#from  .samples import TEMPLATES, get_s_sample
 
-# Test Fixtures #
 @pytest.fixture(scope="module")
 def parser():
     parser = clevr_parser.Parser(backend='spacy', model='en_core_web_sm',

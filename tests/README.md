@@ -5,5 +5,6 @@ N.b. for the image scene graphs (Gt) and composed graphs (Gu) visualizations, pr
 ```
 clevr-parser |
              |-data |
-                    |-CLEVR_v1.0  
+                    |-CLEVR_v1.0 
+                    |-1obj 
   ```

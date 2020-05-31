@@ -8,13 +8,11 @@
 # This file is part of CLEVR Parser
 # Distributed under terms of the MIT License
 
-import pytest
-import os, sys, platform
-import json
-import matplotlib.pyplot as plt
-
+import os
 import clevr_parser
 import clevr_parser.utils as parser_utils
+import pytest
+
 
 # Test Fixtures #
 @pytest.fixture(scope="module")
