@@ -9,20 +9,17 @@
 # Distributed under terms of the MIT license.
 # https://github.com/raeidsaqur/clevr-parser
 
-from .. import database
-from ..parser import Parser
 from .backend import ParserBackend
 from .custom_components_clevr import CLEVRObjectRecognizer
-from .spatial_recognizer import SpatialRecognizer
 from .matching_recognizer import MatchingRecognizer
-from ..utils import *
+from .spatial_recognizer import SpatialRecognizer
+from ..parser import Parser
 
 __all__ = ['SpacyParser']
 
 from functools import reduce
 from operator import itemgetter
-from typing import List, Dict, Tuple, Sequence
-import copy
+from typing import List, Tuple
 import logging
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s %(message)s")
@@ -37,7 +34,6 @@ except ImportError as ie:
 import networkx as nx
 import numpy as np
 np.random.seed(42)
-import scipy.sparse as sp
 import warnings
 
 @Parser.register_backend
@@ -450,8 +446,6 @@ class SpacyParser(ParserBackend):
             head_node_id = f"{head_node_prefix}-{head_node_id}"
 
         nodelist = [tuple((head_node_id, d))]
-        # _z_fn = lambda a, t: dict(zip(node_keys, (a, t.text)))
-        # _n_fn = lambda s, a, t: tuple( (s, _z_fn(a,t)) )
         _n_fn = lambda s, a, t: tuple((s, dict(zip(node_keys, (a, t.text)))))
         for t in entity:
             _node = cls.get_attr_node_from_token(t, ent_num)
@@ -519,17 +513,12 @@ class SpacyParser(ParserBackend):
             if not G.has_edge(*(n0, n1, 'matching_re')):
                 #G.add_edge(n0, n1, **{'label': 'matching_re', 'val':r})
                 G.add_edge(n0, n1, matching_re=r)
-                # G.add_edge(n0, n1,key=r)
-
         has_and = 'and' in doc.text
-        # has_or = 'or' in doc.text
-        # is_logical_re = has_and or has_or
         for i, ent in enumerate(doc.ents):
             if ent in objs:
                 continue
             if ent in matching_res:
                 _r = sr2r_map[ent]
-                # Hack - Best effort: fail gracefully, don't crash
                 try:
                     if i > 1:
                         if has_and:
@@ -611,11 +600,6 @@ class SpacyParser(ParserBackend):
         nco = len(objs)
         if kwargs.get('cap_to_10_objs'):
             assert nco <= 10  # max number of clevr entities in one scene
-        # Gs specific entities
-        # parse will decorate with relations once G is returned
-        # spatial_res = cls.filter_spatial_re(doc.ents)
-        # matching_res = cls.filter_matching_re(doc.ents)
-        # Gt specific components
         pos = kwargs.get('pos')
         if pos is not None:
             assert len(pos) == nco  # each clevr_obj and corresponding pos
@@ -751,9 +735,6 @@ class SpacyParser(ParserBackend):
         if doc is None:
             return None
         else:
-            # Load the matching relations from a file
-            # relation_file = os.path.join(os.path.dirname(__file__), '../_data/relation-attrs.txt')
-            # matching_relations = set(line.strip() for line in open(relation_file))
             matching_relations = ['size', 'color', 'material', 'shape']
             matching_ents = cls.filter_matching_re(doc.ents)
             # Store the relations
@@ -761,7 +742,6 @@ class SpacyParser(ParserBackend):
             for span in matching_ents:
                 for t in span:
                     if t.text in matching_relations:
-                        # extracted_relations.append(t)       # BUG: Don't add token t as relation, will break pickling
                         extracted_relations.append(t.text)
 
             return extracted_relations

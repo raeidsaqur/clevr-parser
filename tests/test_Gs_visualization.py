@@ -11,14 +11,12 @@
 
 import pytest
 np = pytest.importorskip('numpy')
-import os, sys, platform
-import json
-import matplotlib.pyplot as plt
+import os
 from itertools import product
 
 import clevr_parser
 from clevr_parser.utils import *
-from  .samples import TEMPLATES, get_s_sample
+from  .samples import get_s_sample
 
 # Test Fixtures #
 @pytest.fixture(scope="module")

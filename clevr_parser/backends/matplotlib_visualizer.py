@@ -9,10 +9,11 @@
 # Distributed under terms of the MIT License
 # https://github.com/raeidsaqur/clevr-parser
 
-from ..visualizer import Visualizer, get_default_visualizer
-from .backend import VisualizerBackend
-from typing import List, Dict, Tuple, Sequence
 import logging
+
+from .backend import VisualizerBackend
+from ..visualizer import Visualizer
+
 logger = logging.getLogger(__name__)
 import copy
 

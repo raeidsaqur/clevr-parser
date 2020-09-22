@@ -9,12 +9,12 @@
 # Distributed under terms of the MIT License
 # https://github.com/raeidsaqur/clevr-parser
 
-from ..embedding_visualizer import EmbeddingVisualizer, get_default_embedding_visualizer
-from .backend import EmbeddingVisualizerBackend
-from typing import List, Dict, Tuple, Sequence
 import logging
+
+from .backend import EmbeddingVisualizerBackend
+from ..embedding_visualizer import EmbeddingVisualizer
+
 logger = logging.getLogger(__name__)
-import copy
 
 # Imports for t-SNE
 import numpy as np

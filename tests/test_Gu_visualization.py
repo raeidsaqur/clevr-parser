@@ -8,14 +8,14 @@
 # This file is part of RSMLKit
 # Distributed under terms of the MIT License
 
-import pytest
-import os, sys, platform
-import json
-import matplotlib.pyplot as plt
+import os
 
 import clevr_parser
 import clevr_parser.utils as parser_utils
-from  .samples import TEMPLATES, get_s_sample
+import pytest
+
+from .samples import get_s_sample
+
 
 # Test Fixtures #
 @pytest.fixture(scope="module")

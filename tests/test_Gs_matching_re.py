@@ -8,9 +8,10 @@
 # This file is part of CLEVR Parser
 # Distributed under terms of the MIT License
 
-import pytest
 import clevr_parser
+import pytest
 from clevr_parser.utils import *
+
 
 # Test Fixtures #
 @pytest.fixture(scope="module")

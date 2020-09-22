@@ -4,8 +4,7 @@
 import pytest
 np = pytest.importorskip('numpy')
 nx = pytest.importorskip('networkx')
-import os, sys, platform
-from itertools import product
+import os, sys
 
 nb_dir = os.getcwd().split()[0]
 if nb_dir not in sys.path:

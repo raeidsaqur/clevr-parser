@@ -11,18 +11,12 @@
 
 from __future__ import unicode_literals, print_function
 
-import re
-from itertools import permutations
-from typing import List, Dict
-
-from spacy.lang.en import English
-from spacy.matcher import PhraseMatcher
-from spacy.pipeline import EntityRuler, EntityLinker, EntityRecognizer
-from spacy.tokens import Doc, Span, Token
-
-from clevr_parser.utils import *
-from clevr_parser import setup_logging
 import logging
+
+from clevr_parser import setup_logging
+from clevr_parser.utils import *
+from spacy.pipeline import EntityRuler
+
 logger = setup_logging(__name__, log_level=logging.DEBUG)
 
 __all__ = ['SpatialRecognizer']
