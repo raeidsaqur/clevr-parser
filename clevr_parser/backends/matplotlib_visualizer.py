@@ -54,6 +54,7 @@ class MatplotlibVisualizer(VisualizerBackend):
                            hnode_col='tab:blue', anode_col='tab:red',
                            font_size=14, attr_font_size=10,
                            figsize=(11, 9),
+                           dpi = 100,
                            show_edge_labels=True,
                            show_edge_attributes=False,
                            layout='graphviz',
@@ -123,7 +124,7 @@ class MatplotlibVisualizer(VisualizerBackend):
         plt.axis('on' if plot_box == True else "off")
         # fig, axs = plt.subplots(1, 2)
         # axs[1].set_title(f"{doc}")
-        fig, ax = plt.subplots(1, 1, figsize=figsize)
+        fig, ax = plt.subplots(1, 1, figsize=figsize, dpi=dpi)
         ax.set_title(ax_title, wrap=True)
 
         nx.draw_networkx_nodes(G, pos, node_size=nsz, node_color=nc)
