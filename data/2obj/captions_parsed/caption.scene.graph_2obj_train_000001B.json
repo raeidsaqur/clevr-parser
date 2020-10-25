@@ -1,0 +1,57 @@
+{
+    "relationships": [
+    {
+        "predicate": "have",
+        "subject": 0,
+        "text": ["metal sphere", "have", "rubber cylinder"],
+        "object": 1
+    },
+    {
+        "predicate": "to",
+        "subject": 1,
+        "text": ["rubber cylinder", "to", "right"],
+        "object": 2
+    }],
+    "phrase": "The large brown metal sphere has a small red rubber cylinder to the right",
+    "objects": [
+    {
+        "names": ["metal sphere"]
+    },
+    {
+        "names": ["rubber cylinder"]
+    },
+    {
+        "names": ["right"]
+    }],
+    "attributes": [
+    {
+        "predicate": "is",
+        "subject": 0,
+        "attribute": "large",
+        "text": ["metal sphere", "is", "large"],
+        "object": "large"
+    },
+    {
+        "predicate": "is",
+        "subject": 0,
+        "attribute": "brown",
+        "text": ["metal sphere", "is", "brown"],
+        "object": "brown"
+    },
+    {
+        "predicate": "is",
+        "subject": 1,
+        "attribute": "small",
+        "text": ["rubber cylinder", "is", "small"],
+        "object": "small"
+    },
+    {
+        "predicate": "is",
+        "subject": 1,
+        "attribute": "red",
+        "text": ["rubber cylinder", "is", "red"],
+        "object": "red"
+    }],
+    "id": 1,
+    "url": "2obj\/images\/train\/CLEVR_train_000001.png"
+}

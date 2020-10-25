@@ -1,0 +1,3904 @@
+{
+    "info":
+    {
+        "date": "7/8/2017",
+        "version": "1.0",
+        "split": "val",
+        "license": "Creative Commons Attribution (CC-BY 4.0"
+    },
+    "captions": [
+    {
+        "split": "val",
+        "image_filename": "CLEVR_val_000000.png",
+        "image_index": 0,
+        "image": "CLEVR_val_000000",
+        "caption": "yellow shiny cylinder",
+        "program": [
+        {
+            "type": "scene",
+            "inputs": [],
+            "_output": [0],
+            "value_inputs": []
+        },
+        {
+            "type": "filter_color",
+            "inputs": [0],
+            "_output": [],
+            "value_inputs": ["yellow"]
+        },
+        {
+            "type": "filter_material",
+            "inputs": [1],
+            "_output": [],
+            "value_inputs": ["metal"]
+        },
+        {
+            "type": "filter_shape",
+            "inputs": [2],
+            "_output": [],
+            "value_inputs": ["cylinder"]
+        },
+        {
+            "type": "count",
+            "inputs": [3],
+            "_output": 0,
+            "value_inputs": []
+        }],
+        "answer": "no",
+        "template_filename": "1obj.json",
+        "question_family_index": 0,
+        "question_index": 0
+    },
+    {
+        "split": "val",
+        "image_filename": "CLEVR_val_000000.png",
+        "image_index": 0,
+        "image": "CLEVR_val_000000",
+        "caption": "big blue shiny object",
+        "program": [
+        {
+            "type": "scene",
+            "inputs": [],
+            "_output": [0],
+            "value_inputs": []
+        },
+        {
+            "type": "filter_size",
+            "inputs": [0],
+            "_output": [0],
+            "value_inputs": ["large"]
+        },
+        {
+            "type": "filter_color",
+            "inputs": [1],
+            "_output": [0],
+            "value_inputs": ["blue"]
+        },
+        {
+            "type": "filter_material",
+            "inputs": [2],
+            "_output": [0],
+            "value_inputs": ["metal"]
+        },
+        {
+            "type": "count",
+            "inputs": [3],
+            "_output": 1,
+            "value_inputs": []
+        }],
+        "answer": "yes",
+        "template_filename": "1obj.json",
+        "question_family_index": 0,
+        "question_index": 1
+    },
+    {
+        "split": "val",
+        "image_filename": "CLEVR_val_000000.png",
+        "image_index": 0,
+        "image": "CLEVR_val_000000",
+        "caption": "red rubber ball",
+        "program": [
+        {
+            "type": "scene",
+            "inputs": [],
+            "_output": [0],
+            "value_inputs": []
+        },
+        {
+            "type": "filter_color",
+            "inputs": [0],
+            "_output": [],
+            "value_inputs": ["red"]
+        },
+        {
+            "type": "filter_material",
+            "inputs": [1],
+            "_output": [],
+            "value_inputs": ["rubber"]
+        },
+        {
+            "type": "filter_shape",
+            "inputs": [2],
+            "_output": [],
+            "value_inputs": ["sphere"]
+        },
+        {
+            "type": "count",
+            "inputs": [3],
+            "_output": 0,
+            "value_inputs": []
+        }],
+        "answer": "no",
+        "template_filename": "1obj.json",
+        "question_family_index": 1,
+        "question_index": 2
+    },
+    {
+        "split": "val",
+        "image_filename": "CLEVR_val_000000.png",
+        "image_index": 0,
+        "image": "CLEVR_val_000000",
+        "caption": "blue shiny cube",
+        "program": [
+        {
+            "type": "scene",
+            "inputs": [],
+            "_output": [0],
+            "value_inputs": []
+        },
+        {
+            "type": "filter_color",
+            "inputs": [0],
+            "_output": [0],
+            "value_inputs": ["blue"]
+        },
+        {
+            "type": "filter_material",
+            "inputs": [1],
+            "_output": [0],
+            "value_inputs": ["metal"]
+        },
+        {
+            "type": "filter_shape",
+            "inputs": [2],
+            "_output": [0],
+            "value_inputs": ["cube"]
+        },
+        {
+            "type": "count",
+            "inputs": [3],
+            "_output": 1,
+            "value_inputs": []
+        }],
+        "answer": "yes",
+        "template_filename": "1obj.json",
+        "question_family_index": 1,
+        "question_index": 3
+    },
+    {
+        "split": "val",
+        "image_filename": "CLEVR_val_000000.png",
+        "image_index": 0,
+        "image": "CLEVR_val_000000",
+        "caption": "tiny shiny cylinder",
+        "program": [
+        {
+            "type": "scene",
+            "inputs": [],
+            "_output": [0],
+            "value_inputs": []
+        },
+        {
+            "type": "filter_size",
+            "inputs": [0],
+            "_output": [],
+            "value_inputs": ["small"]
+        },
+        {
+            "type": "filter_material",
+            "inputs": [1],
+            "_output": [],
+            "value_inputs": ["metal"]
+        },
+        {
+            "type": "filter_shape",
+            "inputs": [2],
+            "_output": [],
+            "value_inputs": ["cylinder"]
+        },
+        {
+            "type": "count",
+            "inputs": [3],
+            "_output": 0,
+            "value_inputs": []
+        }],
+        "answer": "no",
+        "template_filename": "1obj.json",
+        "question_family_index": 2,
+        "question_index": 4
+    },
+    {
+        "split": "val",
+        "image_filename": "CLEVR_val_000000.png",
+        "image_index": 0,
+        "image": "CLEVR_val_000000",
+        "caption": "big metal block",
+        "program": [
+        {
+            "type": "scene",
+            "inputs": [],
+            "_output": [0],
+            "value_inputs": []
+        },
+        {
+            "type": "filter_size",
+            "inputs": [0],
+            "_output": [0],
+            "value_inputs": ["large"]
+        },
+        {
+            "type": "filter_material",
+            "inputs": [1],
+            "_output": [0],
+            "value_inputs": ["metal"]
+        },
+        {
+            "type": "filter_shape",
+            "inputs": [2],
+            "_output": [0],
+            "value_inputs": ["cube"]
+        },
+        {
+            "type": "count",
+            "inputs": [3],
+            "_output": 1,
+            "value_inputs": []
+        }],
+        "answer": "yes",
+        "template_filename": "1obj.json",
+        "question_family_index": 2,
+        "question_index": 5
+    },
+    {
+        "split": "val",
+        "image_filename": "CLEVR_val_000000.png",
+        "image_index": 0,
+        "image": "CLEVR_val_000000",
+        "caption": "large green cube",
+        "program": [
+        {
+            "type": "scene",
+            "inputs": [],
+            "_output": [0],
+            "value_inputs": []
+        },
+        {
+            "type": "filter_color",
+            "inputs": [0],
+            "_output": [],
+            "value_inputs": ["green"]
+        },
+        {
+            "type": "filter_size",
+            "inputs": [1],
+            "_output": [],
+            "value_inputs": ["large"]
+        },
+        {
+            "type": "filter_shape",
+            "inputs": [2],
+            "_output": [],
+            "value_inputs": ["cube"]
+        },
+        {
+            "type": "count",
+            "inputs": [3],
+            "_output": 0,
+            "value_inputs": []
+        }],
+        "answer": "no",
+        "template_filename": "1obj.json",
+        "question_family_index": 3,
+        "question_index": 6
+    },
+    {
+        "split": "val",
+        "image_filename": "CLEVR_val_000000.png",
+        "image_index": 0,
+        "image": "CLEVR_val_000000",
+        "caption": "big blue cube",
+        "program": [
+        {
+            "type": "scene",
+            "inputs": [],
+            "_output": [0],
+            "value_inputs": []
+        },
+        {
+            "type": "filter_color",
+            "inputs": [0],
+            "_output": [0],
+            "value_inputs": ["blue"]
+        },
+        {
+            "type": "filter_size",
+            "inputs": [1],
+            "_output": [0],
+            "value_inputs": ["large"]
+        },
+        {
+            "type": "filter_shape",
+            "inputs": [2],
+            "_output": [0],
+            "value_inputs": ["cube"]
+        },
+        {
+            "type": "count",
+            "inputs": [3],
+            "_output": 1,
+            "value_inputs": []
+        }],
+        "answer": "yes",
+        "template_filename": "1obj.json",
+        "question_family_index": 3,
+        "question_index": 7
+    },
+    {
+        "split": "val",
+        "image_filename": "CLEVR_val_000000.png",
+        "image_index": 0,
+        "image": "CLEVR_val_000000",
+        "caption": "metallic block",
+        "program": [
+        {
+            "type": "scene",
+            "inputs": [],
+            "_output": [0],
+            "value_inputs": []
+        },
+        {
+            "type": "filter_material",
+            "inputs": [0],
+            "_output": [0],
+            "value_inputs": []
+        },
+        {
+            "type": "filter_shape",
+            "inputs": [1],
+            "_output": [0],
+            "value_inputs": ["cube"]
+        },
+        {
+            "type": "count",
+            "inputs": [2],
+            "_output": 1,
+            "value_inputs": []
+        }],
+        "answer": "yes",
+        "template_filename": "1obj.json",
+        "question_family_index": 4,
+        "question_index": 8
+    },
+    {
+        "split": "val",
+        "image_filename": "CLEVR_val_000000.png",
+        "image_index": 0,
+        "image": "CLEVR_val_000000",
+        "caption": "metal cylinder",
+        "program": [
+        {
+            "type": "scene",
+            "inputs": [],
+            "_output": [0],
+            "value_inputs": []
+        },
+        {
+            "type": "filter_material",
+            "inputs": [0],
+            "_output": [0],
+            "value_inputs": []
+        },
+        {
+            "type": "filter_shape",
+            "inputs": [1],
+            "_output": [],
+            "value_inputs": ["cylinder"]
+        },
+        {
+            "type": "count",
+            "inputs": [2],
+            "_output": 0,
+            "value_inputs": []
+        }],
+        "answer": "no",
+        "template_filename": "1obj.json",
+        "question_family_index": 4,
+        "question_index": 9
+    },
+    {
+        "split": "val",
+        "image_filename": "CLEVR_val_000001.png",
+        "image_index": 1,
+        "image": "CLEVR_val_000001",
+        "caption": "red cube",
+        "program": [
+        {
+            "type": "scene",
+            "inputs": [],
+            "_output": [0],
+            "value_inputs": []
+        },
+        {
+            "type": "filter_color",
+            "inputs": [0],
+            "_output": [],
+            "value_inputs": ["red"]
+        },
+        {
+            "type": "filter_shape",
+            "inputs": [1],
+            "_output": [],
+            "value_inputs": ["cube"]
+        },
+        {
+            "type": "count",
+            "inputs": [2],
+            "_output": 0,
+            "value_inputs": []
+        }],
+        "answer": "no",
+        "template_filename": "1obj.json",
+        "question_family_index": 5,
+        "question_index": 10
+    },
+    {
+        "split": "val",
+        "image_filename": "CLEVR_val_000001.png",
+        "image_index": 1,
+        "image": "CLEVR_val_000001",
+        "caption": "green cube",
+        "program": [
+        {
+            "type": "scene",
+            "inputs": [],
+            "_output": [0],
+            "value_inputs": []
+        },
+        {
+            "type": "filter_color",
+            "inputs": [0],
+            "_output": [0],
+            "value_inputs": ["green"]
+        },
+        {
+            "type": "filter_shape",
+            "inputs": [1],
+            "_output": [0],
+            "value_inputs": ["cube"]
+        },
+        {
+            "type": "count",
+            "inputs": [2],
+            "_output": 1,
+            "value_inputs": []
+        }],
+        "answer": "yes",
+        "template_filename": "1obj.json",
+        "question_family_index": 5,
+        "question_index": 11
+    },
+    {
+        "split": "val",
+        "image_filename": "CLEVR_val_000001.png",
+        "image_index": 1,
+        "image": "CLEVR_val_000001",
+        "caption": "small cube",
+        "program": [
+        {
+            "type": "scene",
+            "inputs": [],
+            "_output": [0],
+            "value_inputs": []
+        },
+        {
+            "type": "filter_size",
+            "inputs": [0],
+            "_output": [0],
+            "value_inputs": []
+        },
+        {
+            "type": "filter_shape",
+            "inputs": [1],
+            "_output": [0],
+            "value_inputs": ["cube"]
+        },
+        {
+            "type": "count",
+            "inputs": [2],
+            "_output": 1,
+            "value_inputs": []
+        }],
+        "answer": "yes",
+        "template_filename": "1obj.json",
+        "question_family_index": 6,
+        "question_index": 12
+    },
+    {
+        "split": "val",
+        "image_filename": "CLEVR_val_000001.png",
+        "image_index": 1,
+        "image": "CLEVR_val_000001",
+        "caption": "tiny cylinder",
+        "program": [
+        {
+            "type": "scene",
+            "inputs": [],
+            "_output": [0],
+            "value_inputs": []
+        },
+        {
+            "type": "filter_size",
+            "inputs": [0],
+            "_output": [0],
+            "value_inputs": []
+        },
+        {
+            "type": "filter_shape",
+            "inputs": [1],
+            "_output": [],
+            "value_inputs": ["cylinder"]
+        },
+        {
+            "type": "count",
+            "inputs": [2],
+            "_output": 0,
+            "value_inputs": []
+        }],
+        "answer": "no",
+        "template_filename": "1obj.json",
+        "question_family_index": 6,
+        "question_index": 13
+    },
+    {
+        "split": "val",
+        "image_filename": "CLEVR_val_000001.png",
+        "image_index": 1,
+        "image": "CLEVR_val_000001",
+        "caption": "small metal block",
+        "program": [
+        {
+            "type": "scene",
+            "inputs": [],
+            "_output": [0],
+            "value_inputs": []
+        },
+        {
+            "type": "filter_size",
+            "inputs": [0],
+            "_output": [0],
+            "value_inputs": ["small"]
+        },
+        {
+            "type": "filter_material",
+            "inputs": [1],
+            "_output": [0],
+            "value_inputs": ["metal"]
+        },
+        {
+            "type": "filter_shape",
+            "inputs": [2],
+            "_output": [0],
+            "value_inputs": ["cube"]
+        },
+        {
+            "type": "count",
+            "inputs": [3],
+            "_output": 1,
+            "value_inputs": []
+        }],
+        "answer": "yes",
+        "template_filename": "1obj.json",
+        "question_family_index": 0,
+        "question_index": 14
+    },
+    {
+        "split": "val",
+        "image_filename": "CLEVR_val_000001.png",
+        "image_index": 1,
+        "image": "CLEVR_val_000001",
+        "caption": "blue cube",
+        "program": [
+        {
+            "type": "scene",
+            "inputs": [],
+            "_output": [0],
+            "value_inputs": []
+        },
+        {
+            "type": "filter_color",
+            "inputs": [0],
+            "_output": [],
+            "value_inputs": ["blue"]
+        },
+        {
+            "type": "filter_shape",
+            "inputs": [1],
+            "_output": [],
+            "value_inputs": ["cube"]
+        },
+        {
+            "type": "count",
+            "inputs": [2],
+            "_output": 0,
+            "value_inputs": []
+        }],
+        "answer": "no",
+        "template_filename": "1obj.json",
+        "question_family_index": 0,
+        "question_index": 15
+    },
+    {
+        "split": "val",
+        "image_filename": "CLEVR_val_000001.png",
+        "image_index": 1,
+        "image": "CLEVR_val_000001",
+        "caption": "purple shiny cylinder",
+        "program": [
+        {
+            "type": "scene",
+            "inputs": [],
+            "_output": [0],
+            "value_inputs": []
+        },
+        {
+            "type": "filter_color",
+            "inputs": [0],
+            "_output": [],
+            "value_inputs": []
+        },
+        {
+            "type": "filter_material",
+            "inputs": [1],
+            "_output": [],
+            "value_inputs": []
+        },
+        {
+            "type": "filter_shape",
+            "inputs": [2],
+            "_output": [],
+            "value_inputs": ["cylinder"]
+        },
+        {
+            "type": "count",
+            "inputs": [3],
+            "_output": 0,
+            "value_inputs": []
+        }],
+        "answer": "no",
+        "template_filename": "1obj.json",
+        "question_family_index": 1,
+        "question_index": 16
+    },
+    {
+        "split": "val",
+        "image_filename": "CLEVR_val_000001.png",
+        "image_index": 1,
+        "image": "CLEVR_val_000001",
+        "caption": "purple shiny ball",
+        "program": [
+        {
+            "type": "scene",
+            "inputs": [],
+            "_output": [0],
+            "value_inputs": []
+        },
+        {
+            "type": "filter_color",
+            "inputs": [0],
+            "_output": [],
+            "value_inputs": []
+        },
+        {
+            "type": "filter_material",
+            "inputs": [1],
+            "_output": [],
+            "value_inputs": []
+        },
+        {
+            "type": "filter_shape",
+            "inputs": [2],
+            "_output": [],
+            "value_inputs": ["sphere"]
+        },
+        {
+            "type": "count",
+            "inputs": [3],
+            "_output": 0,
+            "value_inputs": []
+        }],
+        "answer": "no",
+        "template_filename": "1obj.json",
+        "question_family_index": 1,
+        "question_index": 17
+    },
+    {
+        "split": "val",
+        "image_filename": "CLEVR_val_000001.png",
+        "image_index": 1,
+        "image": "CLEVR_val_000001",
+        "caption": "large matte cylinder",
+        "program": [
+        {
+            "type": "scene",
+            "inputs": [],
+            "_output": [0],
+            "value_inputs": []
+        },
+        {
+            "type": "filter_size",
+            "inputs": [0],
+            "_output": [],
+            "value_inputs": []
+        },
+        {
+            "type": "filter_material",
+            "inputs": [1],
+            "_output": [],
+            "value_inputs": []
+        },
+        {
+            "type": "filter_shape",
+            "inputs": [2],
+            "_output": [],
+            "value_inputs": ["cylinder"]
+        },
+        {
+            "type": "count",
+            "inputs": [3],
+            "_output": 0,
+            "value_inputs": []
+        }],
+        "answer": "no",
+        "template_filename": "1obj.json",
+        "question_family_index": 2,
+        "question_index": 18
+    },
+    {
+        "split": "val",
+        "image_filename": "CLEVR_val_000001.png",
+        "image_index": 1,
+        "image": "CLEVR_val_000001",
+        "caption": "big rubber block",
+        "program": [
+        {
+            "type": "scene",
+            "inputs": [],
+            "_output": [0],
+            "value_inputs": []
+        },
+        {
+            "type": "filter_size",
+            "inputs": [0],
+            "_output": [],
+            "value_inputs": []
+        },
+        {
+            "type": "filter_material",
+            "inputs": [1],
+            "_output": [],
+            "value_inputs": []
+        },
+        {
+            "type": "filter_shape",
+            "inputs": [2],
+            "_output": [],
+            "value_inputs": ["cube"]
+        },
+        {
+            "type": "count",
+            "inputs": [3],
+            "_output": 0,
+            "value_inputs": []
+        }],
+        "answer": "no",
+        "template_filename": "1obj.json",
+        "question_family_index": 2,
+        "question_index": 19
+    },
+    {
+        "split": "val",
+        "image_filename": "CLEVR_val_000002.png",
+        "image_index": 2,
+        "image": "CLEVR_val_000002",
+        "caption": "small cyan cube",
+        "program": [
+        {
+            "type": "scene",
+            "inputs": [],
+            "_output": [0],
+            "value_inputs": []
+        },
+        {
+            "type": "filter_color",
+            "inputs": [0],
+            "_output": [0],
+            "value_inputs": []
+        },
+        {
+            "type": "filter_size",
+            "inputs": [1],
+            "_output": [],
+            "value_inputs": []
+        },
+        {
+            "type": "filter_shape",
+            "inputs": [2],
+            "_output": [],
+            "value_inputs": ["cube"]
+        },
+        {
+            "type": "count",
+            "inputs": [3],
+            "_output": 0,
+            "value_inputs": []
+        }],
+        "answer": "no",
+        "template_filename": "1obj.json",
+        "question_family_index": 3,
+        "question_index": 20
+    },
+    {
+        "split": "val",
+        "image_filename": "CLEVR_val_000002.png",
+        "image_index": 2,
+        "image": "CLEVR_val_000002",
+        "caption": "small cyan cylinder",
+        "program": [
+        {
+            "type": "scene",
+            "inputs": [],
+            "_output": [0],
+            "value_inputs": []
+        },
+        {
+            "type": "filter_color",
+            "inputs": [0],
+            "_output": [0],
+            "value_inputs": []
+        },
+        {
+            "type": "filter_size",
+            "inputs": [1],
+            "_output": [],
+            "value_inputs": []
+        },
+        {
+            "type": "filter_shape",
+            "inputs": [2],
+            "_output": [],
+            "value_inputs": ["cylinder"]
+        },
+        {
+            "type": "count",
+            "inputs": [3],
+            "_output": 0,
+            "value_inputs": []
+        }],
+        "answer": "no",
+        "template_filename": "1obj.json",
+        "question_family_index": 3,
+        "question_index": 21
+    },
+    {
+        "split": "val",
+        "image_filename": "CLEVR_val_000002.png",
+        "image_index": 2,
+        "image": "CLEVR_val_000002",
+        "caption": "shiny ball",
+        "program": [
+        {
+            "type": "scene",
+            "inputs": [],
+            "_output": [0],
+            "value_inputs": []
+        },
+        {
+            "type": "filter_material",
+            "inputs": [0],
+            "_output": [0],
+            "value_inputs": []
+        },
+        {
+            "type": "filter_shape",
+            "inputs": [1],
+            "_output": [0],
+            "value_inputs": ["sphere"]
+        },
+        {
+            "type": "count",
+            "inputs": [2],
+            "_output": 1,
+            "value_inputs": []
+        }],
+        "answer": "yes",
+        "template_filename": "1obj.json",
+        "question_family_index": 4,
+        "question_index": 22
+    },
+    {
+        "split": "val",
+        "image_filename": "CLEVR_val_000002.png",
+        "image_index": 2,
+        "image": "CLEVR_val_000002",
+        "caption": "metal cylinder",
+        "program": [
+        {
+            "type": "scene",
+            "inputs": [],
+            "_output": [0],
+            "value_inputs": []
+        },
+        {
+            "type": "filter_material",
+            "inputs": [0],
+            "_output": [0],
+            "value_inputs": []
+        },
+        {
+            "type": "filter_shape",
+            "inputs": [1],
+            "_output": [],
+            "value_inputs": ["cylinder"]
+        },
+        {
+            "type": "count",
+            "inputs": [2],
+            "_output": 0,
+            "value_inputs": []
+        }],
+        "answer": "no",
+        "template_filename": "1obj.json",
+        "question_family_index": 4,
+        "question_index": 23
+    },
+    {
+        "split": "val",
+        "image_filename": "CLEVR_val_000002.png",
+        "image_index": 2,
+        "image": "CLEVR_val_000002",
+        "caption": "yellow block",
+        "program": [
+        {
+            "type": "scene",
+            "inputs": [],
+            "_output": [0],
+            "value_inputs": []
+        },
+        {
+            "type": "filter_color",
+            "inputs": [0],
+            "_output": [],
+            "value_inputs": []
+        },
+        {
+            "type": "filter_shape",
+            "inputs": [1],
+            "_output": [],
+            "value_inputs": ["cube"]
+        },
+        {
+            "type": "count",
+            "inputs": [2],
+            "_output": 0,
+            "value_inputs": []
+        }],
+        "answer": "no",
+        "template_filename": "1obj.json",
+        "question_family_index": 5,
+        "question_index": 24
+    },
+    {
+        "split": "val",
+        "image_filename": "CLEVR_val_000002.png",
+        "image_index": 2,
+        "image": "CLEVR_val_000002",
+        "caption": "yellow ball",
+        "program": [
+        {
+            "type": "scene",
+            "inputs": [],
+            "_output": [0],
+            "value_inputs": []
+        },
+        {
+            "type": "filter_color",
+            "inputs": [0],
+            "_output": [],
+            "value_inputs": []
+        },
+        {
+            "type": "filter_shape",
+            "inputs": [1],
+            "_output": [],
+            "value_inputs": ["sphere"]
+        },
+        {
+            "type": "count",
+            "inputs": [2],
+            "_output": 0,
+            "value_inputs": []
+        }],
+        "answer": "no",
+        "template_filename": "1obj.json",
+        "question_family_index": 5,
+        "question_index": 25
+    },
+    {
+        "split": "val",
+        "image_filename": "CLEVR_val_000002.png",
+        "image_index": 2,
+        "image": "CLEVR_val_000002",
+        "caption": "small cylinder",
+        "program": [
+        {
+            "type": "scene",
+            "inputs": [],
+            "_output": [0],
+            "value_inputs": []
+        },
+        {
+            "type": "filter_size",
+            "inputs": [0],
+            "_output": [],
+            "value_inputs": []
+        },
+        {
+            "type": "filter_shape",
+            "inputs": [1],
+            "_output": [],
+            "value_inputs": ["cylinder"]
+        },
+        {
+            "type": "count",
+            "inputs": [2],
+            "_output": 0,
+            "value_inputs": []
+        }],
+        "answer": "no",
+        "template_filename": "1obj.json",
+        "question_family_index": 6,
+        "question_index": 26
+    },
+    {
+        "split": "val",
+        "image_filename": "CLEVR_val_000002.png",
+        "image_index": 2,
+        "image": "CLEVR_val_000002",
+        "caption": "tiny block",
+        "program": [
+        {
+            "type": "scene",
+            "inputs": [],
+            "_output": [0],
+            "value_inputs": []
+        },
+        {
+            "type": "filter_size",
+            "inputs": [0],
+            "_output": [],
+            "value_inputs": []
+        },
+        {
+            "type": "filter_shape",
+            "inputs": [1],
+            "_output": [],
+            "value_inputs": ["cube"]
+        },
+        {
+            "type": "count",
+            "inputs": [2],
+            "_output": 0,
+            "value_inputs": []
+        }],
+        "answer": "no",
+        "template_filename": "1obj.json",
+        "question_family_index": 6,
+        "question_index": 27
+    },
+    {
+        "split": "val",
+        "image_filename": "CLEVR_val_000002.png",
+        "image_index": 2,
+        "image": "CLEVR_val_000002",
+        "caption": "large purple rubber object",
+        "program": [
+        {
+            "type": "scene",
+            "inputs": [],
+            "_output": [0],
+            "value_inputs": []
+        },
+        {
+            "type": "filter_size",
+            "inputs": [0],
+            "_output": [0],
+            "value_inputs": ["large"]
+        },
+        {
+            "type": "filter_color",
+            "inputs": [1],
+            "_output": [],
+            "value_inputs": ["purple"]
+        },
+        {
+            "type": "filter_material",
+            "inputs": [2],
+            "_output": [],
+            "value_inputs": ["rubber"]
+        },
+        {
+            "type": "count",
+            "inputs": [3],
+            "_output": 0,
+            "value_inputs": []
+        }],
+        "answer": "no",
+        "template_filename": "1obj.json",
+        "question_family_index": 0,
+        "question_index": 28
+    },
+    {
+        "split": "val",
+        "image_filename": "CLEVR_val_000002.png",
+        "image_index": 2,
+        "image": "CLEVR_val_000002",
+        "caption": "big blue matte block",
+        "program": [
+        {
+            "type": "scene",
+            "inputs": [],
+            "_output": [0],
+            "value_inputs": []
+        },
+        {
+            "type": "filter_size",
+            "inputs": [0],
+            "_output": [0],
+            "value_inputs": ["large"]
+        },
+        {
+            "type": "filter_color",
+            "inputs": [1],
+            "_output": [],
+            "value_inputs": ["blue"]
+        },
+        {
+            "type": "filter_material",
+            "inputs": [2],
+            "_output": [],
+            "value_inputs": ["rubber"]
+        },
+        {
+            "type": "filter_shape",
+            "inputs": [3],
+            "_output": [],
+            "value_inputs": ["cube"]
+        },
+        {
+            "type": "count",
+            "inputs": [4],
+            "_output": 0,
+            "value_inputs": []
+        }],
+        "answer": "no",
+        "template_filename": "1obj.json",
+        "question_family_index": 0,
+        "question_index": 29
+    },
+    {
+        "split": "val",
+        "image_filename": "CLEVR_val_000003.png",
+        "image_index": 3,
+        "image": "CLEVR_val_000003",
+        "caption": "red metallic block",
+        "program": [
+        {
+            "type": "scene",
+            "inputs": [],
+            "_output": [0],
+            "value_inputs": []
+        },
+        {
+            "type": "filter_color",
+            "inputs": [0],
+            "_output": [0],
+            "value_inputs": []
+        },
+        {
+            "type": "filter_material",
+            "inputs": [1],
+            "_output": [0],
+            "value_inputs": []
+        },
+        {
+            "type": "filter_shape",
+            "inputs": [2],
+            "_output": [0],
+            "value_inputs": ["cube"]
+        },
+        {
+            "type": "count",
+            "inputs": [3],
+            "_output": 1,
+            "value_inputs": []
+        }],
+        "answer": "yes",
+        "template_filename": "1obj.json",
+        "question_family_index": 1,
+        "question_index": 30
+    },
+    {
+        "split": "val",
+        "image_filename": "CLEVR_val_000003.png",
+        "image_index": 3,
+        "image": "CLEVR_val_000003",
+        "caption": "red shiny ball",
+        "program": [
+        {
+            "type": "scene",
+            "inputs": [],
+            "_output": [0],
+            "value_inputs": []
+        },
+        {
+            "type": "filter_color",
+            "inputs": [0],
+            "_output": [0],
+            "value_inputs": []
+        },
+        {
+            "type": "filter_material",
+            "inputs": [1],
+            "_output": [0],
+            "value_inputs": []
+        },
+        {
+            "type": "filter_shape",
+            "inputs": [2],
+            "_output": [],
+            "value_inputs": ["sphere"]
+        },
+        {
+            "type": "count",
+            "inputs": [3],
+            "_output": 0,
+            "value_inputs": []
+        }],
+        "answer": "no",
+        "template_filename": "1obj.json",
+        "question_family_index": 1,
+        "question_index": 31
+    },
+    {
+        "split": "val",
+        "image_filename": "CLEVR_val_000003.png",
+        "image_index": 3,
+        "image": "CLEVR_val_000003",
+        "caption": "big shiny cube",
+        "program": [
+        {
+            "type": "scene",
+            "inputs": [],
+            "_output": [0],
+            "value_inputs": []
+        },
+        {
+            "type": "filter_size",
+            "inputs": [0],
+            "_output": [0],
+            "value_inputs": []
+        },
+        {
+            "type": "filter_material",
+            "inputs": [1],
+            "_output": [0],
+            "value_inputs": []
+        },
+        {
+            "type": "filter_shape",
+            "inputs": [2],
+            "_output": [0],
+            "value_inputs": ["cube"]
+        },
+        {
+            "type": "count",
+            "inputs": [3],
+            "_output": 1,
+            "value_inputs": []
+        }],
+        "answer": "yes",
+        "template_filename": "1obj.json",
+        "question_family_index": 2,
+        "question_index": 32
+    },
+    {
+        "split": "val",
+        "image_filename": "CLEVR_val_000003.png",
+        "image_index": 3,
+        "image": "CLEVR_val_000003",
+        "caption": "big metal sphere",
+        "program": [
+        {
+            "type": "scene",
+            "inputs": [],
+            "_output": [0],
+            "value_inputs": []
+        },
+        {
+            "type": "filter_size",
+            "inputs": [0],
+            "_output": [0],
+            "value_inputs": []
+        },
+        {
+            "type": "filter_material",
+            "inputs": [1],
+            "_output": [0],
+            "value_inputs": []
+        },
+        {
+            "type": "filter_shape",
+            "inputs": [2],
+            "_output": [],
+            "value_inputs": ["sphere"]
+        },
+        {
+            "type": "count",
+            "inputs": [3],
+            "_output": 0,
+            "value_inputs": []
+        }],
+        "answer": "no",
+        "template_filename": "1obj.json",
+        "question_family_index": 2,
+        "question_index": 33
+    },
+    {
+        "split": "val",
+        "image_filename": "CLEVR_val_000003.png",
+        "image_index": 3,
+        "image": "CLEVR_val_000003",
+        "caption": "large red cube",
+        "program": [
+        {
+            "type": "scene",
+            "inputs": [],
+            "_output": [0],
+            "value_inputs": []
+        },
+        {
+            "type": "filter_color",
+            "inputs": [0],
+            "_output": [0],
+            "value_inputs": ["red"]
+        },
+        {
+            "type": "filter_size",
+            "inputs": [1],
+            "_output": [0],
+            "value_inputs": ["large"]
+        },
+        {
+            "type": "filter_shape",
+            "inputs": [2],
+            "_output": [0],
+            "value_inputs": ["cube"]
+        },
+        {
+            "type": "count",
+            "inputs": [3],
+            "_output": 1,
+            "value_inputs": []
+        }],
+        "answer": "yes",
+        "template_filename": "1obj.json",
+        "question_family_index": 3,
+        "question_index": 34
+    },
+    {
+        "split": "val",
+        "image_filename": "CLEVR_val_000003.png",
+        "image_index": 3,
+        "image": "CLEVR_val_000003",
+        "caption": "small brown cube",
+        "program": [
+        {
+            "type": "scene",
+            "inputs": [],
+            "_output": [0],
+            "value_inputs": []
+        },
+        {
+            "type": "filter_color",
+            "inputs": [0],
+            "_output": [],
+            "value_inputs": ["brown"]
+        },
+        {
+            "type": "filter_size",
+            "inputs": [1],
+            "_output": [],
+            "value_inputs": ["small"]
+        },
+        {
+            "type": "filter_shape",
+            "inputs": [2],
+            "_output": [],
+            "value_inputs": ["cube"]
+        },
+        {
+            "type": "count",
+            "inputs": [3],
+            "_output": 0,
+            "value_inputs": []
+        }],
+        "answer": "no",
+        "template_filename": "1obj.json",
+        "question_family_index": 3,
+        "question_index": 35
+    },
+    {
+        "split": "val",
+        "image_filename": "CLEVR_val_000003.png",
+        "image_index": 3,
+        "image": "CLEVR_val_000003",
+        "caption": "shiny block",
+        "program": [
+        {
+            "type": "scene",
+            "inputs": [],
+            "_output": [0],
+            "value_inputs": []
+        },
+        {
+            "type": "filter_material",
+            "inputs": [0],
+            "_output": [0],
+            "value_inputs": []
+        },
+        {
+            "type": "filter_shape",
+            "inputs": [1],
+            "_output": [0],
+            "value_inputs": ["cube"]
+        },
+        {
+            "type": "count",
+            "inputs": [2],
+            "_output": 1,
+            "value_inputs": []
+        }],
+        "answer": "yes",
+        "template_filename": "1obj.json",
+        "question_family_index": 4,
+        "question_index": 36
+    },
+    {
+        "split": "val",
+        "image_filename": "CLEVR_val_000003.png",
+        "image_index": 3,
+        "image": "CLEVR_val_000003",
+        "caption": "metallic cylinder",
+        "program": [
+        {
+            "type": "scene",
+            "inputs": [],
+            "_output": [0],
+            "value_inputs": []
+        },
+        {
+            "type": "filter_material",
+            "inputs": [0],
+            "_output": [0],
+            "value_inputs": []
+        },
+        {
+            "type": "filter_shape",
+            "inputs": [1],
+            "_output": [],
+            "value_inputs": ["cylinder"]
+        },
+        {
+            "type": "count",
+            "inputs": [2],
+            "_output": 0,
+            "value_inputs": []
+        }],
+        "answer": "no",
+        "template_filename": "1obj.json",
+        "question_family_index": 4,
+        "question_index": 37
+    },
+    {
+        "split": "val",
+        "image_filename": "CLEVR_val_000003.png",
+        "image_index": 3,
+        "image": "CLEVR_val_000003",
+        "caption": "red block",
+        "program": [
+        {
+            "type": "scene",
+            "inputs": [],
+            "_output": [0],
+            "value_inputs": []
+        },
+        {
+            "type": "filter_color",
+            "inputs": [0],
+            "_output": [0],
+            "value_inputs": []
+        },
+        {
+            "type": "filter_shape",
+            "inputs": [1],
+            "_output": [0],
+            "value_inputs": ["cube"]
+        },
+        {
+            "type": "count",
+            "inputs": [2],
+            "_output": 1,
+            "value_inputs": []
+        }],
+        "answer": "yes",
+        "template_filename": "1obj.json",
+        "question_family_index": 5,
+        "question_index": 38
+    },
+    {
+        "split": "val",
+        "image_filename": "CLEVR_val_000003.png",
+        "image_index": 3,
+        "image": "CLEVR_val_000003",
+        "caption": "red cylinder",
+        "program": [
+        {
+            "type": "scene",
+            "inputs": [],
+            "_output": [0],
+            "value_inputs": []
+        },
+        {
+            "type": "filter_color",
+            "inputs": [0],
+            "_output": [0],
+            "value_inputs": []
+        },
+        {
+            "type": "filter_shape",
+            "inputs": [1],
+            "_output": [],
+            "value_inputs": ["cylinder"]
+        },
+        {
+            "type": "count",
+            "inputs": [2],
+            "_output": 0,
+            "value_inputs": []
+        }],
+        "answer": "no",
+        "template_filename": "1obj.json",
+        "question_family_index": 5,
+        "question_index": 39
+    },
+    {
+        "split": "val",
+        "image_filename": "CLEVR_val_000004.png",
+        "image_index": 4,
+        "image": "CLEVR_val_000004",
+        "caption": "tiny cube",
+        "program": [
+        {
+            "type": "scene",
+            "inputs": [],
+            "_output": [0],
+            "value_inputs": []
+        },
+        {
+            "type": "filter_size",
+            "inputs": [0],
+            "_output": [0],
+            "value_inputs": []
+        },
+        {
+            "type": "filter_shape",
+            "inputs": [1],
+            "_output": [0],
+            "value_inputs": ["cube"]
+        },
+        {
+            "type": "count",
+            "inputs": [2],
+            "_output": 1,
+            "value_inputs": []
+        }],
+        "answer": "yes",
+        "template_filename": "1obj.json",
+        "question_family_index": 6,
+        "question_index": 40
+    },
+    {
+        "split": "val",
+        "image_filename": "CLEVR_val_000004.png",
+        "image_index": 4,
+        "image": "CLEVR_val_000004",
+        "caption": "tiny cylinder",
+        "program": [
+        {
+            "type": "scene",
+            "inputs": [],
+            "_output": [0],
+            "value_inputs": []
+        },
+        {
+            "type": "filter_size",
+            "inputs": [0],
+            "_output": [0],
+            "value_inputs": []
+        },
+        {
+            "type": "filter_shape",
+            "inputs": [1],
+            "_output": [],
+            "value_inputs": ["cylinder"]
+        },
+        {
+            "type": "count",
+            "inputs": [2],
+            "_output": 0,
+            "value_inputs": []
+        }],
+        "answer": "no",
+        "template_filename": "1obj.json",
+        "question_family_index": 6,
+        "question_index": 41
+    },
+    {
+        "split": "val",
+        "image_filename": "CLEVR_val_000004.png",
+        "image_index": 4,
+        "image": "CLEVR_val_000004",
+        "caption": "small rubber object",
+        "program": [
+        {
+            "type": "scene",
+            "inputs": [],
+            "_output": [0],
+            "value_inputs": []
+        },
+        {
+            "type": "filter_size",
+            "inputs": [0],
+            "_output": [0],
+            "value_inputs": ["small"]
+        },
+        {
+            "type": "filter_material",
+            "inputs": [1],
+            "_output": [0],
+            "value_inputs": ["rubber"]
+        },
+        {
+            "type": "count",
+            "inputs": [2],
+            "_output": 1,
+            "value_inputs": []
+        }],
+        "answer": "yes",
+        "template_filename": "1obj.json",
+        "question_family_index": 0,
+        "question_index": 42
+    },
+    {
+        "split": "val",
+        "image_filename": "CLEVR_val_000004.png",
+        "image_index": 4,
+        "image": "CLEVR_val_000004",
+        "caption": "cyan thing",
+        "program": [
+        {
+            "type": "scene",
+            "inputs": [],
+            "_output": [0],
+            "value_inputs": []
+        },
+        {
+            "type": "filter_color",
+            "inputs": [0],
+            "_output": [0],
+            "value_inputs": ["cyan"]
+        },
+        {
+            "type": "count",
+            "inputs": [1],
+            "_output": 1,
+            "value_inputs": []
+        }],
+        "answer": "yes",
+        "template_filename": "1obj.json",
+        "question_family_index": 0,
+        "question_index": 43
+    },
+    {
+        "split": "val",
+        "image_filename": "CLEVR_val_000004.png",
+        "image_index": 4,
+        "image": "CLEVR_val_000004",
+        "caption": "brown metallic sphere",
+        "program": [
+        {
+            "type": "scene",
+            "inputs": [],
+            "_output": [0],
+            "value_inputs": []
+        },
+        {
+            "type": "filter_color",
+            "inputs": [0],
+            "_output": [],
+            "value_inputs": ["brown"]
+        },
+        {
+            "type": "filter_material",
+            "inputs": [1],
+            "_output": [],
+            "value_inputs": ["metal"]
+        },
+        {
+            "type": "filter_shape",
+            "inputs": [2],
+            "_output": [],
+            "value_inputs": ["sphere"]
+        },
+        {
+            "type": "count",
+            "inputs": [3],
+            "_output": 0,
+            "value_inputs": []
+        }],
+        "answer": "no",
+        "template_filename": "1obj.json",
+        "question_family_index": 1,
+        "question_index": 44
+    },
+    {
+        "split": "val",
+        "image_filename": "CLEVR_val_000004.png",
+        "image_index": 4,
+        "image": "CLEVR_val_000004",
+        "caption": "cyan rubber cube",
+        "program": [
+        {
+            "type": "scene",
+            "inputs": [],
+            "_output": [0],
+            "value_inputs": []
+        },
+        {
+            "type": "filter_color",
+            "inputs": [0],
+            "_output": [0],
+            "value_inputs": ["cyan"]
+        },
+        {
+            "type": "filter_material",
+            "inputs": [1],
+            "_output": [0],
+            "value_inputs": ["rubber"]
+        },
+        {
+            "type": "filter_shape",
+            "inputs": [2],
+            "_output": [0],
+            "value_inputs": ["cube"]
+        },
+        {
+            "type": "count",
+            "inputs": [3],
+            "_output": 1,
+            "value_inputs": []
+        }],
+        "answer": "yes",
+        "template_filename": "1obj.json",
+        "question_family_index": 1,
+        "question_index": 45
+    },
+    {
+        "split": "val",
+        "image_filename": "CLEVR_val_000004.png",
+        "image_index": 4,
+        "image": "CLEVR_val_000004",
+        "caption": "small matte cylinder",
+        "program": [
+        {
+            "type": "scene",
+            "inputs": [],
+            "_output": [0],
+            "value_inputs": []
+        },
+        {
+            "type": "filter_size",
+            "inputs": [0],
+            "_output": [0],
+            "value_inputs": []
+        },
+        {
+            "type": "filter_material",
+            "inputs": [1],
+            "_output": [0],
+            "value_inputs": []
+        },
+        {
+            "type": "filter_shape",
+            "inputs": [2],
+            "_output": [],
+            "value_inputs": ["cylinder"]
+        },
+        {
+            "type": "count",
+            "inputs": [3],
+            "_output": 0,
+            "value_inputs": []
+        }],
+        "answer": "no",
+        "template_filename": "1obj.json",
+        "question_family_index": 2,
+        "question_index": 46
+    },
+    {
+        "split": "val",
+        "image_filename": "CLEVR_val_000004.png",
+        "image_index": 4,
+        "image": "CLEVR_val_000004",
+        "caption": "tiny matte cube",
+        "program": [
+        {
+            "type": "scene",
+            "inputs": [],
+            "_output": [0],
+            "value_inputs": []
+        },
+        {
+            "type": "filter_size",
+            "inputs": [0],
+            "_output": [0],
+            "value_inputs": []
+        },
+        {
+            "type": "filter_material",
+            "inputs": [1],
+            "_output": [0],
+            "value_inputs": []
+        },
+        {
+            "type": "filter_shape",
+            "inputs": [2],
+            "_output": [0],
+            "value_inputs": ["cube"]
+        },
+        {
+            "type": "count",
+            "inputs": [3],
+            "_output": 1,
+            "value_inputs": []
+        }],
+        "answer": "yes",
+        "template_filename": "1obj.json",
+        "question_family_index": 2,
+        "question_index": 47
+    },
+    {
+        "split": "val",
+        "image_filename": "CLEVR_val_000004.png",
+        "image_index": 4,
+        "image": "CLEVR_val_000004",
+        "caption": "large red ball",
+        "program": [
+        {
+            "type": "scene",
+            "inputs": [],
+            "_output": [0],
+            "value_inputs": []
+        },
+        {
+            "type": "filter_color",
+            "inputs": [0],
+            "_output": [],
+            "value_inputs": ["red"]
+        },
+        {
+            "type": "filter_size",
+            "inputs": [1],
+            "_output": [],
+            "value_inputs": ["large"]
+        },
+        {
+            "type": "filter_shape",
+            "inputs": [2],
+            "_output": [],
+            "value_inputs": ["sphere"]
+        },
+        {
+            "type": "count",
+            "inputs": [3],
+            "_output": 0,
+            "value_inputs": []
+        }],
+        "answer": "no",
+        "template_filename": "1obj.json",
+        "question_family_index": 3,
+        "question_index": 48
+    },
+    {
+        "split": "val",
+        "image_filename": "CLEVR_val_000004.png",
+        "image_index": 4,
+        "image": "CLEVR_val_000004",
+        "caption": "small cyan block",
+        "program": [
+        {
+            "type": "scene",
+            "inputs": [],
+            "_output": [0],
+            "value_inputs": []
+        },
+        {
+            "type": "filter_color",
+            "inputs": [0],
+            "_output": [0],
+            "value_inputs": ["cyan"]
+        },
+        {
+            "type": "filter_size",
+            "inputs": [1],
+            "_output": [0],
+            "value_inputs": ["small"]
+        },
+        {
+            "type": "filter_shape",
+            "inputs": [2],
+            "_output": [0],
+            "value_inputs": ["cube"]
+        },
+        {
+            "type": "count",
+            "inputs": [3],
+            "_output": 1,
+            "value_inputs": []
+        }],
+        "answer": "yes",
+        "template_filename": "1obj.json",
+        "question_family_index": 3,
+        "question_index": 49
+    },
+    {
+        "split": "val",
+        "image_filename": "CLEVR_val_000005.png",
+        "image_index": 5,
+        "image": "CLEVR_val_000005",
+        "caption": "rubber block",
+        "program": [
+        {
+            "type": "scene",
+            "inputs": [],
+            "_output": [0],
+            "value_inputs": []
+        },
+        {
+            "type": "filter_material",
+            "inputs": [0],
+            "_output": [],
+            "value_inputs": []
+        },
+        {
+            "type": "filter_shape",
+            "inputs": [1],
+            "_output": [],
+            "value_inputs": ["cube"]
+        },
+        {
+            "type": "count",
+            "inputs": [2],
+            "_output": 0,
+            "value_inputs": []
+        }],
+        "answer": "no",
+        "template_filename": "1obj.json",
+        "question_family_index": 4,
+        "question_index": 50
+    },
+    {
+        "split": "val",
+        "image_filename": "CLEVR_val_000005.png",
+        "image_index": 5,
+        "image": "CLEVR_val_000005",
+        "caption": "rubber cylinder",
+        "program": [
+        {
+            "type": "scene",
+            "inputs": [],
+            "_output": [0],
+            "value_inputs": []
+        },
+        {
+            "type": "filter_material",
+            "inputs": [0],
+            "_output": [],
+            "value_inputs": []
+        },
+        {
+            "type": "filter_shape",
+            "inputs": [1],
+            "_output": [],
+            "value_inputs": ["cylinder"]
+        },
+        {
+            "type": "count",
+            "inputs": [2],
+            "_output": 0,
+            "value_inputs": []
+        }],
+        "answer": "no",
+        "template_filename": "1obj.json",
+        "question_family_index": 4,
+        "question_index": 51
+    },
+    {
+        "split": "val",
+        "image_filename": "CLEVR_val_000005.png",
+        "image_index": 5,
+        "image": "CLEVR_val_000005",
+        "caption": "cyan cube",
+        "program": [
+        {
+            "type": "scene",
+            "inputs": [],
+            "_output": [0],
+            "value_inputs": []
+        },
+        {
+            "type": "filter_color",
+            "inputs": [0],
+            "_output": [],
+            "value_inputs": ["cyan"]
+        },
+        {
+            "type": "filter_shape",
+            "inputs": [1],
+            "_output": [],
+            "value_inputs": ["cube"]
+        },
+        {
+            "type": "count",
+            "inputs": [2],
+            "_output": 0,
+            "value_inputs": []
+        }],
+        "answer": "no",
+        "template_filename": "1obj.json",
+        "question_family_index": 5,
+        "question_index": 52
+    },
+    {
+        "split": "val",
+        "image_filename": "CLEVR_val_000005.png",
+        "image_index": 5,
+        "image": "CLEVR_val_000005",
+        "caption": "yellow cylinder",
+        "program": [
+        {
+            "type": "scene",
+            "inputs": [],
+            "_output": [0],
+            "value_inputs": []
+        },
+        {
+            "type": "filter_color",
+            "inputs": [0],
+            "_output": [0],
+            "value_inputs": ["yellow"]
+        },
+        {
+            "type": "filter_shape",
+            "inputs": [1],
+            "_output": [0],
+            "value_inputs": ["cylinder"]
+        },
+        {
+            "type": "count",
+            "inputs": [2],
+            "_output": 1,
+            "value_inputs": []
+        }],
+        "answer": "yes",
+        "template_filename": "1obj.json",
+        "question_family_index": 5,
+        "question_index": 53
+    },
+    {
+        "split": "val",
+        "image_filename": "CLEVR_val_000005.png",
+        "image_index": 5,
+        "image": "CLEVR_val_000005",
+        "caption": "small sphere",
+        "program": [
+        {
+            "type": "scene",
+            "inputs": [],
+            "_output": [0],
+            "value_inputs": []
+        },
+        {
+            "type": "filter_size",
+            "inputs": [0],
+            "_output": [0],
+            "value_inputs": []
+        },
+        {
+            "type": "filter_shape",
+            "inputs": [1],
+            "_output": [],
+            "value_inputs": ["sphere"]
+        },
+        {
+            "type": "count",
+            "inputs": [2],
+            "_output": 0,
+            "value_inputs": []
+        }],
+        "answer": "no",
+        "template_filename": "1obj.json",
+        "question_family_index": 6,
+        "question_index": 54
+    },
+    {
+        "split": "val",
+        "image_filename": "CLEVR_val_000005.png",
+        "image_index": 5,
+        "image": "CLEVR_val_000005",
+        "caption": "tiny cylinder",
+        "program": [
+        {
+            "type": "scene",
+            "inputs": [],
+            "_output": [0],
+            "value_inputs": []
+        },
+        {
+            "type": "filter_size",
+            "inputs": [0],
+            "_output": [0],
+            "value_inputs": []
+        },
+        {
+            "type": "filter_shape",
+            "inputs": [1],
+            "_output": [0],
+            "value_inputs": ["cylinder"]
+        },
+        {
+            "type": "count",
+            "inputs": [2],
+            "_output": 1,
+            "value_inputs": []
+        }],
+        "answer": "yes",
+        "template_filename": "1obj.json",
+        "question_family_index": 6,
+        "question_index": 55
+    },
+    {
+        "split": "val",
+        "image_filename": "CLEVR_val_000005.png",
+        "image_index": 5,
+        "image": "CLEVR_val_000005",
+        "caption": "yellow metallic cylinder",
+        "program": [
+        {
+            "type": "scene",
+            "inputs": [],
+            "_output": [0],
+            "value_inputs": []
+        },
+        {
+            "type": "filter_color",
+            "inputs": [0],
+            "_output": [0],
+            "value_inputs": ["yellow"]
+        },
+        {
+            "type": "filter_material",
+            "inputs": [1],
+            "_output": [0],
+            "value_inputs": ["metal"]
+        },
+        {
+            "type": "filter_shape",
+            "inputs": [2],
+            "_output": [0],
+            "value_inputs": ["cylinder"]
+        },
+        {
+            "type": "count",
+            "inputs": [3],
+            "_output": 1,
+            "value_inputs": []
+        }],
+        "answer": "yes",
+        "template_filename": "1obj.json",
+        "question_family_index": 0,
+        "question_index": 56
+    },
+    {
+        "split": "val",
+        "image_filename": "CLEVR_val_000005.png",
+        "image_index": 5,
+        "image": "CLEVR_val_000005",
+        "caption": "green matte ball",
+        "program": [
+        {
+            "type": "scene",
+            "inputs": [],
+            "_output": [0],
+            "value_inputs": []
+        },
+        {
+            "type": "filter_color",
+            "inputs": [0],
+            "_output": [],
+            "value_inputs": ["green"]
+        },
+        {
+            "type": "filter_material",
+            "inputs": [1],
+            "_output": [],
+            "value_inputs": ["rubber"]
+        },
+        {
+            "type": "filter_shape",
+            "inputs": [2],
+            "_output": [],
+            "value_inputs": ["sphere"]
+        },
+        {
+            "type": "count",
+            "inputs": [3],
+            "_output": 0,
+            "value_inputs": []
+        }],
+        "answer": "no",
+        "template_filename": "1obj.json",
+        "question_family_index": 0,
+        "question_index": 57
+    },
+    {
+        "split": "val",
+        "image_filename": "CLEVR_val_000005.png",
+        "image_index": 5,
+        "image": "CLEVR_val_000005",
+        "caption": "cyan shiny ball",
+        "program": [
+        {
+            "type": "scene",
+            "inputs": [],
+            "_output": [0],
+            "value_inputs": []
+        },
+        {
+            "type": "filter_color",
+            "inputs": [0],
+            "_output": [],
+            "value_inputs": []
+        },
+        {
+            "type": "filter_material",
+            "inputs": [1],
+            "_output": [],
+            "value_inputs": []
+        },
+        {
+            "type": "filter_shape",
+            "inputs": [2],
+            "_output": [],
+            "value_inputs": ["sphere"]
+        },
+        {
+            "type": "count",
+            "inputs": [3],
+            "_output": 0,
+            "value_inputs": []
+        }],
+        "answer": "no",
+        "template_filename": "1obj.json",
+        "question_family_index": 1,
+        "question_index": 58
+    },
+    {
+        "split": "val",
+        "image_filename": "CLEVR_val_000005.png",
+        "image_index": 5,
+        "image": "CLEVR_val_000005",
+        "caption": "cyan metallic block",
+        "program": [
+        {
+            "type": "scene",
+            "inputs": [],
+            "_output": [0],
+            "value_inputs": []
+        },
+        {
+            "type": "filter_color",
+            "inputs": [0],
+            "_output": [],
+            "value_inputs": []
+        },
+        {
+            "type": "filter_material",
+            "inputs": [1],
+            "_output": [],
+            "value_inputs": []
+        },
+        {
+            "type": "filter_shape",
+            "inputs": [2],
+            "_output": [],
+            "value_inputs": ["cube"]
+        },
+        {
+            "type": "count",
+            "inputs": [3],
+            "_output": 0,
+            "value_inputs": []
+        }],
+        "answer": "no",
+        "template_filename": "1obj.json",
+        "question_family_index": 1,
+        "question_index": 59
+    },
+    {
+        "split": "val",
+        "image_filename": "CLEVR_val_000006.png",
+        "image_index": 6,
+        "image": "CLEVR_val_000006",
+        "caption": "large metal cylinder",
+        "program": [
+        {
+            "type": "scene",
+            "inputs": [],
+            "_output": [0],
+            "value_inputs": []
+        },
+        {
+            "type": "filter_size",
+            "inputs": [0],
+            "_output": [],
+            "value_inputs": []
+        },
+        {
+            "type": "filter_material",
+            "inputs": [1],
+            "_output": [],
+            "value_inputs": []
+        },
+        {
+            "type": "filter_shape",
+            "inputs": [2],
+            "_output": [],
+            "value_inputs": ["cylinder"]
+        },
+        {
+            "type": "count",
+            "inputs": [3],
+            "_output": 0,
+            "value_inputs": []
+        }],
+        "answer": "no",
+        "template_filename": "1obj.json",
+        "question_family_index": 2,
+        "question_index": 60
+    },
+    {
+        "split": "val",
+        "image_filename": "CLEVR_val_000006.png",
+        "image_index": 6,
+        "image": "CLEVR_val_000006",
+        "caption": "large metal sphere",
+        "program": [
+        {
+            "type": "scene",
+            "inputs": [],
+            "_output": [0],
+            "value_inputs": []
+        },
+        {
+            "type": "filter_size",
+            "inputs": [0],
+            "_output": [],
+            "value_inputs": []
+        },
+        {
+            "type": "filter_material",
+            "inputs": [1],
+            "_output": [],
+            "value_inputs": []
+        },
+        {
+            "type": "filter_shape",
+            "inputs": [2],
+            "_output": [],
+            "value_inputs": ["sphere"]
+        },
+        {
+            "type": "count",
+            "inputs": [3],
+            "_output": 0,
+            "value_inputs": []
+        }],
+        "answer": "no",
+        "template_filename": "1obj.json",
+        "question_family_index": 2,
+        "question_index": 61
+    },
+    {
+        "split": "val",
+        "image_filename": "CLEVR_val_000006.png",
+        "image_index": 6,
+        "image": "CLEVR_val_000006",
+        "caption": "large cyan block",
+        "program": [
+        {
+            "type": "scene",
+            "inputs": [],
+            "_output": [0],
+            "value_inputs": []
+        },
+        {
+            "type": "filter_color",
+            "inputs": [0],
+            "_output": [],
+            "value_inputs": []
+        },
+        {
+            "type": "filter_size",
+            "inputs": [1],
+            "_output": [],
+            "value_inputs": []
+        },
+        {
+            "type": "filter_shape",
+            "inputs": [2],
+            "_output": [],
+            "value_inputs": ["cube"]
+        },
+        {
+            "type": "count",
+            "inputs": [3],
+            "_output": 0,
+            "value_inputs": []
+        }],
+        "answer": "no",
+        "template_filename": "1obj.json",
+        "question_family_index": 3,
+        "question_index": 62
+    },
+    {
+        "split": "val",
+        "image_filename": "CLEVR_val_000006.png",
+        "image_index": 6,
+        "image": "CLEVR_val_000006",
+        "caption": "big cyan ball",
+        "program": [
+        {
+            "type": "scene",
+            "inputs": [],
+            "_output": [0],
+            "value_inputs": []
+        },
+        {
+            "type": "filter_color",
+            "inputs": [0],
+            "_output": [],
+            "value_inputs": []
+        },
+        {
+            "type": "filter_size",
+            "inputs": [1],
+            "_output": [],
+            "value_inputs": []
+        },
+        {
+            "type": "filter_shape",
+            "inputs": [2],
+            "_output": [],
+            "value_inputs": ["sphere"]
+        },
+        {
+            "type": "count",
+            "inputs": [3],
+            "_output": 0,
+            "value_inputs": []
+        }],
+        "answer": "no",
+        "template_filename": "1obj.json",
+        "question_family_index": 3,
+        "question_index": 63
+    },
+    {
+        "split": "val",
+        "image_filename": "CLEVR_val_000006.png",
+        "image_index": 6,
+        "image": "CLEVR_val_000006",
+        "caption": "metallic ball",
+        "program": [
+        {
+            "type": "scene",
+            "inputs": [],
+            "_output": [0],
+            "value_inputs": []
+        },
+        {
+            "type": "filter_material",
+            "inputs": [0],
+            "_output": [],
+            "value_inputs": []
+        },
+        {
+            "type": "filter_shape",
+            "inputs": [1],
+            "_output": [],
+            "value_inputs": ["sphere"]
+        },
+        {
+            "type": "count",
+            "inputs": [2],
+            "_output": 0,
+            "value_inputs": []
+        }],
+        "answer": "no",
+        "template_filename": "1obj.json",
+        "question_family_index": 4,
+        "question_index": 64
+    },
+    {
+        "split": "val",
+        "image_filename": "CLEVR_val_000006.png",
+        "image_index": 6,
+        "image": "CLEVR_val_000006",
+        "caption": "shiny cylinder",
+        "program": [
+        {
+            "type": "scene",
+            "inputs": [],
+            "_output": [0],
+            "value_inputs": []
+        },
+        {
+            "type": "filter_material",
+            "inputs": [0],
+            "_output": [],
+            "value_inputs": []
+        },
+        {
+            "type": "filter_shape",
+            "inputs": [1],
+            "_output": [],
+            "value_inputs": ["cylinder"]
+        },
+        {
+            "type": "count",
+            "inputs": [2],
+            "_output": 0,
+            "value_inputs": []
+        }],
+        "answer": "no",
+        "template_filename": "1obj.json",
+        "question_family_index": 4,
+        "question_index": 65
+    },
+    {
+        "split": "val",
+        "image_filename": "CLEVR_val_000006.png",
+        "image_index": 6,
+        "image": "CLEVR_val_000006",
+        "caption": "purple block",
+        "program": [
+        {
+            "type": "scene",
+            "inputs": [],
+            "_output": [0],
+            "value_inputs": []
+        },
+        {
+            "type": "filter_color",
+            "inputs": [0],
+            "_output": [0],
+            "value_inputs": []
+        },
+        {
+            "type": "filter_shape",
+            "inputs": [1],
+            "_output": [],
+            "value_inputs": ["cube"]
+        },
+        {
+            "type": "count",
+            "inputs": [2],
+            "_output": 0,
+            "value_inputs": []
+        }],
+        "answer": "no",
+        "template_filename": "1obj.json",
+        "question_family_index": 5,
+        "question_index": 66
+    },
+    {
+        "split": "val",
+        "image_filename": "CLEVR_val_000006.png",
+        "image_index": 6,
+        "image": "CLEVR_val_000006",
+        "caption": "purple sphere",
+        "program": [
+        {
+            "type": "scene",
+            "inputs": [],
+            "_output": [0],
+            "value_inputs": []
+        },
+        {
+            "type": "filter_color",
+            "inputs": [0],
+            "_output": [0],
+            "value_inputs": []
+        },
+        {
+            "type": "filter_shape",
+            "inputs": [1],
+            "_output": [0],
+            "value_inputs": ["sphere"]
+        },
+        {
+            "type": "count",
+            "inputs": [2],
+            "_output": 1,
+            "value_inputs": []
+        }],
+        "answer": "yes",
+        "template_filename": "1obj.json",
+        "question_family_index": 5,
+        "question_index": 67
+    },
+    {
+        "split": "val",
+        "image_filename": "CLEVR_val_000006.png",
+        "image_index": 6,
+        "image": "CLEVR_val_000006",
+        "caption": "tiny ball",
+        "program": [
+        {
+            "type": "scene",
+            "inputs": [],
+            "_output": [0],
+            "value_inputs": []
+        },
+        {
+            "type": "filter_size",
+            "inputs": [0],
+            "_output": [0],
+            "value_inputs": []
+        },
+        {
+            "type": "filter_shape",
+            "inputs": [1],
+            "_output": [0],
+            "value_inputs": ["sphere"]
+        },
+        {
+            "type": "count",
+            "inputs": [2],
+            "_output": 1,
+            "value_inputs": []
+        }],
+        "answer": "yes",
+        "template_filename": "1obj.json",
+        "question_family_index": 6,
+        "question_index": 68
+    },
+    {
+        "split": "val",
+        "image_filename": "CLEVR_val_000006.png",
+        "image_index": 6,
+        "image": "CLEVR_val_000006",
+        "caption": "small cylinder",
+        "program": [
+        {
+            "type": "scene",
+            "inputs": [],
+            "_output": [0],
+            "value_inputs": []
+        },
+        {
+            "type": "filter_size",
+            "inputs": [0],
+            "_output": [0],
+            "value_inputs": []
+        },
+        {
+            "type": "filter_shape",
+            "inputs": [1],
+            "_output": [],
+            "value_inputs": ["cylinder"]
+        },
+        {
+            "type": "count",
+            "inputs": [2],
+            "_output": 0,
+            "value_inputs": []
+        }],
+        "answer": "no",
+        "template_filename": "1obj.json",
+        "question_family_index": 6,
+        "question_index": 69
+    },
+    {
+        "split": "val",
+        "image_filename": "CLEVR_val_000007.png",
+        "image_index": 7,
+        "image": "CLEVR_val_000007",
+        "caption": "small cyan metallic cube",
+        "program": [
+        {
+            "type": "scene",
+            "inputs": [],
+            "_output": [0],
+            "value_inputs": []
+        },
+        {
+            "type": "filter_size",
+            "inputs": [0],
+            "_output": [],
+            "value_inputs": ["small"]
+        },
+        {
+            "type": "filter_color",
+            "inputs": [1],
+            "_output": [],
+            "value_inputs": ["cyan"]
+        },
+        {
+            "type": "filter_material",
+            "inputs": [2],
+            "_output": [],
+            "value_inputs": ["metal"]
+        },
+        {
+            "type": "filter_shape",
+            "inputs": [3],
+            "_output": [],
+            "value_inputs": ["cube"]
+        },
+        {
+            "type": "count",
+            "inputs": [4],
+            "_output": 0,
+            "value_inputs": []
+        }],
+        "answer": "no",
+        "template_filename": "1obj.json",
+        "question_family_index": 0,
+        "question_index": 70
+    },
+    {
+        "split": "val",
+        "image_filename": "CLEVR_val_000007.png",
+        "image_index": 7,
+        "image": "CLEVR_val_000007",
+        "caption": "gray cylinder",
+        "program": [
+        {
+            "type": "scene",
+            "inputs": [],
+            "_output": [0],
+            "value_inputs": []
+        },
+        {
+            "type": "filter_color",
+            "inputs": [0],
+            "_output": [],
+            "value_inputs": ["gray"]
+        },
+        {
+            "type": "filter_shape",
+            "inputs": [1],
+            "_output": [],
+            "value_inputs": ["cylinder"]
+        },
+        {
+            "type": "count",
+            "inputs": [2],
+            "_output": 0,
+            "value_inputs": []
+        }],
+        "answer": "no",
+        "template_filename": "1obj.json",
+        "question_family_index": 0,
+        "question_index": 71
+    },
+    {
+        "split": "val",
+        "image_filename": "CLEVR_val_000007.png",
+        "image_index": 7,
+        "image": "CLEVR_val_000007",
+        "caption": "purple shiny sphere",
+        "program": [
+        {
+            "type": "scene",
+            "inputs": [],
+            "_output": [0],
+            "value_inputs": []
+        },
+        {
+            "type": "filter_color",
+            "inputs": [0],
+            "_output": [0],
+            "value_inputs": []
+        },
+        {
+            "type": "filter_material",
+            "inputs": [1],
+            "_output": [0],
+            "value_inputs": []
+        },
+        {
+            "type": "filter_shape",
+            "inputs": [2],
+            "_output": [0],
+            "value_inputs": ["sphere"]
+        },
+        {
+            "type": "count",
+            "inputs": [3],
+            "_output": 1,
+            "value_inputs": []
+        }],
+        "answer": "yes",
+        "template_filename": "1obj.json",
+        "question_family_index": 1,
+        "question_index": 72
+    },
+    {
+        "split": "val",
+        "image_filename": "CLEVR_val_000007.png",
+        "image_index": 7,
+        "image": "CLEVR_val_000007",
+        "caption": "purple metallic cylinder",
+        "program": [
+        {
+            "type": "scene",
+            "inputs": [],
+            "_output": [0],
+            "value_inputs": []
+        },
+        {
+            "type": "filter_color",
+            "inputs": [0],
+            "_output": [0],
+            "value_inputs": []
+        },
+        {
+            "type": "filter_material",
+            "inputs": [1],
+            "_output": [0],
+            "value_inputs": []
+        },
+        {
+            "type": "filter_shape",
+            "inputs": [2],
+            "_output": [],
+            "value_inputs": ["cylinder"]
+        },
+        {
+            "type": "count",
+            "inputs": [3],
+            "_output": 0,
+            "value_inputs": []
+        }],
+        "answer": "no",
+        "template_filename": "1obj.json",
+        "question_family_index": 1,
+        "question_index": 73
+    },
+    {
+        "split": "val",
+        "image_filename": "CLEVR_val_000007.png",
+        "image_index": 7,
+        "image": "CLEVR_val_000007",
+        "caption": "large metallic ball",
+        "program": [
+        {
+            "type": "scene",
+            "inputs": [],
+            "_output": [0],
+            "value_inputs": []
+        },
+        {
+            "type": "filter_size",
+            "inputs": [0],
+            "_output": [0],
+            "value_inputs": []
+        },
+        {
+            "type": "filter_material",
+            "inputs": [1],
+            "_output": [0],
+            "value_inputs": []
+        },
+        {
+            "type": "filter_shape",
+            "inputs": [2],
+            "_output": [0],
+            "value_inputs": ["sphere"]
+        },
+        {
+            "type": "count",
+            "inputs": [3],
+            "_output": 1,
+            "value_inputs": []
+        }],
+        "answer": "yes",
+        "template_filename": "1obj.json",
+        "question_family_index": 2,
+        "question_index": 74
+    },
+    {
+        "split": "val",
+        "image_filename": "CLEVR_val_000007.png",
+        "image_index": 7,
+        "image": "CLEVR_val_000007",
+        "caption": "big shiny cylinder",
+        "program": [
+        {
+            "type": "scene",
+            "inputs": [],
+            "_output": [0],
+            "value_inputs": []
+        },
+        {
+            "type": "filter_size",
+            "inputs": [0],
+            "_output": [0],
+            "value_inputs": []
+        },
+        {
+            "type": "filter_material",
+            "inputs": [1],
+            "_output": [0],
+            "value_inputs": []
+        },
+        {
+            "type": "filter_shape",
+            "inputs": [2],
+            "_output": [],
+            "value_inputs": ["cylinder"]
+        },
+        {
+            "type": "count",
+            "inputs": [3],
+            "_output": 0,
+            "value_inputs": []
+        }],
+        "answer": "no",
+        "template_filename": "1obj.json",
+        "question_family_index": 2,
+        "question_index": 75
+    },
+    {
+        "split": "val",
+        "image_filename": "CLEVR_val_000007.png",
+        "image_index": 7,
+        "image": "CLEVR_val_000007",
+        "caption": "large purple ball",
+        "program": [
+        {
+            "type": "scene",
+            "inputs": [],
+            "_output": [0],
+            "value_inputs": []
+        },
+        {
+            "type": "filter_color",
+            "inputs": [0],
+            "_output": [0],
+            "value_inputs": []
+        },
+        {
+            "type": "filter_size",
+            "inputs": [1],
+            "_output": [0],
+            "value_inputs": []
+        },
+        {
+            "type": "filter_shape",
+            "inputs": [2],
+            "_output": [0],
+            "value_inputs": ["sphere"]
+        },
+        {
+            "type": "count",
+            "inputs": [3],
+            "_output": 1,
+            "value_inputs": []
+        }],
+        "answer": "yes",
+        "template_filename": "1obj.json",
+        "question_family_index": 3,
+        "question_index": 76
+    },
+    {
+        "split": "val",
+        "image_filename": "CLEVR_val_000007.png",
+        "image_index": 7,
+        "image": "CLEVR_val_000007",
+        "caption": "large purple cube",
+        "program": [
+        {
+            "type": "scene",
+            "inputs": [],
+            "_output": [0],
+            "value_inputs": []
+        },
+        {
+            "type": "filter_color",
+            "inputs": [0],
+            "_output": [0],
+            "value_inputs": []
+        },
+        {
+            "type": "filter_size",
+            "inputs": [1],
+            "_output": [0],
+            "value_inputs": []
+        },
+        {
+            "type": "filter_shape",
+            "inputs": [2],
+            "_output": [],
+            "value_inputs": ["cube"]
+        },
+        {
+            "type": "count",
+            "inputs": [3],
+            "_output": 0,
+            "value_inputs": []
+        }],
+        "answer": "no",
+        "template_filename": "1obj.json",
+        "question_family_index": 3,
+        "question_index": 77
+    },
+    {
+        "split": "val",
+        "image_filename": "CLEVR_val_000007.png",
+        "image_index": 7,
+        "image": "CLEVR_val_000007",
+        "caption": "metal ball",
+        "program": [
+        {
+            "type": "scene",
+            "inputs": [],
+            "_output": [0],
+            "value_inputs": []
+        },
+        {
+            "type": "filter_material",
+            "inputs": [0],
+            "_output": [0],
+            "value_inputs": ["metal"]
+        },
+        {
+            "type": "filter_shape",
+            "inputs": [1],
+            "_output": [0],
+            "value_inputs": ["sphere"]
+        },
+        {
+            "type": "count",
+            "inputs": [2],
+            "_output": 1,
+            "value_inputs": []
+        }],
+        "answer": "yes",
+        "template_filename": "1obj.json",
+        "question_family_index": 4,
+        "question_index": 78
+    },
+    {
+        "split": "val",
+        "image_filename": "CLEVR_val_000008.png",
+        "image_index": 8,
+        "image": "CLEVR_val_000008",
+        "caption": "blue cube",
+        "program": [
+        {
+            "type": "scene",
+            "inputs": [],
+            "_output": [0],
+            "value_inputs": []
+        },
+        {
+            "type": "filter_color",
+            "inputs": [0],
+            "_output": [],
+            "value_inputs": []
+        },
+        {
+            "type": "filter_shape",
+            "inputs": [1],
+            "_output": [],
+            "value_inputs": ["cube"]
+        },
+        {
+            "type": "count",
+            "inputs": [2],
+            "_output": 0,
+            "value_inputs": []
+        }],
+        "answer": "no",
+        "template_filename": "1obj.json",
+        "question_family_index": 5,
+        "question_index": 79
+    },
+    {
+        "split": "val",
+        "image_filename": "CLEVR_val_000008.png",
+        "image_index": 8,
+        "image": "CLEVR_val_000008",
+        "caption": "blue sphere",
+        "program": [
+        {
+            "type": "scene",
+            "inputs": [],
+            "_output": [0],
+            "value_inputs": []
+        },
+        {
+            "type": "filter_color",
+            "inputs": [0],
+            "_output": [],
+            "value_inputs": []
+        },
+        {
+            "type": "filter_shape",
+            "inputs": [1],
+            "_output": [],
+            "value_inputs": ["sphere"]
+        },
+        {
+            "type": "count",
+            "inputs": [2],
+            "_output": 0,
+            "value_inputs": []
+        }],
+        "answer": "no",
+        "template_filename": "1obj.json",
+        "question_family_index": 5,
+        "question_index": 80
+    },
+    {
+        "split": "val",
+        "image_filename": "CLEVR_val_000008.png",
+        "image_index": 8,
+        "image": "CLEVR_val_000008",
+        "caption": "tiny cylinder",
+        "program": [
+        {
+            "type": "scene",
+            "inputs": [],
+            "_output": [0],
+            "value_inputs": []
+        },
+        {
+            "type": "filter_size",
+            "inputs": [0],
+            "_output": [0],
+            "value_inputs": []
+        },
+        {
+            "type": "filter_shape",
+            "inputs": [1],
+            "_output": [],
+            "value_inputs": ["cylinder"]
+        },
+        {
+            "type": "count",
+            "inputs": [2],
+            "_output": 0,
+            "value_inputs": []
+        }],
+        "answer": "no",
+        "template_filename": "1obj.json",
+        "question_family_index": 6,
+        "question_index": 81
+    },
+    {
+        "split": "val",
+        "image_filename": "CLEVR_val_000008.png",
+        "image_index": 8,
+        "image": "CLEVR_val_000008",
+        "caption": "small ball",
+        "program": [
+        {
+            "type": "scene",
+            "inputs": [],
+            "_output": [0],
+            "value_inputs": []
+        },
+        {
+            "type": "filter_size",
+            "inputs": [0],
+            "_output": [0],
+            "value_inputs": []
+        },
+        {
+            "type": "filter_shape",
+            "inputs": [1],
+            "_output": [],
+            "value_inputs": ["sphere"]
+        },
+        {
+            "type": "count",
+            "inputs": [2],
+            "_output": 0,
+            "value_inputs": []
+        }],
+        "answer": "no",
+        "template_filename": "1obj.json",
+        "question_family_index": 6,
+        "question_index": 82
+    },
+    {
+        "split": "val",
+        "image_filename": "CLEVR_val_000008.png",
+        "image_index": 8,
+        "image": "CLEVR_val_000008",
+        "caption": "tiny red thing",
+        "program": [
+        {
+            "type": "scene",
+            "inputs": [],
+            "_output": [0],
+            "value_inputs": []
+        },
+        {
+            "type": "filter_size",
+            "inputs": [0],
+            "_output": [0],
+            "value_inputs": ["small"]
+        },
+        {
+            "type": "filter_color",
+            "inputs": [1],
+            "_output": [0],
+            "value_inputs": ["red"]
+        },
+        {
+            "type": "count",
+            "inputs": [2],
+            "_output": 1,
+            "value_inputs": []
+        }],
+        "answer": "yes",
+        "template_filename": "1obj.json",
+        "question_family_index": 0,
+        "question_index": 83
+    },
+    {
+        "split": "val",
+        "image_filename": "CLEVR_val_000008.png",
+        "image_index": 8,
+        "image": "CLEVR_val_000008",
+        "caption": "large blue rubber cylinder",
+        "program": [
+        {
+            "type": "scene",
+            "inputs": [],
+            "_output": [0],
+            "value_inputs": []
+        },
+        {
+            "type": "filter_size",
+            "inputs": [0],
+            "_output": [],
+            "value_inputs": ["large"]
+        },
+        {
+            "type": "filter_color",
+            "inputs": [1],
+            "_output": [],
+            "value_inputs": ["blue"]
+        },
+        {
+            "type": "filter_material",
+            "inputs": [2],
+            "_output": [],
+            "value_inputs": ["rubber"]
+        },
+        {
+            "type": "filter_shape",
+            "inputs": [3],
+            "_output": [],
+            "value_inputs": ["cylinder"]
+        },
+        {
+            "type": "count",
+            "inputs": [4],
+            "_output": 0,
+            "value_inputs": []
+        }],
+        "answer": "no",
+        "template_filename": "1obj.json",
+        "question_family_index": 0,
+        "question_index": 84
+    },
+    {
+        "split": "val",
+        "image_filename": "CLEVR_val_000008.png",
+        "image_index": 8,
+        "image": "CLEVR_val_000008",
+        "caption": "red rubber ball",
+        "program": [
+        {
+            "type": "scene",
+            "inputs": [],
+            "_output": [0],
+            "value_inputs": []
+        },
+        {
+            "type": "filter_color",
+            "inputs": [0],
+            "_output": [0],
+            "value_inputs": []
+        },
+        {
+            "type": "filter_material",
+            "inputs": [1],
+            "_output": [0],
+            "value_inputs": []
+        },
+        {
+            "type": "filter_shape",
+            "inputs": [2],
+            "_output": [],
+            "value_inputs": ["sphere"]
+        },
+        {
+            "type": "count",
+            "inputs": [3],
+            "_output": 0,
+            "value_inputs": []
+        }],
+        "answer": "no",
+        "template_filename": "1obj.json",
+        "question_family_index": 1,
+        "question_index": 85
+    },
+    {
+        "split": "val",
+        "image_filename": "CLEVR_val_000008.png",
+        "image_index": 8,
+        "image": "CLEVR_val_000008",
+        "caption": "red matte block",
+        "program": [
+        {
+            "type": "scene",
+            "inputs": [],
+            "_output": [0],
+            "value_inputs": []
+        },
+        {
+            "type": "filter_color",
+            "inputs": [0],
+            "_output": [0],
+            "value_inputs": []
+        },
+        {
+            "type": "filter_material",
+            "inputs": [1],
+            "_output": [0],
+            "value_inputs": []
+        },
+        {
+            "type": "filter_shape",
+            "inputs": [2],
+            "_output": [0],
+            "value_inputs": ["cube"]
+        },
+        {
+            "type": "count",
+            "inputs": [3],
+            "_output": 1,
+            "value_inputs": []
+        }],
+        "answer": "yes",
+        "template_filename": "1obj.json",
+        "question_family_index": 1,
+        "question_index": 86
+    },
+    {
+        "split": "val",
+        "image_filename": "CLEVR_val_000008.png",
+        "image_index": 8,
+        "image": "CLEVR_val_000008",
+        "caption": "large metal ball",
+        "program": [
+        {
+            "type": "scene",
+            "inputs": [],
+            "_output": [0],
+            "value_inputs": []
+        },
+        {
+            "type": "filter_size",
+            "inputs": [0],
+            "_output": [],
+            "value_inputs": ["large"]
+        },
+        {
+            "type": "filter_material",
+            "inputs": [1],
+            "_output": [],
+            "value_inputs": ["metal"]
+        },
+        {
+            "type": "filter_shape",
+            "inputs": [2],
+            "_output": [],
+            "value_inputs": ["sphere"]
+        },
+        {
+            "type": "count",
+            "inputs": [3],
+            "_output": 0,
+            "value_inputs": []
+        }],
+        "answer": "no",
+        "template_filename": "1obj.json",
+        "question_family_index": 2,
+        "question_index": 87
+    },
+    {
+        "split": "val",
+        "image_filename": "CLEVR_val_000008.png",
+        "image_index": 8,
+        "image": "CLEVR_val_000008",
+        "caption": "tiny matte block",
+        "program": [
+        {
+            "type": "scene",
+            "inputs": [],
+            "_output": [0],
+            "value_inputs": []
+        },
+        {
+            "type": "filter_size",
+            "inputs": [0],
+            "_output": [0],
+            "value_inputs": ["small"]
+        },
+        {
+            "type": "filter_material",
+            "inputs": [1],
+            "_output": [0],
+            "value_inputs": ["rubber"]
+        },
+        {
+            "type": "filter_shape",
+            "inputs": [2],
+            "_output": [0],
+            "value_inputs": ["cube"]
+        },
+        {
+            "type": "count",
+            "inputs": [3],
+            "_output": 1,
+            "value_inputs": []
+        }],
+        "answer": "yes",
+        "template_filename": "1obj.json",
+        "question_family_index": 2,
+        "question_index": 88
+    },
+    {
+        "split": "val",
+        "image_filename": "CLEVR_val_000009.png",
+        "image_index": 9,
+        "image": "CLEVR_val_000009",
+        "caption": "small cyan cylinder",
+        "program": [
+        {
+            "type": "scene",
+            "inputs": [],
+            "_output": [0],
+            "value_inputs": []
+        },
+        {
+            "type": "filter_color",
+            "inputs": [0],
+            "_output": [],
+            "value_inputs": ["cyan"]
+        },
+        {
+            "type": "filter_size",
+            "inputs": [1],
+            "_output": [],
+            "value_inputs": ["small"]
+        },
+        {
+            "type": "filter_shape",
+            "inputs": [2],
+            "_output": [],
+            "value_inputs": ["cylinder"]
+        },
+        {
+            "type": "count",
+            "inputs": [3],
+            "_output": 0,
+            "value_inputs": []
+        }],
+        "answer": "no",
+        "template_filename": "1obj.json",
+        "question_family_index": 3,
+        "question_index": 89
+    },
+    {
+        "split": "val",
+        "image_filename": "CLEVR_val_000009.png",
+        "image_index": 9,
+        "image": "CLEVR_val_000009",
+        "caption": "small yellow cylinder",
+        "program": [
+        {
+            "type": "scene",
+            "inputs": [],
+            "_output": [0],
+            "value_inputs": []
+        },
+        {
+            "type": "filter_color",
+            "inputs": [0],
+            "_output": [0],
+            "value_inputs": ["yellow"]
+        },
+        {
+            "type": "filter_size",
+            "inputs": [1],
+            "_output": [0],
+            "value_inputs": ["small"]
+        },
+        {
+            "type": "filter_shape",
+            "inputs": [2],
+            "_output": [0],
+            "value_inputs": ["cylinder"]
+        },
+        {
+            "type": "count",
+            "inputs": [3],
+            "_output": 1,
+            "value_inputs": []
+        }],
+        "answer": "yes",
+        "template_filename": "1obj.json",
+        "question_family_index": 3,
+        "question_index": 90
+    },
+    {
+        "split": "val",
+        "image_filename": "CLEVR_val_000009.png",
+        "image_index": 9,
+        "image": "CLEVR_val_000009",
+        "caption": "matte block",
+        "program": [
+        {
+            "type": "scene",
+            "inputs": [],
+            "_output": [0],
+            "value_inputs": []
+        },
+        {
+            "type": "filter_material",
+            "inputs": [0],
+            "_output": [],
+            "value_inputs": []
+        },
+        {
+            "type": "filter_shape",
+            "inputs": [1],
+            "_output": [],
+            "value_inputs": ["cube"]
+        },
+        {
+            "type": "count",
+            "inputs": [2],
+            "_output": 0,
+            "value_inputs": []
+        }],
+        "answer": "no",
+        "template_filename": "1obj.json",
+        "question_family_index": 4,
+        "question_index": 91
+    },
+    {
+        "split": "val",
+        "image_filename": "CLEVR_val_000009.png",
+        "image_index": 9,
+        "image": "CLEVR_val_000009",
+        "caption": "matte ball",
+        "program": [
+        {
+            "type": "scene",
+            "inputs": [],
+            "_output": [0],
+            "value_inputs": []
+        },
+        {
+            "type": "filter_material",
+            "inputs": [0],
+            "_output": [],
+            "value_inputs": []
+        },
+        {
+            "type": "filter_shape",
+            "inputs": [1],
+            "_output": [],
+            "value_inputs": ["sphere"]
+        },
+        {
+            "type": "count",
+            "inputs": [2],
+            "_output": 0,
+            "value_inputs": []
+        }],
+        "answer": "no",
+        "template_filename": "1obj.json",
+        "question_family_index": 4,
+        "question_index": 92
+    },
+    {
+        "split": "val",
+        "image_filename": "CLEVR_val_000009.png",
+        "image_index": 9,
+        "image": "CLEVR_val_000009",
+        "caption": "cyan cylinder",
+        "program": [
+        {
+            "type": "scene",
+            "inputs": [],
+            "_output": [0],
+            "value_inputs": []
+        },
+        {
+            "type": "filter_color",
+            "inputs": [0],
+            "_output": [],
+            "value_inputs": ["cyan"]
+        },
+        {
+            "type": "filter_shape",
+            "inputs": [1],
+            "_output": [],
+            "value_inputs": ["cylinder"]
+        },
+        {
+            "type": "count",
+            "inputs": [2],
+            "_output": 0,
+            "value_inputs": []
+        }],
+        "answer": "no",
+        "template_filename": "1obj.json",
+        "question_family_index": 5,
+        "question_index": 93
+    },
+    {
+        "split": "val",
+        "image_filename": "CLEVR_val_000009.png",
+        "image_index": 9,
+        "image": "CLEVR_val_000009",
+        "caption": "yellow cylinder",
+        "program": [
+        {
+            "type": "scene",
+            "inputs": [],
+            "_output": [0],
+            "value_inputs": []
+        },
+        {
+            "type": "filter_color",
+            "inputs": [0],
+            "_output": [0],
+            "value_inputs": ["yellow"]
+        },
+        {
+            "type": "filter_shape",
+            "inputs": [1],
+            "_output": [0],
+            "value_inputs": ["cylinder"]
+        },
+        {
+            "type": "count",
+            "inputs": [2],
+            "_output": 1,
+            "value_inputs": []
+        }],
+        "answer": "yes",
+        "template_filename": "1obj.json",
+        "question_family_index": 5,
+        "question_index": 94
+    },
+    {
+        "split": "val",
+        "image_filename": "CLEVR_val_000009.png",
+        "image_index": 9,
+        "image": "CLEVR_val_000009",
+        "caption": "small cube",
+        "program": [
+        {
+            "type": "scene",
+            "inputs": [],
+            "_output": [0],
+            "value_inputs": []
+        },
+        {
+            "type": "filter_size",
+            "inputs": [0],
+            "_output": [0],
+            "value_inputs": []
+        },
+        {
+            "type": "filter_shape",
+            "inputs": [1],
+            "_output": [],
+            "value_inputs": ["cube"]
+        },
+        {
+            "type": "count",
+            "inputs": [2],
+            "_output": 0,
+            "value_inputs": []
+        }],
+        "answer": "no",
+        "template_filename": "1obj.json",
+        "question_family_index": 6,
+        "question_index": 95
+    },
+    {
+        "split": "val",
+        "image_filename": "CLEVR_val_000009.png",
+        "image_index": 9,
+        "image": "CLEVR_val_000009",
+        "caption": "tiny cylinder",
+        "program": [
+        {
+            "type": "scene",
+            "inputs": [],
+            "_output": [0],
+            "value_inputs": []
+        },
+        {
+            "type": "filter_size",
+            "inputs": [0],
+            "_output": [0],
+            "value_inputs": []
+        },
+        {
+            "type": "filter_shape",
+            "inputs": [1],
+            "_output": [0],
+            "value_inputs": ["cylinder"]
+        },
+        {
+            "type": "count",
+            "inputs": [2],
+            "_output": 1,
+            "value_inputs": []
+        }],
+        "answer": "yes",
+        "template_filename": "1obj.json",
+        "question_family_index": 6,
+        "question_index": 96
+    },
+    {
+        "split": "val",
+        "image_filename": "CLEVR_val_000009.png",
+        "image_index": 9,
+        "image": "CLEVR_val_000009",
+        "caption": "large blue cube",
+        "program": [
+        {
+            "type": "scene",
+            "inputs": [],
+            "_output": [0],
+            "value_inputs": []
+        },
+        {
+            "type": "filter_size",
+            "inputs": [0],
+            "_output": [],
+            "value_inputs": ["large"]
+        },
+        {
+            "type": "filter_color",
+            "inputs": [1],
+            "_output": [],
+            "value_inputs": ["blue"]
+        },
+        {
+            "type": "filter_shape",
+            "inputs": [2],
+            "_output": [],
+            "value_inputs": ["cube"]
+        },
+        {
+            "type": "count",
+            "inputs": [3],
+            "_output": 0,
+            "value_inputs": []
+        }],
+        "answer": "no",
+        "template_filename": "1obj.json",
+        "question_family_index": 0,
+        "question_index": 97
+    },
+    {
+        "split": "val",
+        "image_filename": "CLEVR_val_000009.png",
+        "image_index": 9,
+        "image": "CLEVR_val_000009",
+        "caption": "big green matte thing",
+        "program": [
+        {
+            "type": "scene",
+            "inputs": [],
+            "_output": [0],
+            "value_inputs": []
+        },
+        {
+            "type": "filter_size",
+            "inputs": [0],
+            "_output": [],
+            "value_inputs": ["large"]
+        },
+        {
+            "type": "filter_color",
+            "inputs": [1],
+            "_output": [],
+            "value_inputs": ["green"]
+        },
+        {
+            "type": "filter_material",
+            "inputs": [2],
+            "_output": [],
+            "value_inputs": ["rubber"]
+        },
+        {
+            "type": "count",
+            "inputs": [3],
+            "_output": 0,
+            "value_inputs": []
+        }],
+        "answer": "no",
+        "template_filename": "1obj.json",
+        "question_family_index": 0,
+        "question_index": 98
+    }]
+}

@@ -1,0 +1,125 @@
+{
+    "info": "1obj_train derendered scene",
+    "scenes": [
+	    {
+	        "image_index": 0,
+	        "image_filename": "CLEVR_train_000000.png",
+	        "objects": [
+	        {
+	            "shape": "sphere",
+	            "size": "large",
+	            "material": "rubber",
+	            "color": "purple",
+	            "position": [-0.5565927624702454, -2.3495750427246094, 0.7051336765289307]
+	        }]
+	    },
+	    {
+	        "image_index": 1,
+	        "image_filename": "CLEVR_train_000001.png",
+	        "objects": [
+	        {
+	            "shape": "cylinder",
+	            "size": "small",
+	            "material": "metal",
+	            "color": "gray",
+	            "position": [-2.395026445388794, 0.6640287041664124, 0.3488791584968567]
+	        }]
+	    },
+	    {
+	        "image_index": 2,
+	        "image_filename": "CLEVR_train_000002.png",
+	        "objects": [
+	        {
+	            "shape": "sphere",
+	            "size": "small",
+	            "material": "metal",
+	            "color": "blue",
+	            "position": [-1.6376186609268188, -1.3545957803726196, 0.3476511836051941]
+	        }]
+	    },
+	    {
+	        "image_index": 3,
+	        "image_filename": "CLEVR_train_000003.png",
+	        "objects": [
+	        {
+	            "shape": "sphere",
+	            "size": "small",
+	            "material": "metal",
+	            "color": "gray",
+	            "position": [-0.8344532251358032, 0.9666774868965149, 0.35277363657951355]
+	        }]
+	    },
+	    {
+	        "image_index": 4,
+	        "image_filename": "CLEVR_train_000004.png",
+	        "objects": [
+	        {
+	            "shape": "sphere",
+	            "size": "small",
+	            "material": "metal",
+	            "color": "gray",
+	            "position": [-1.0549999475479126, 2.8033931255340576, 0.3519635796546936]
+	        }]
+	    },
+	    {
+	        "image_index": 5,
+	        "image_filename": "CLEVR_train_000005.png",
+	        "objects": [
+	        {
+	            "shape": "sphere",
+	            "size": "large",
+	            "material": "metal",
+	            "color": "green",
+	            "position": [-1.5209327936172485, 1.162937879562378, 0.6972309350967407]
+	        }]
+	    },
+	    {
+	        "image_index": 6,
+	        "image_filename": "CLEVR_train_000006.png",
+	        "objects": [
+	        {
+	            "shape": "cube",
+	            "size": "large",
+	            "material": "rubber",
+	            "color": "green",
+	            "position": [-1.0345851182937622, 0.04786131531000137, 0.7007463574409485]
+	        }]
+	    },
+	    {
+	        "image_index": 7,
+	        "image_filename": "CLEVR_train_000007.png",
+	        "objects": [
+	        {
+	            "shape": "cube",
+	            "size": "large",
+	            "material": "rubber",
+	            "color": "blue",
+	            "position": [1.8936394453048706, 1.6371523141860962, 0.695177435874939]
+	        }]
+	    },
+	    {
+	        "image_index": 8,
+	        "image_filename": "CLEVR_train_000008.png",
+	        "objects": [
+	        {
+	            "shape": "cube",
+	            "size": "large",
+	            "material": "metal",
+	            "color": "purple",
+	            "position": [2.670616865158081, -0.6328219175338745, 0.6993865966796875]
+	        }]
+	    },
+	    {
+	        "image_index": 9,
+	        "image_filename": "CLEVR_train_000009.png",
+	        "objects": [
+	        {
+	            "shape": "sphere",
+	            "size": "large",
+	            "material": "rubber",
+	            "color": "purple",
+	            "position": [-2.1451432704925537, 0.8095563650131226, 0.7006559371948242]
+	        }]
+	    }
+	]
+}

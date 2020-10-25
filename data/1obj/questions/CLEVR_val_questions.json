@@ -1,0 +1,1456 @@
+{
+    "info":
+    {
+        "date": "7/8/2017",
+        "version": "1.0",
+        "split": "val",
+        "license": "Creative Commons Attribution (CC-BY 4.0"
+    },
+    "questions": [
+    {
+        "split": "val",
+        "image_filename": "CLEVR_val_000000.png",
+        "image_index": 0,
+        "image": "CLEVR_val_000000",
+        "question": "What color is the thing?",
+        "program": [
+        {
+            "type": "scene",
+            "inputs": [],
+            "_output": [0],
+            "value_inputs": []
+        },
+        {
+            "type": "unique",
+            "inputs": [0],
+            "_output": 0,
+            "value_inputs": []
+        },
+        {
+            "type": "query_color",
+            "inputs": [1],
+            "_output": "blue",
+            "value_inputs": []
+        }],
+        "answer": "blue",
+        "template_filename": "simple_query.json",
+        "question_family_index": 0,
+        "question_index": 0
+    },
+    {
+        "split": "val",
+        "image_filename": "CLEVR_val_000000.png",
+        "image_index": 0,
+        "image": "CLEVR_val_000000",
+        "question": "What size is the thing?",
+        "program": [
+        {
+            "type": "scene",
+            "inputs": [],
+            "_output": [0],
+            "value_inputs": []
+        },
+        {
+            "type": "unique",
+            "inputs": [0],
+            "_output": 0,
+            "value_inputs": []
+        },
+        {
+            "type": "query_size",
+            "inputs": [1],
+            "_output": "large",
+            "value_inputs": []
+        }],
+        "answer": "large",
+        "template_filename": "simple_query.json",
+        "question_family_index": 1,
+        "question_index": 1
+    },
+    {
+        "split": "val",
+        "image_filename": "CLEVR_val_000000.png",
+        "image_index": 0,
+        "image": "CLEVR_val_000000",
+        "question": "There is a object in the picture. What is the texture of it?",
+        "program": [
+        {
+            "type": "scene",
+            "inputs": [],
+            "_output": [0],
+            "value_inputs": []
+        },
+        {
+            "type": "unique",
+            "inputs": [0],
+            "_output": 0,
+            "value_inputs": []
+        },
+        {
+            "type": "query_material",
+            "inputs": [1],
+            "_output": "metal",
+            "value_inputs": []
+        }],
+        "answer": "metal",
+        "template_filename": "simple_query.json",
+        "question_family_index": 2,
+        "question_index": 2
+    },
+    {
+        "split": "val",
+        "image_filename": "CLEVR_val_000001.png",
+        "image_index": 1,
+        "image": "CLEVR_val_000001",
+        "question": "What color is the thing?",
+        "program": [
+        {
+            "type": "scene",
+            "inputs": [],
+            "_output": [0],
+            "value_inputs": []
+        },
+        {
+            "type": "unique",
+            "inputs": [0],
+            "_output": 0,
+            "value_inputs": []
+        },
+        {
+            "type": "query_color",
+            "inputs": [1],
+            "_output": "green",
+            "value_inputs": []
+        }],
+        "answer": "green",
+        "template_filename": "simple_query.json",
+        "question_family_index": 0,
+        "question_index": 3
+    },
+    {
+        "split": "val",
+        "image_filename": "CLEVR_val_000001.png",
+        "image_index": 1,
+        "image": "CLEVR_val_000001",
+        "question": "What color is the object in the picture?",
+        "program": [
+        {
+            "type": "scene",
+            "inputs": [],
+            "_output": [0],
+            "value_inputs": []
+        },
+        {
+            "type": "filter_size",
+            "inputs": [0],
+            "_output": [0],
+            "value_inputs": ["small"]
+        },
+        {
+            "type": "unique",
+            "inputs": [1],
+            "_output": 0,
+            "value_inputs": []
+        },
+        {
+            "type": "query_color",
+            "inputs": [2],
+            "_output": "green",
+            "value_inputs": []
+        }],
+        "answer": "green",
+        "template_filename": "simple_query.json",
+        "question_family_index": 0,
+        "question_index": 4
+    },
+    {
+        "split": "val",
+        "image_filename": "CLEVR_val_000001.png",
+        "image_index": 1,
+        "image": "CLEVR_val_000001",
+        "question": "How big is the object in the picture?",
+        "program": [
+        {
+            "type": "scene",
+            "inputs": [],
+            "_output": [0],
+            "value_inputs": []
+        },
+        {
+            "type": "unique",
+            "inputs": [0],
+            "_output": 0,
+            "value_inputs": []
+        },
+        {
+            "type": "query_size",
+            "inputs": [1],
+            "_output": "small",
+            "value_inputs": []
+        }],
+        "answer": "small",
+        "template_filename": "simple_query.json",
+        "question_family_index": 1,
+        "question_index": 5
+    },
+    {
+        "split": "val",
+        "image_filename": "CLEVR_val_000001.png",
+        "image_index": 1,
+        "image": "CLEVR_val_000001",
+        "question": "What size is the object?",
+        "program": [
+        {
+            "type": "scene",
+            "inputs": [],
+            "_output": [0],
+            "value_inputs": []
+        },
+        {
+            "type": "unique",
+            "inputs": [0],
+            "_output": 0,
+            "value_inputs": []
+        },
+        {
+            "type": "query_size",
+            "inputs": [1],
+            "_output": "small",
+            "value_inputs": []
+        }],
+        "answer": "small",
+        "template_filename": "simple_query.json",
+        "question_family_index": 1,
+        "question_index": 6
+    },
+    {
+        "split": "val",
+        "image_filename": "CLEVR_val_000002.png",
+        "image_index": 2,
+        "image": "CLEVR_val_000002",
+        "question": "What color is the big object?",
+        "program": [
+        {
+            "type": "scene",
+            "inputs": [],
+            "_output": [0],
+            "value_inputs": []
+        },
+        {
+            "type": "filter_size",
+            "inputs": [0],
+            "_output": [0],
+            "value_inputs": ["large"]
+        },
+        {
+            "type": "unique",
+            "inputs": [1],
+            "_output": 0,
+            "value_inputs": []
+        },
+        {
+            "type": "query_color",
+            "inputs": [2],
+            "_output": "cyan",
+            "value_inputs": []
+        }],
+        "answer": "cyan",
+        "template_filename": "simple_query.json",
+        "question_family_index": 0,
+        "question_index": 7
+    },
+    {
+        "split": "val",
+        "image_filename": "CLEVR_val_000002.png",
+        "image_index": 2,
+        "image": "CLEVR_val_000002",
+        "question": "What color is the thing in the picture?",
+        "program": [
+        {
+            "type": "scene",
+            "inputs": [],
+            "_output": [0],
+            "value_inputs": []
+        },
+        {
+            "type": "unique",
+            "inputs": [0],
+            "_output": 0,
+            "value_inputs": []
+        },
+        {
+            "type": "query_color",
+            "inputs": [1],
+            "_output": "cyan",
+            "value_inputs": []
+        }],
+        "answer": "cyan",
+        "template_filename": "simple_query.json",
+        "question_family_index": 0,
+        "question_index": 8
+    },
+    {
+        "split": "val",
+        "image_filename": "CLEVR_val_000002.png",
+        "image_index": 2,
+        "image": "CLEVR_val_000002",
+        "question": "What size is the thing?",
+        "program": [
+        {
+            "type": "scene",
+            "inputs": [],
+            "_output": [0],
+            "value_inputs": []
+        },
+        {
+            "type": "unique",
+            "inputs": [0],
+            "_output": 0,
+            "value_inputs": []
+        },
+        {
+            "type": "query_size",
+            "inputs": [1],
+            "_output": "large",
+            "value_inputs": []
+        }],
+        "answer": "large",
+        "template_filename": "simple_query.json",
+        "question_family_index": 1,
+        "question_index": 9
+    },
+    {
+        "split": "val",
+        "image_filename": "CLEVR_val_000002.png",
+        "image_index": 2,
+        "image": "CLEVR_val_000002",
+        "question": "What size is the thing?",
+        "program": [
+        {
+            "type": "scene",
+            "inputs": [],
+            "_output": [0],
+            "value_inputs": []
+        },
+        {
+            "type": "unique",
+            "inputs": [0],
+            "_output": 0,
+            "value_inputs": []
+        },
+        {
+            "type": "query_size",
+            "inputs": [1],
+            "_output": "large",
+            "value_inputs": []
+        }],
+        "answer": "large",
+        "template_filename": "simple_query.json",
+        "question_family_index": 1,
+        "question_index": 10
+    },
+    {
+        "split": "val",
+        "image_filename": "CLEVR_val_000003.png",
+        "image_index": 3,
+        "image": "CLEVR_val_000003",
+        "question": "What color is the object in the picture?",
+        "program": [
+        {
+            "type": "scene",
+            "inputs": [],
+            "_output": [0],
+            "value_inputs": []
+        },
+        {
+            "type": "filter_size",
+            "inputs": [0],
+            "_output": [0],
+            "value_inputs": ["large"]
+        },
+        {
+            "type": "unique",
+            "inputs": [1],
+            "_output": 0,
+            "value_inputs": []
+        },
+        {
+            "type": "query_color",
+            "inputs": [2],
+            "_output": "red",
+            "value_inputs": []
+        }],
+        "answer": "red",
+        "template_filename": "simple_query.json",
+        "question_family_index": 0,
+        "question_index": 11
+    },
+    {
+        "split": "val",
+        "image_filename": "CLEVR_val_000003.png",
+        "image_index": 3,
+        "image": "CLEVR_val_000003",
+        "question": "What color is the object in the picture?",
+        "program": [
+        {
+            "type": "scene",
+            "inputs": [],
+            "_output": [0],
+            "value_inputs": []
+        },
+        {
+            "type": "filter_size",
+            "inputs": [0],
+            "_output": [0],
+            "value_inputs": ["large"]
+        },
+        {
+            "type": "unique",
+            "inputs": [1],
+            "_output": 0,
+            "value_inputs": []
+        },
+        {
+            "type": "query_color",
+            "inputs": [2],
+            "_output": "red",
+            "value_inputs": []
+        }],
+        "answer": "red",
+        "template_filename": "simple_query.json",
+        "question_family_index": 0,
+        "question_index": 12
+    },
+    {
+        "split": "val",
+        "image_filename": "CLEVR_val_000004.png",
+        "image_index": 4,
+        "image": "CLEVR_val_000004",
+        "question": "There is a cyan cube in the picture. What is the texture of it?",
+        "program": [
+        {
+            "type": "scene",
+            "inputs": [],
+            "_output": [0],
+            "value_inputs": []
+        },
+        {
+            "type": "filter_size",
+            "inputs": [0],
+            "_output": [0],
+            "value_inputs": ["small"]
+        },
+        {
+            "type": "filter_color",
+            "inputs": [1],
+            "_output": [0],
+            "value_inputs": ["cyan"]
+        },
+        {
+            "type": "filter_shape",
+            "inputs": [2],
+            "_output": [0],
+            "value_inputs": ["cube"]
+        },
+        {
+            "type": "unique",
+            "inputs": [3],
+            "_output": 0,
+            "value_inputs": []
+        },
+        {
+            "type": "query_material",
+            "inputs": [4],
+            "_output": "rubber",
+            "value_inputs": []
+        }],
+        "answer": "rubber",
+        "template_filename": "simple_query.json",
+        "question_family_index": 2,
+        "question_index": 13
+    },
+    {
+        "split": "val",
+        "image_filename": "CLEVR_val_000004.png",
+        "image_index": 4,
+        "image": "CLEVR_val_000004",
+        "question": "What is the cyan tiny object made of?",
+        "program": [
+        {
+            "type": "scene",
+            "inputs": [],
+            "_output": [0],
+            "value_inputs": []
+        },
+        {
+            "type": "filter_size",
+            "inputs": [0],
+            "_output": [0],
+            "value_inputs": ["small"]
+        },
+        {
+            "type": "filter_color",
+            "inputs": [1],
+            "_output": [0],
+            "value_inputs": ["cyan"]
+        },
+        {
+            "type": "unique",
+            "inputs": [2],
+            "_output": 0,
+            "value_inputs": []
+        },
+        {
+            "type": "query_material",
+            "inputs": [3],
+            "_output": "rubber",
+            "value_inputs": []
+        }],
+        "answer": "rubber",
+        "template_filename": "simple_query.json",
+        "question_family_index": 2,
+        "question_index": 14
+    },
+    {
+        "split": "val",
+        "image_filename": "CLEVR_val_000004.png",
+        "image_index": 4,
+        "image": "CLEVR_val_000004",
+        "question": "How big is the thing in the picture?",
+        "program": [
+        {
+            "type": "scene",
+            "inputs": [],
+            "_output": [0],
+            "value_inputs": []
+        },
+        {
+            "type": "unique",
+            "inputs": [0],
+            "_output": 0,
+            "value_inputs": []
+        },
+        {
+            "type": "query_size",
+            "inputs": [1],
+            "_output": "small",
+            "value_inputs": []
+        }],
+        "answer": "small",
+        "template_filename": "simple_query.json",
+        "question_family_index": 1,
+        "question_index": 15
+    },
+    {
+        "split": "val",
+        "image_filename": "CLEVR_val_000004.png",
+        "image_index": 4,
+        "image": "CLEVR_val_000004",
+        "question": "How big is the thing in the picture?",
+        "program": [
+        {
+            "type": "scene",
+            "inputs": [],
+            "_output": [0],
+            "value_inputs": []
+        },
+        {
+            "type": "unique",
+            "inputs": [0],
+            "_output": 0,
+            "value_inputs": []
+        },
+        {
+            "type": "query_size",
+            "inputs": [1],
+            "_output": "small",
+            "value_inputs": []
+        }],
+        "answer": "small",
+        "template_filename": "simple_query.json",
+        "question_family_index": 1,
+        "question_index": 16
+    },
+    {
+        "split": "val",
+        "image_filename": "CLEVR_val_000004.png",
+        "image_index": 4,
+        "image": "CLEVR_val_000004",
+        "question": "What color is the object in the picture?",
+        "program": [
+        {
+            "type": "scene",
+            "inputs": [],
+            "_output": [0],
+            "value_inputs": []
+        },
+        {
+            "type": "unique",
+            "inputs": [0],
+            "_output": 0,
+            "value_inputs": []
+        },
+        {
+            "type": "query_color",
+            "inputs": [1],
+            "_output": "cyan",
+            "value_inputs": []
+        }],
+        "answer": "cyan",
+        "template_filename": "simple_query.json",
+        "question_family_index": 0,
+        "question_index": 17
+    },
+    {
+        "split": "val",
+        "image_filename": "CLEVR_val_000005.png",
+        "image_index": 5,
+        "image": "CLEVR_val_000005",
+        "question": "There is a yellow cylinder in the picture. What is the texture of it?",
+        "program": [
+        {
+            "type": "scene",
+            "inputs": [],
+            "_output": [0],
+            "value_inputs": []
+        },
+        {
+            "type": "filter_color",
+            "inputs": [0],
+            "_output": [0],
+            "value_inputs": ["yellow"]
+        },
+        {
+            "type": "filter_shape",
+            "inputs": [1],
+            "_output": [0],
+            "value_inputs": ["cylinder"]
+        },
+        {
+            "type": "unique",
+            "inputs": [2],
+            "_output": 0,
+            "value_inputs": []
+        },
+        {
+            "type": "query_material",
+            "inputs": [3],
+            "_output": "metal",
+            "value_inputs": []
+        }],
+        "answer": "metal",
+        "template_filename": "simple_query.json",
+        "question_family_index": 2,
+        "question_index": 18
+    },
+    {
+        "split": "val",
+        "image_filename": "CLEVR_val_000005.png",
+        "image_index": 5,
+        "image": "CLEVR_val_000005",
+        "question": "There is a thing in the picture. What is the texture of it?",
+        "program": [
+        {
+            "type": "scene",
+            "inputs": [],
+            "_output": [0],
+            "value_inputs": []
+        },
+        {
+            "type": "filter_size",
+            "inputs": [0],
+            "_output": [0],
+            "value_inputs": ["small"]
+        },
+        {
+            "type": "unique",
+            "inputs": [1],
+            "_output": 0,
+            "value_inputs": []
+        },
+        {
+            "type": "query_material",
+            "inputs": [2],
+            "_output": "metal",
+            "value_inputs": []
+        }],
+        "answer": "metal",
+        "template_filename": "simple_query.json",
+        "question_family_index": 2,
+        "question_index": 19
+    },
+    {
+        "split": "val",
+        "image_filename": "CLEVR_val_000005.png",
+        "image_index": 5,
+        "image": "CLEVR_val_000005",
+        "question": "What color is the thing?",
+        "program": [
+        {
+            "type": "scene",
+            "inputs": [],
+            "_output": [0],
+            "value_inputs": []
+        },
+        {
+            "type": "unique",
+            "inputs": [0],
+            "_output": 0,
+            "value_inputs": []
+        },
+        {
+            "type": "query_color",
+            "inputs": [1],
+            "_output": "yellow",
+            "value_inputs": []
+        }],
+        "answer": "yellow",
+        "template_filename": "simple_query.json",
+        "question_family_index": 0,
+        "question_index": 20
+    },
+    {
+        "split": "val",
+        "image_filename": "CLEVR_val_000005.png",
+        "image_index": 5,
+        "image": "CLEVR_val_000005",
+        "question": "What color is the thing in the picture?",
+        "program": [
+        {
+            "type": "scene",
+            "inputs": [],
+            "_output": [0],
+            "value_inputs": []
+        },
+        {
+            "type": "filter_size",
+            "inputs": [0],
+            "_output": [0],
+            "value_inputs": ["small"]
+        },
+        {
+            "type": "unique",
+            "inputs": [1],
+            "_output": 0,
+            "value_inputs": []
+        },
+        {
+            "type": "query_color",
+            "inputs": [2],
+            "_output": "yellow",
+            "value_inputs": []
+        }],
+        "answer": "yellow",
+        "template_filename": "simple_query.json",
+        "question_family_index": 0,
+        "question_index": 21
+    },
+    {
+        "split": "val",
+        "image_filename": "CLEVR_val_000006.png",
+        "image_index": 6,
+        "image": "CLEVR_val_000006",
+        "question": "What is the tiny object made of?",
+        "program": [
+        {
+            "type": "scene",
+            "inputs": [],
+            "_output": [0],
+            "value_inputs": []
+        },
+        {
+            "type": "filter_size",
+            "inputs": [0],
+            "_output": [0],
+            "value_inputs": ["small"]
+        },
+        {
+            "type": "unique",
+            "inputs": [1],
+            "_output": 0,
+            "value_inputs": []
+        },
+        {
+            "type": "query_material",
+            "inputs": [2],
+            "_output": "rubber",
+            "value_inputs": []
+        }],
+        "answer": "rubber",
+        "template_filename": "simple_query.json",
+        "question_family_index": 2,
+        "question_index": 22
+    },
+    {
+        "split": "val",
+        "image_filename": "CLEVR_val_000006.png",
+        "image_index": 6,
+        "image": "CLEVR_val_000006",
+        "question": "There is a sphere in the picture. What is the texture of it?",
+        "program": [
+        {
+            "type": "scene",
+            "inputs": [],
+            "_output": [0],
+            "value_inputs": []
+        },
+        {
+            "type": "filter_size",
+            "inputs": [0],
+            "_output": [0],
+            "value_inputs": ["small"]
+        },
+        {
+            "type": "filter_shape",
+            "inputs": [1],
+            "_output": [0],
+            "value_inputs": ["sphere"]
+        },
+        {
+            "type": "unique",
+            "inputs": [2],
+            "_output": 0,
+            "value_inputs": []
+        },
+        {
+            "type": "query_material",
+            "inputs": [3],
+            "_output": "rubber",
+            "value_inputs": []
+        }],
+        "answer": "rubber",
+        "template_filename": "simple_query.json",
+        "question_family_index": 2,
+        "question_index": 23
+    },
+    {
+        "split": "val",
+        "image_filename": "CLEVR_val_000006.png",
+        "image_index": 6,
+        "image": "CLEVR_val_000006",
+        "question": "What color is the small thing?",
+        "program": [
+        {
+            "type": "scene",
+            "inputs": [],
+            "_output": [0],
+            "value_inputs": []
+        },
+        {
+            "type": "filter_size",
+            "inputs": [0],
+            "_output": [0],
+            "value_inputs": ["small"]
+        },
+        {
+            "type": "unique",
+            "inputs": [1],
+            "_output": 0,
+            "value_inputs": []
+        },
+        {
+            "type": "query_color",
+            "inputs": [2],
+            "_output": "purple",
+            "value_inputs": []
+        }],
+        "answer": "purple",
+        "template_filename": "simple_query.json",
+        "question_family_index": 0,
+        "question_index": 24
+    },
+    {
+        "split": "val",
+        "image_filename": "CLEVR_val_000006.png",
+        "image_index": 6,
+        "image": "CLEVR_val_000006",
+        "question": "What color is the thing in the picture?",
+        "program": [
+        {
+            "type": "scene",
+            "inputs": [],
+            "_output": [0],
+            "value_inputs": []
+        },
+        {
+            "type": "unique",
+            "inputs": [0],
+            "_output": 0,
+            "value_inputs": []
+        },
+        {
+            "type": "query_color",
+            "inputs": [1],
+            "_output": "purple",
+            "value_inputs": []
+        }],
+        "answer": "purple",
+        "template_filename": "simple_query.json",
+        "question_family_index": 0,
+        "question_index": 25
+    },
+    {
+        "split": "val",
+        "image_filename": "CLEVR_val_000007.png",
+        "image_index": 7,
+        "image": "CLEVR_val_000007",
+        "question": "What size is the thing?",
+        "program": [
+        {
+            "type": "scene",
+            "inputs": [],
+            "_output": [0],
+            "value_inputs": []
+        },
+        {
+            "type": "unique",
+            "inputs": [0],
+            "_output": 0,
+            "value_inputs": []
+        },
+        {
+            "type": "query_size",
+            "inputs": [1],
+            "_output": "large",
+            "value_inputs": []
+        }],
+        "answer": "large",
+        "template_filename": "simple_query.json",
+        "question_family_index": 1,
+        "question_index": 26
+    },
+    {
+        "split": "val",
+        "image_filename": "CLEVR_val_000007.png",
+        "image_index": 7,
+        "image": "CLEVR_val_000007",
+        "question": "How big is the thing in the picture?",
+        "program": [
+        {
+            "type": "scene",
+            "inputs": [],
+            "_output": [0],
+            "value_inputs": []
+        },
+        {
+            "type": "unique",
+            "inputs": [0],
+            "_output": 0,
+            "value_inputs": []
+        },
+        {
+            "type": "query_size",
+            "inputs": [1],
+            "_output": "large",
+            "value_inputs": []
+        }],
+        "answer": "large",
+        "template_filename": "simple_query.json",
+        "question_family_index": 1,
+        "question_index": 27
+    },
+    {
+        "split": "val",
+        "image_filename": "CLEVR_val_000007.png",
+        "image_index": 7,
+        "image": "CLEVR_val_000007",
+        "question": "There is a purple sphere in the picture. What is the texture of it?",
+        "program": [
+        {
+            "type": "scene",
+            "inputs": [],
+            "_output": [0],
+            "value_inputs": []
+        },
+        {
+            "type": "filter_color",
+            "inputs": [0],
+            "_output": [0],
+            "value_inputs": ["purple"]
+        },
+        {
+            "type": "filter_shape",
+            "inputs": [1],
+            "_output": [0],
+            "value_inputs": ["sphere"]
+        },
+        {
+            "type": "unique",
+            "inputs": [2],
+            "_output": 0,
+            "value_inputs": []
+        },
+        {
+            "type": "query_material",
+            "inputs": [3],
+            "_output": "metal",
+            "value_inputs": []
+        }],
+        "answer": "metal",
+        "template_filename": "simple_query.json",
+        "question_family_index": 2,
+        "question_index": 28
+    },
+    {
+        "split": "val",
+        "image_filename": "CLEVR_val_000007.png",
+        "image_index": 7,
+        "image": "CLEVR_val_000007",
+        "question": "What is the large ball made of?",
+        "program": [
+        {
+            "type": "scene",
+            "inputs": [],
+            "_output": [0],
+            "value_inputs": []
+        },
+        {
+            "type": "filter_size",
+            "inputs": [0],
+            "_output": [0],
+            "value_inputs": ["large"]
+        },
+        {
+            "type": "filter_shape",
+            "inputs": [1],
+            "_output": [0],
+            "value_inputs": ["sphere"]
+        },
+        {
+            "type": "unique",
+            "inputs": [2],
+            "_output": 0,
+            "value_inputs": []
+        },
+        {
+            "type": "query_material",
+            "inputs": [3],
+            "_output": "metal",
+            "value_inputs": []
+        }],
+        "answer": "metal",
+        "template_filename": "simple_query.json",
+        "question_family_index": 2,
+        "question_index": 29
+    },
+    {
+        "split": "val",
+        "image_filename": "CLEVR_val_000007.png",
+        "image_index": 7,
+        "image": "CLEVR_val_000007",
+        "question": "What color is the object?",
+        "program": [
+        {
+            "type": "scene",
+            "inputs": [],
+            "_output": [0],
+            "value_inputs": []
+        },
+        {
+            "type": "unique",
+            "inputs": [0],
+            "_output": 0,
+            "value_inputs": []
+        },
+        {
+            "type": "query_color",
+            "inputs": [1],
+            "_output": "purple",
+            "value_inputs": []
+        }],
+        "answer": "purple",
+        "template_filename": "simple_query.json",
+        "question_family_index": 0,
+        "question_index": 30
+    },
+    {
+        "split": "val",
+        "image_filename": "CLEVR_val_000007.png",
+        "image_index": 7,
+        "image": "CLEVR_val_000007",
+        "question": "What color is the big thing?",
+        "program": [
+        {
+            "type": "scene",
+            "inputs": [],
+            "_output": [0],
+            "value_inputs": []
+        },
+        {
+            "type": "filter_size",
+            "inputs": [0],
+            "_output": [0],
+            "value_inputs": ["large"]
+        },
+        {
+            "type": "unique",
+            "inputs": [1],
+            "_output": 0,
+            "value_inputs": []
+        },
+        {
+            "type": "query_color",
+            "inputs": [2],
+            "_output": "purple",
+            "value_inputs": []
+        }],
+        "answer": "purple",
+        "template_filename": "simple_query.json",
+        "question_family_index": 0,
+        "question_index": 31
+    },
+    {
+        "split": "val",
+        "image_filename": "CLEVR_val_000008.png",
+        "image_index": 8,
+        "image": "CLEVR_val_000008",
+        "question": "How big is the thing in the picture?",
+        "program": [
+        {
+            "type": "scene",
+            "inputs": [],
+            "_output": [0],
+            "value_inputs": []
+        },
+        {
+            "type": "unique",
+            "inputs": [0],
+            "_output": 0,
+            "value_inputs": []
+        },
+        {
+            "type": "query_size",
+            "inputs": [1],
+            "_output": "small",
+            "value_inputs": []
+        }],
+        "answer": "small",
+        "template_filename": "simple_query.json",
+        "question_family_index": 1,
+        "question_index": 32
+    },
+    {
+        "split": "val",
+        "image_filename": "CLEVR_val_000008.png",
+        "image_index": 8,
+        "image": "CLEVR_val_000008",
+        "question": "How big is the object in the picture?",
+        "program": [
+        {
+            "type": "scene",
+            "inputs": [],
+            "_output": [0],
+            "value_inputs": []
+        },
+        {
+            "type": "unique",
+            "inputs": [0],
+            "_output": 0,
+            "value_inputs": []
+        },
+        {
+            "type": "query_size",
+            "inputs": [1],
+            "_output": "small",
+            "value_inputs": []
+        }],
+        "answer": "small",
+        "template_filename": "simple_query.json",
+        "question_family_index": 1,
+        "question_index": 33
+    },
+    {
+        "split": "val",
+        "image_filename": "CLEVR_val_000008.png",
+        "image_index": 8,
+        "image": "CLEVR_val_000008",
+        "question": "What is the cube made of?",
+        "program": [
+        {
+            "type": "scene",
+            "inputs": [],
+            "_output": [0],
+            "value_inputs": []
+        },
+        {
+            "type": "filter_shape",
+            "inputs": [0],
+            "_output": [0],
+            "value_inputs": ["cube"]
+        },
+        {
+            "type": "unique",
+            "inputs": [1],
+            "_output": 0,
+            "value_inputs": []
+        },
+        {
+            "type": "query_material",
+            "inputs": [2],
+            "_output": "rubber",
+            "value_inputs": []
+        }],
+        "answer": "rubber",
+        "template_filename": "simple_query.json",
+        "question_family_index": 2,
+        "question_index": 34
+    },
+    {
+        "split": "val",
+        "image_filename": "CLEVR_val_000008.png",
+        "image_index": 8,
+        "image": "CLEVR_val_000008",
+        "question": "What is the red block made of?",
+        "program": [
+        {
+            "type": "scene",
+            "inputs": [],
+            "_output": [0],
+            "value_inputs": []
+        },
+        {
+            "type": "filter_color",
+            "inputs": [0],
+            "_output": [0],
+            "value_inputs": ["red"]
+        },
+        {
+            "type": "filter_shape",
+            "inputs": [1],
+            "_output": [0],
+            "value_inputs": ["cube"]
+        },
+        {
+            "type": "unique",
+            "inputs": [2],
+            "_output": 0,
+            "value_inputs": []
+        },
+        {
+            "type": "query_material",
+            "inputs": [3],
+            "_output": "rubber",
+            "value_inputs": []
+        }],
+        "answer": "rubber",
+        "template_filename": "simple_query.json",
+        "question_family_index": 2,
+        "question_index": 35
+    },
+    {
+        "split": "val",
+        "image_filename": "CLEVR_val_000008.png",
+        "image_index": 8,
+        "image": "CLEVR_val_000008",
+        "question": "What color is the object in the picture?",
+        "program": [
+        {
+            "type": "scene",
+            "inputs": [],
+            "_output": [0],
+            "value_inputs": []
+        },
+        {
+            "type": "filter_size",
+            "inputs": [0],
+            "_output": [0],
+            "value_inputs": ["small"]
+        },
+        {
+            "type": "unique",
+            "inputs": [1],
+            "_output": 0,
+            "value_inputs": []
+        },
+        {
+            "type": "query_color",
+            "inputs": [2],
+            "_output": "red",
+            "value_inputs": []
+        }],
+        "answer": "red",
+        "template_filename": "simple_query.json",
+        "question_family_index": 0,
+        "question_index": 36
+    },
+    {
+        "split": "val",
+        "image_filename": "CLEVR_val_000008.png",
+        "image_index": 8,
+        "image": "CLEVR_val_000008",
+        "question": "What color is the thing in the picture?",
+        "program": [
+        {
+            "type": "scene",
+            "inputs": [],
+            "_output": [0],
+            "value_inputs": []
+        },
+        {
+            "type": "unique",
+            "inputs": [0],
+            "_output": 0,
+            "value_inputs": []
+        },
+        {
+            "type": "query_color",
+            "inputs": [1],
+            "_output": "red",
+            "value_inputs": []
+        }],
+        "answer": "red",
+        "template_filename": "simple_query.json",
+        "question_family_index": 0,
+        "question_index": 37
+    },
+    {
+        "split": "val",
+        "image_filename": "CLEVR_val_000009.png",
+        "image_index": 9,
+        "image": "CLEVR_val_000009",
+        "question": "What is the yellow cylinder made of?",
+        "program": [
+        {
+            "type": "scene",
+            "inputs": [],
+            "_output": [0],
+            "value_inputs": []
+        },
+        {
+            "type": "filter_color",
+            "inputs": [0],
+            "_output": [0],
+            "value_inputs": ["yellow"]
+        },
+        {
+            "type": "filter_shape",
+            "inputs": [1],
+            "_output": [0],
+            "value_inputs": ["cylinder"]
+        },
+        {
+            "type": "unique",
+            "inputs": [2],
+            "_output": 0,
+            "value_inputs": []
+        },
+        {
+            "type": "query_material",
+            "inputs": [3],
+            "_output": "metal",
+            "value_inputs": []
+        }],
+        "answer": "metal",
+        "template_filename": "simple_query.json",
+        "question_family_index": 2,
+        "question_index": 38
+    },
+    {
+        "split": "val",
+        "image_filename": "CLEVR_val_000009.png",
+        "image_index": 9,
+        "image": "CLEVR_val_000009",
+        "question": "What is the small cylinder made of?",
+        "program": [
+        {
+            "type": "scene",
+            "inputs": [],
+            "_output": [0],
+            "value_inputs": []
+        },
+        {
+            "type": "filter_size",
+            "inputs": [0],
+            "_output": [0],
+            "value_inputs": ["small"]
+        },
+        {
+            "type": "filter_shape",
+            "inputs": [1],
+            "_output": [0],
+            "value_inputs": ["cylinder"]
+        },
+        {
+            "type": "unique",
+            "inputs": [2],
+            "_output": 0,
+            "value_inputs": []
+        },
+        {
+            "type": "query_material",
+            "inputs": [3],
+            "_output": "metal",
+            "value_inputs": []
+        }],
+        "answer": "metal",
+        "template_filename": "simple_query.json",
+        "question_family_index": 2,
+        "question_index": 39
+    },
+    {
+        "split": "val",
+        "image_filename": "CLEVR_val_000009.png",
+        "image_index": 9,
+        "image": "CLEVR_val_000009",
+        "question": "What color is the thing in the picture?",
+        "program": [
+        {
+            "type": "scene",
+            "inputs": [],
+            "_output": [0],
+            "value_inputs": []
+        },
+        {
+            "type": "unique",
+            "inputs": [0],
+            "_output": 0,
+            "value_inputs": []
+        },
+        {
+            "type": "query_color",
+            "inputs": [1],
+            "_output": "yellow",
+            "value_inputs": []
+        }],
+        "answer": "yellow",
+        "template_filename": "simple_query.json",
+        "question_family_index": 0,
+        "question_index": 40
+    },
+    {
+        "split": "val",
+        "image_filename": "CLEVR_val_000009.png",
+        "image_index": 9,
+        "image": "CLEVR_val_000009",
+        "question": "What color is the small object?",
+        "program": [
+        {
+            "type": "scene",
+            "inputs": [],
+            "_output": [0],
+            "value_inputs": []
+        },
+        {
+            "type": "filter_size",
+            "inputs": [0],
+            "_output": [0],
+            "value_inputs": ["small"]
+        },
+        {
+            "type": "unique",
+            "inputs": [1],
+            "_output": 0,
+            "value_inputs": []
+        },
+        {
+            "type": "query_color",
+            "inputs": [2],
+            "_output": "yellow",
+            "value_inputs": []
+        }],
+        "answer": "yellow",
+        "template_filename": "simple_query.json",
+        "question_family_index": 0,
+        "question_index": 41
+    }]
+}

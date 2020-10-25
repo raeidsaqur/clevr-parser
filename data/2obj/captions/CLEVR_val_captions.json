@@ -1,0 +1,2194 @@
+{
+    "info":
+    {
+        "date": "7/8/2017",
+        "version": "1.0",
+        "split": "val",
+        "license": "Creative Commons Attribution (CC-BY 4.0"
+    },
+    "captions": [
+    {
+        "split": "val",
+        "image_filename": "CLEVR_val_000000.png",
+        "image_index": 0,
+        "image": "CLEVR_val_000000",
+        "caption": "There is a purple metallic sphere; the large green cylinder is in front of it",
+        "program": [
+        {
+            "function": "scene",
+            "inputs": [],
+            "_output": [0, 1],
+            "value_inputs": []
+        },
+        {
+            "function": "filter_color",
+            "inputs": [0],
+            "_output": [0],
+            "value_inputs": ["purple"]
+        },
+        {
+            "function": "filter_material",
+            "inputs": [1],
+            "_output": [0],
+            "value_inputs": ["metal"]
+        },
+        {
+            "function": "filter_shape",
+            "inputs": [2],
+            "_output": [0],
+            "value_inputs": ["sphere"]
+        },
+        {
+            "function": "unique",
+            "inputs": [3],
+            "_output": 0,
+            "value_inputs": []
+        },
+        {
+            "function": "relate",
+            "inputs": [4],
+            "_output": [1],
+            "value_inputs": ["front"]
+        },
+        {
+            "function": "filter_size",
+            "inputs": [5],
+            "_output": [1],
+            "value_inputs": ["large"]
+        },
+        {
+            "function": "filter_color",
+            "inputs": [6],
+            "_output": [1],
+            "value_inputs": ["green"]
+        },
+        {
+            "function": "filter_shape",
+            "inputs": [7],
+            "_output": [1],
+            "value_inputs": ["cylinder"]
+        },
+        {
+            "function": "count",
+            "inputs": [8],
+            "_output": 1,
+            "value_inputs": []
+        }],
+        "answer": "yes",
+        "template_filename": "3_attributes.json",
+        "question_family_index": 0,
+        "question_index": 0
+    },
+    {
+        "split": "val",
+        "image_filename": "CLEVR_val_000000.png",
+        "image_index": 0,
+        "image": "CLEVR_val_000000",
+        "caption": "large purple metal object is on the left side of the large green thing",
+        "program": [
+        {
+            "function": "scene",
+            "inputs": [],
+            "_output": [0, 1],
+            "value_inputs": []
+        },
+        {
+            "function": "filter_size",
+            "inputs": [0],
+            "_output": [0, 1],
+            "value_inputs": ["large"]
+        },
+        {
+            "function": "filter_color",
+            "inputs": [1],
+            "_output": [1],
+            "value_inputs": ["green"]
+        },
+        {
+            "function": "unique",
+            "inputs": [2],
+            "_output": 1,
+            "value_inputs": []
+        },
+        {
+            "function": "relate",
+            "inputs": [3],
+            "_output": [],
+            "value_inputs": ["left"]
+        },
+        {
+            "function": "filter_size",
+            "inputs": [4],
+            "_output": [],
+            "value_inputs": ["large"]
+        },
+        {
+            "function": "filter_color",
+            "inputs": [5],
+            "_output": [],
+            "value_inputs": ["purple"]
+        },
+        {
+            "function": "filter_material",
+            "inputs": [6],
+            "_output": [],
+            "value_inputs": ["metal"]
+        },
+        {
+            "function": "count",
+            "inputs": [7],
+            "_output": 0,
+            "value_inputs": []
+        }],
+        "answer": "no",
+        "template_filename": "3_attributes.json",
+        "question_family_index": 2,
+        "question_index": 1
+    },
+    {
+        "split": "val",
+        "image_filename": "CLEVR_val_000000.png",
+        "image_index": 0,
+        "image": "CLEVR_val_000000",
+        "caption": "A large green matte cylinder is behind the large sphere",
+        "program": [
+        {
+            "function": "scene",
+            "inputs": [],
+            "_output": [0, 1],
+            "value_inputs": []
+        },
+        {
+            "function": "filter_size",
+            "inputs": [0],
+            "_output": [0, 1],
+            "value_inputs": ["large"]
+        },
+        {
+            "function": "filter_shape",
+            "inputs": [1],
+            "_output": [0],
+            "value_inputs": ["sphere"]
+        },
+        {
+            "function": "unique",
+            "inputs": [2],
+            "_output": 0,
+            "value_inputs": []
+        },
+        {
+            "function": "relate",
+            "inputs": [3],
+            "_output": [],
+            "value_inputs": ["behind"]
+        },
+        {
+            "function": "filter_size",
+            "inputs": [4],
+            "_output": [],
+            "value_inputs": ["large"]
+        },
+        {
+            "function": "filter_color",
+            "inputs": [5],
+            "_output": [],
+            "value_inputs": ["green"]
+        },
+        {
+            "function": "filter_material",
+            "inputs": [6],
+            "_output": [],
+            "value_inputs": ["rubber"]
+        },
+        {
+            "function": "filter_shape",
+            "inputs": [7],
+            "_output": [],
+            "value_inputs": ["cylinder"]
+        },
+        {
+            "function": "count",
+            "inputs": [8],
+            "_output": 0,
+            "value_inputs": []
+        }],
+        "answer": "no",
+        "template_filename": "all_attributes.json",
+        "question_family_index": 0,
+        "question_index": 2
+    },
+    {
+        "split": "val",
+        "image_filename": "CLEVR_val_000001.png",
+        "image_index": 1,
+        "image": "CLEVR_val_000001",
+        "caption": "There is a tiny object; the red ball is in front of it",
+        "program": [
+        {
+            "function": "scene",
+            "inputs": [],
+            "_output": [0, 1],
+            "value_inputs": []
+        },
+        {
+            "function": "filter_size",
+            "inputs": [0],
+            "_output": [0],
+            "value_inputs": ["small"]
+        },
+        {
+            "function": "unique",
+            "inputs": [1],
+            "_output": 0,
+            "value_inputs": []
+        },
+        {
+            "function": "relate",
+            "inputs": [2],
+            "_output": [1],
+            "value_inputs": ["front"]
+        },
+        {
+            "function": "filter_color",
+            "inputs": [3],
+            "_output": [],
+            "value_inputs": ["red"]
+        },
+        {
+            "function": "filter_shape",
+            "inputs": [4],
+            "_output": [],
+            "value_inputs": ["sphere"]
+        },
+        {
+            "function": "count",
+            "inputs": [5],
+            "_output": 0,
+            "value_inputs": []
+        }],
+        "answer": "no",
+        "template_filename": "3_attributes.json",
+        "question_family_index": 1,
+        "question_index": 3
+    },
+    {
+        "split": "val",
+        "image_filename": "CLEVR_val_000001.png",
+        "image_index": 1,
+        "image": "CLEVR_val_000001",
+        "caption": "There is a red rubber ball; the red matte thing is behind it",
+        "program": [
+        {
+            "function": "scene",
+            "inputs": [],
+            "_output": [0, 1],
+            "value_inputs": []
+        },
+        {
+            "function": "filter_color",
+            "inputs": [0],
+            "_output": [0],
+            "value_inputs": ["red"]
+        },
+        {
+            "function": "filter_material",
+            "inputs": [1],
+            "_output": [0],
+            "value_inputs": ["rubber"]
+        },
+        {
+            "function": "filter_shape",
+            "inputs": [2],
+            "_output": [0],
+            "value_inputs": ["sphere"]
+        },
+        {
+            "function": "unique",
+            "inputs": [3],
+            "_output": 0,
+            "value_inputs": []
+        },
+        {
+            "function": "relate",
+            "inputs": [4],
+            "_output": [],
+            "value_inputs": ["behind"]
+        },
+        {
+            "function": "filter_color",
+            "inputs": [5],
+            "_output": [],
+            "value_inputs": ["red"]
+        },
+        {
+            "function": "filter_material",
+            "inputs": [6],
+            "_output": [],
+            "value_inputs": ["rubber"]
+        },
+        {
+            "function": "count",
+            "inputs": [7],
+            "_output": 0,
+            "value_inputs": []
+        }],
+        "answer": "no",
+        "template_filename": "3_attributes.json",
+        "question_family_index": 0,
+        "question_index": 4
+    },
+    {
+        "split": "val",
+        "image_filename": "CLEVR_val_000001.png",
+        "image_index": 1,
+        "image": "CLEVR_val_000001",
+        "caption": "tiny matte object is behind the blue thing",
+        "program": [
+        {
+            "function": "scene",
+            "inputs": [],
+            "_output": [0, 1],
+            "value_inputs": []
+        },
+        {
+            "function": "filter_color",
+            "inputs": [0],
+            "_output": [1],
+            "value_inputs": ["blue"]
+        },
+        {
+            "function": "unique",
+            "inputs": [1],
+            "_output": 1,
+            "value_inputs": []
+        },
+        {
+            "function": "relate",
+            "inputs": [2],
+            "_output": [0],
+            "value_inputs": ["behind"]
+        },
+        {
+            "function": "filter_size",
+            "inputs": [3],
+            "_output": [0],
+            "value_inputs": ["small"]
+        },
+        {
+            "function": "filter_material",
+            "inputs": [4],
+            "_output": [0],
+            "value_inputs": ["rubber"]
+        },
+        {
+            "function": "count",
+            "inputs": [5],
+            "_output": 1,
+            "value_inputs": []
+        }],
+        "answer": "yes",
+        "template_filename": "3_attributes.json",
+        "question_family_index": 2,
+        "question_index": 5
+    },
+    {
+        "split": "val",
+        "image_filename": "CLEVR_val_000001.png",
+        "image_index": 1,
+        "image": "CLEVR_val_000001",
+        "caption": "A tiny rubber thing is to the right of the blue object",
+        "program": [
+        {
+            "function": "scene",
+            "inputs": [],
+            "_output": [0, 1],
+            "value_inputs": []
+        },
+        {
+            "function": "filter_color",
+            "inputs": [0],
+            "_output": [1],
+            "value_inputs": ["blue"]
+        },
+        {
+            "function": "unique",
+            "inputs": [1],
+            "_output": 1,
+            "value_inputs": []
+        },
+        {
+            "function": "relate",
+            "inputs": [2],
+            "_output": [0],
+            "value_inputs": ["right"]
+        },
+        {
+            "function": "filter_size",
+            "inputs": [3],
+            "_output": [0],
+            "value_inputs": ["small"]
+        },
+        {
+            "function": "filter_material",
+            "inputs": [4],
+            "_output": [0],
+            "value_inputs": ["rubber"]
+        },
+        {
+            "function": "count",
+            "inputs": [5],
+            "_output": 1,
+            "value_inputs": []
+        }],
+        "answer": "yes",
+        "template_filename": "all_attributes.json",
+        "question_family_index": 0,
+        "question_index": 6
+    },
+    {
+        "split": "val",
+        "image_filename": "CLEVR_val_000002.png",
+        "image_index": 2,
+        "image": "CLEVR_val_000002",
+        "caption": "There is a tiny thing; the green shiny thing is right of it",
+        "program": [
+        {
+            "function": "scene",
+            "inputs": [],
+            "_output": [0, 1],
+            "value_inputs": []
+        },
+        {
+            "function": "filter_size",
+            "inputs": [0],
+            "_output": [1],
+            "value_inputs": ["small"]
+        },
+        {
+            "function": "unique",
+            "inputs": [1],
+            "_output": 1,
+            "value_inputs": []
+        },
+        {
+            "function": "relate",
+            "inputs": [2],
+            "_output": [0],
+            "value_inputs": ["right"]
+        },
+        {
+            "function": "filter_color",
+            "inputs": [3],
+            "_output": [0],
+            "value_inputs": ["green"]
+        },
+        {
+            "function": "filter_material",
+            "inputs": [4],
+            "_output": [0],
+            "value_inputs": ["metal"]
+        },
+        {
+            "function": "count",
+            "inputs": [5],
+            "_output": 1,
+            "value_inputs": []
+        }],
+        "answer": "yes",
+        "template_filename": "3_attributes.json",
+        "question_family_index": 1,
+        "question_index": 7
+    },
+    {
+        "split": "val",
+        "image_filename": "CLEVR_val_000002.png",
+        "image_index": 2,
+        "image": "CLEVR_val_000002",
+        "caption": "There is a green metal sphere; the large metallic object is right of it",
+        "program": [
+        {
+            "function": "scene",
+            "inputs": [],
+            "_output": [0, 1],
+            "value_inputs": []
+        },
+        {
+            "function": "filter_color",
+            "inputs": [0],
+            "_output": [0],
+            "value_inputs": ["green"]
+        },
+        {
+            "function": "filter_material",
+            "inputs": [1],
+            "_output": [0],
+            "value_inputs": ["metal"]
+        },
+        {
+            "function": "filter_shape",
+            "inputs": [2],
+            "_output": [0],
+            "value_inputs": ["sphere"]
+        },
+        {
+            "function": "unique",
+            "inputs": [3],
+            "_output": 0,
+            "value_inputs": []
+        },
+        {
+            "function": "relate",
+            "inputs": [4],
+            "_output": [],
+            "value_inputs": ["right"]
+        },
+        {
+            "function": "filter_size",
+            "inputs": [5],
+            "_output": [],
+            "value_inputs": ["large"]
+        },
+        {
+            "function": "filter_material",
+            "inputs": [6],
+            "_output": [],
+            "value_inputs": ["metal"]
+        },
+        {
+            "function": "count",
+            "inputs": [7],
+            "_output": 0,
+            "value_inputs": []
+        }],
+        "answer": "no",
+        "template_filename": "3_attributes.json",
+        "question_family_index": 0,
+        "question_index": 8
+    },
+    {
+        "split": "val",
+        "image_filename": "CLEVR_val_000002.png",
+        "image_index": 2,
+        "image": "CLEVR_val_000002",
+        "caption": "small rubber thing is to the left of the big object",
+        "program": [
+        {
+            "function": "scene",
+            "inputs": [],
+            "_output": [0, 1],
+            "value_inputs": []
+        },
+        {
+            "function": "filter_size",
+            "inputs": [0],
+            "_output": [0],
+            "value_inputs": ["large"]
+        },
+        {
+            "function": "unique",
+            "inputs": [1],
+            "_output": 0,
+            "value_inputs": []
+        },
+        {
+            "function": "relate",
+            "inputs": [2],
+            "_output": [1],
+            "value_inputs": ["left"]
+        },
+        {
+            "function": "filter_size",
+            "inputs": [3],
+            "_output": [1],
+            "value_inputs": ["small"]
+        },
+        {
+            "function": "filter_material",
+            "inputs": [4],
+            "_output": [1],
+            "value_inputs": ["rubber"]
+        },
+        {
+            "function": "count",
+            "inputs": [5],
+            "_output": 1,
+            "value_inputs": []
+        }],
+        "answer": "yes",
+        "template_filename": "3_attributes.json",
+        "question_family_index": 2,
+        "question_index": 9
+    },
+    {
+        "split": "val",
+        "image_filename": "CLEVR_val_000002.png",
+        "image_index": 2,
+        "image": "CLEVR_val_000002",
+        "caption": "There is a rubber thing; a rubber object is behind it",
+        "program": [
+        {
+            "function": "scene",
+            "inputs": [],
+            "_output": [0, 1],
+            "value_inputs": []
+        },
+        {
+            "function": "filter_material",
+            "inputs": [0],
+            "_output": [1],
+            "value_inputs": ["rubber"]
+        },
+        {
+            "function": "unique",
+            "inputs": [1],
+            "_output": 1,
+            "value_inputs": []
+        },
+        {
+            "function": "relate",
+            "inputs": [2],
+            "_output": [],
+            "value_inputs": ["behind"]
+        },
+        {
+            "function": "filter_material",
+            "inputs": [3],
+            "_output": [],
+            "value_inputs": ["rubber"]
+        },
+        {
+            "function": "count",
+            "inputs": [4],
+            "_output": 0,
+            "value_inputs": []
+        }],
+        "answer": "no",
+        "template_filename": "all_attributes.json",
+        "question_family_index": 0,
+        "question_index": 10
+    },
+    {
+        "split": "val",
+        "image_filename": "CLEVR_val_000003.png",
+        "image_index": 3,
+        "image": "CLEVR_val_000003",
+        "caption": "sphere is in front of the large thing",
+        "program": [
+        {
+            "function": "scene",
+            "inputs": [],
+            "_output": [0, 1],
+            "value_inputs": []
+        },
+        {
+            "function": "filter_size",
+            "inputs": [0],
+            "_output": [0],
+            "value_inputs": ["large"]
+        },
+        {
+            "function": "unique",
+            "inputs": [1],
+            "_output": 0,
+            "value_inputs": []
+        },
+        {
+            "function": "relate",
+            "inputs": [2],
+            "_output": [],
+            "value_inputs": ["front"]
+        },
+        {
+            "function": "filter_shape",
+            "inputs": [3],
+            "_output": [],
+            "value_inputs": ["sphere"]
+        },
+        {
+            "function": "count",
+            "inputs": [4],
+            "_output": 0,
+            "value_inputs": []
+        }],
+        "answer": "no",
+        "template_filename": "3_attributes.json",
+        "question_family_index": 1,
+        "question_index": 11
+    },
+    {
+        "split": "val",
+        "image_filename": "CLEVR_val_000003.png",
+        "image_index": 3,
+        "image": "CLEVR_val_000003",
+        "caption": "There is a red shiny sphere; the large thing is behind it",
+        "program": [
+        {
+            "function": "scene",
+            "inputs": [],
+            "_output": [0, 1],
+            "value_inputs": []
+        },
+        {
+            "function": "filter_color",
+            "inputs": [0],
+            "_output": [0],
+            "value_inputs": ["red"]
+        },
+        {
+            "function": "filter_material",
+            "inputs": [1],
+            "_output": [0],
+            "value_inputs": ["metal"]
+        },
+        {
+            "function": "filter_shape",
+            "inputs": [2],
+            "_output": [0],
+            "value_inputs": ["sphere"]
+        },
+        {
+            "function": "unique",
+            "inputs": [3],
+            "_output": 0,
+            "value_inputs": []
+        },
+        {
+            "function": "relate",
+            "inputs": [4],
+            "_output": [1],
+            "value_inputs": ["behind"]
+        },
+        {
+            "function": "filter_size",
+            "inputs": [5],
+            "_output": [],
+            "value_inputs": ["large"]
+        },
+        {
+            "function": "count",
+            "inputs": [6],
+            "_output": 0,
+            "value_inputs": []
+        }],
+        "answer": "no",
+        "template_filename": "3_attributes.json",
+        "question_family_index": 0,
+        "question_index": 12
+    },
+    {
+        "split": "val",
+        "image_filename": "CLEVR_val_000003.png",
+        "image_index": 3,
+        "image": "CLEVR_val_000003",
+        "caption": "blue rubber thing is behind the red thing",
+        "program": [
+        {
+            "function": "scene",
+            "inputs": [],
+            "_output": [0, 1],
+            "value_inputs": []
+        },
+        {
+            "function": "filter_color",
+            "inputs": [0],
+            "_output": [0],
+            "value_inputs": ["red"]
+        },
+        {
+            "function": "unique",
+            "inputs": [1],
+            "_output": 0,
+            "value_inputs": []
+        },
+        {
+            "function": "relate",
+            "inputs": [2],
+            "_output": [1],
+            "value_inputs": ["behind"]
+        },
+        {
+            "function": "filter_color",
+            "inputs": [3],
+            "_output": [1],
+            "value_inputs": ["blue"]
+        },
+        {
+            "function": "filter_material",
+            "inputs": [4],
+            "_output": [1],
+            "value_inputs": ["rubber"]
+        },
+        {
+            "function": "count",
+            "inputs": [5],
+            "_output": 1,
+            "value_inputs": []
+        }],
+        "answer": "yes",
+        "template_filename": "3_attributes.json",
+        "question_family_index": 2,
+        "question_index": 13
+    },
+    {
+        "split": "val",
+        "image_filename": "CLEVR_val_000003.png",
+        "image_index": 3,
+        "image": "CLEVR_val_000003",
+        "caption": "A small blue matte thing is behind the blue rubber cube",
+        "program": [
+        {
+            "function": "scene",
+            "inputs": [],
+            "_output": [0, 1],
+            "value_inputs": []
+        },
+        {
+            "function": "filter_color",
+            "inputs": [0],
+            "_output": [1],
+            "value_inputs": ["blue"]
+        },
+        {
+            "function": "filter_material",
+            "inputs": [1],
+            "_output": [1],
+            "value_inputs": ["rubber"]
+        },
+        {
+            "function": "filter_shape",
+            "inputs": [2],
+            "_output": [1],
+            "value_inputs": ["cube"]
+        },
+        {
+            "function": "unique",
+            "inputs": [3],
+            "_output": 1,
+            "value_inputs": []
+        },
+        {
+            "function": "relate",
+            "inputs": [4],
+            "_output": [],
+            "value_inputs": ["behind"]
+        },
+        {
+            "function": "filter_size",
+            "inputs": [5],
+            "_output": [],
+            "value_inputs": ["small"]
+        },
+        {
+            "function": "filter_color",
+            "inputs": [6],
+            "_output": [],
+            "value_inputs": ["blue"]
+        },
+        {
+            "function": "filter_material",
+            "inputs": [7],
+            "_output": [],
+            "value_inputs": ["rubber"]
+        },
+        {
+            "function": "count",
+            "inputs": [8],
+            "_output": 0,
+            "value_inputs": []
+        }],
+        "answer": "no",
+        "template_filename": "all_attributes.json",
+        "question_family_index": 0,
+        "question_index": 14
+    },
+    {
+        "split": "val",
+        "image_filename": "CLEVR_val_000004.png",
+        "image_index": 4,
+        "image": "CLEVR_val_000004",
+        "caption": "There is a large object; the small brown cylinder is in front of it",
+        "program": [
+        {
+            "function": "scene",
+            "inputs": [],
+            "_output": [0, 1],
+            "value_inputs": []
+        },
+        {
+            "function": "filter_size",
+            "inputs": [0],
+            "_output": [0],
+            "value_inputs": ["large"]
+        },
+        {
+            "function": "unique",
+            "inputs": [1],
+            "_output": 0,
+            "value_inputs": []
+        },
+        {
+            "function": "relate",
+            "inputs": [2],
+            "_output": [1],
+            "value_inputs": ["front"]
+        },
+        {
+            "function": "filter_size",
+            "inputs": [3],
+            "_output": [1],
+            "value_inputs": ["small"]
+        },
+        {
+            "function": "filter_color",
+            "inputs": [4],
+            "_output": [1],
+            "value_inputs": ["brown"]
+        },
+        {
+            "function": "filter_shape",
+            "inputs": [5],
+            "_output": [1],
+            "value_inputs": ["cylinder"]
+        },
+        {
+            "function": "count",
+            "inputs": [6],
+            "_output": 1,
+            "value_inputs": []
+        }],
+        "answer": "yes",
+        "template_filename": "3_attributes.json",
+        "question_family_index": 1,
+        "question_index": 15
+    },
+    {
+        "split": "val",
+        "image_filename": "CLEVR_val_000004.png",
+        "image_index": 4,
+        "image": "CLEVR_val_000004",
+        "caption": "There is a brown matte cylinder; the matte object is behind it",
+        "program": [
+        {
+            "function": "scene",
+            "inputs": [],
+            "_output": [0, 1],
+            "value_inputs": []
+        },
+        {
+            "function": "filter_color",
+            "inputs": [0],
+            "_output": [1],
+            "value_inputs": ["brown"]
+        },
+        {
+            "function": "filter_material",
+            "inputs": [1],
+            "_output": [1],
+            "value_inputs": ["rubber"]
+        },
+        {
+            "function": "filter_shape",
+            "inputs": [2],
+            "_output": [1],
+            "value_inputs": ["cylinder"]
+        },
+        {
+            "function": "unique",
+            "inputs": [3],
+            "_output": 1,
+            "value_inputs": []
+        },
+        {
+            "function": "relate",
+            "inputs": [4],
+            "_output": [0],
+            "value_inputs": ["behind"]
+        },
+        {
+            "function": "filter_material",
+            "inputs": [5],
+            "_output": [0],
+            "value_inputs": ["rubber"]
+        },
+        {
+            "function": "count",
+            "inputs": [6],
+            "_output": 1,
+            "value_inputs": []
+        }],
+        "answer": "yes",
+        "template_filename": "3_attributes.json",
+        "question_family_index": 0,
+        "question_index": 16
+    },
+    {
+        "split": "val",
+        "image_filename": "CLEVR_val_000004.png",
+        "image_index": 4,
+        "image": "CLEVR_val_000004",
+        "caption": "There is a large gray thing; the brown cylinder is right of it",
+        "program": [
+        {
+            "function": "scene",
+            "inputs": [],
+            "_output": [0, 1],
+            "value_inputs": []
+        },
+        {
+            "function": "filter_size",
+            "inputs": [0],
+            "_output": [0],
+            "value_inputs": ["large"]
+        },
+        {
+            "function": "filter_color",
+            "inputs": [1],
+            "_output": [0],
+            "value_inputs": ["gray"]
+        },
+        {
+            "function": "unique",
+            "inputs": [2],
+            "_output": 0,
+            "value_inputs": []
+        },
+        {
+            "function": "relate",
+            "inputs": [3],
+            "_output": [],
+            "value_inputs": ["right"]
+        },
+        {
+            "function": "filter_color",
+            "inputs": [4],
+            "_output": [],
+            "value_inputs": ["brown"]
+        },
+        {
+            "function": "filter_shape",
+            "inputs": [5],
+            "_output": [],
+            "value_inputs": ["cylinder"]
+        },
+        {
+            "function": "count",
+            "inputs": [6],
+            "_output": 0,
+            "value_inputs": []
+        }],
+        "answer": "no",
+        "template_filename": "3_attributes.json",
+        "question_family_index": 2,
+        "question_index": 17
+    },
+    {
+        "split": "val",
+        "image_filename": "CLEVR_val_000004.png",
+        "image_index": 4,
+        "image": "CLEVR_val_000004",
+        "caption": "A small rubber object is in front of the big rubber cylinder",
+        "program": [
+        {
+            "function": "scene",
+            "inputs": [],
+            "_output": [0, 1],
+            "value_inputs": []
+        },
+        {
+            "function": "filter_size",
+            "inputs": [0],
+            "_output": [0],
+            "value_inputs": ["large"]
+        },
+        {
+            "function": "filter_material",
+            "inputs": [1],
+            "_output": [0],
+            "value_inputs": ["rubber"]
+        },
+        {
+            "function": "filter_shape",
+            "inputs": [2],
+            "_output": [0],
+            "value_inputs": ["cylinder"]
+        },
+        {
+            "function": "unique",
+            "inputs": [3],
+            "_output": 0,
+            "value_inputs": []
+        },
+        {
+            "function": "relate",
+            "inputs": [4],
+            "_output": [1],
+            "value_inputs": ["front"]
+        },
+        {
+            "function": "filter_size",
+            "inputs": [5],
+            "_output": [1],
+            "value_inputs": ["small"]
+        },
+        {
+            "function": "filter_material",
+            "inputs": [6],
+            "_output": [1],
+            "value_inputs": ["rubber"]
+        },
+        {
+            "function": "count",
+            "inputs": [7],
+            "_output": 1,
+            "value_inputs": []
+        }],
+        "answer": "yes",
+        "template_filename": "all_attributes.json",
+        "question_family_index": 0,
+        "question_index": 18
+    },
+    {
+        "split": "val",
+        "image_filename": "CLEVR_val_000005.png",
+        "image_index": 5,
+        "image": "CLEVR_val_000005",
+        "caption": "big purple ball is behind the brown rubber cylinder",
+        "program": [
+        {
+            "function": "scene",
+            "inputs": [],
+            "_output": [0, 1],
+            "value_inputs": []
+        },
+        {
+            "function": "filter_color",
+            "inputs": [0],
+            "_output": [1],
+            "value_inputs": ["brown"]
+        },
+        {
+            "function": "filter_material",
+            "inputs": [1],
+            "_output": [1],
+            "value_inputs": ["rubber"]
+        },
+        {
+            "function": "filter_shape",
+            "inputs": [2],
+            "_output": [1],
+            "value_inputs": ["cylinder"]
+        },
+        {
+            "function": "unique",
+            "inputs": [3],
+            "_output": 1,
+            "value_inputs": []
+        },
+        {
+            "function": "relate",
+            "inputs": [4],
+            "_output": [],
+            "value_inputs": ["behind"]
+        },
+        {
+            "function": "filter_size",
+            "inputs": [5],
+            "_output": [],
+            "value_inputs": ["large"]
+        },
+        {
+            "function": "filter_color",
+            "inputs": [6],
+            "_output": [],
+            "value_inputs": ["purple"]
+        },
+        {
+            "function": "filter_shape",
+            "inputs": [7],
+            "_output": [],
+            "value_inputs": ["sphere"]
+        },
+        {
+            "function": "count",
+            "inputs": [8],
+            "_output": 0,
+            "value_inputs": []
+        }],
+        "answer": "no",
+        "template_filename": "3_attributes.json",
+        "question_family_index": 0,
+        "question_index": 19
+    },
+    {
+        "split": "val",
+        "image_filename": "CLEVR_val_000005.png",
+        "image_index": 5,
+        "image": "CLEVR_val_000005",
+        "caption": "There is a big brown thing; the big ball is behind it",
+        "program": [
+        {
+            "function": "scene",
+            "inputs": [],
+            "_output": [0, 1],
+            "value_inputs": []
+        },
+        {
+            "function": "filter_size",
+            "inputs": [0],
+            "_output": [0, 1],
+            "value_inputs": ["large"]
+        },
+        {
+            "function": "filter_color",
+            "inputs": [1],
+            "_output": [1],
+            "value_inputs": ["brown"]
+        },
+        {
+            "function": "unique",
+            "inputs": [2],
+            "_output": 1,
+            "value_inputs": []
+        },
+        {
+            "function": "relate",
+            "inputs": [3],
+            "_output": [],
+            "value_inputs": ["behind"]
+        },
+        {
+            "function": "filter_size",
+            "inputs": [4],
+            "_output": [],
+            "value_inputs": ["large"]
+        },
+        {
+            "function": "filter_shape",
+            "inputs": [5],
+            "_output": [],
+            "value_inputs": ["sphere"]
+        },
+        {
+            "function": "count",
+            "inputs": [6],
+            "_output": 0,
+            "value_inputs": []
+        }],
+        "answer": "no",
+        "template_filename": "3_attributes.json",
+        "question_family_index": 2,
+        "question_index": 20
+    },
+    {
+        "split": "val",
+        "image_filename": "CLEVR_val_000005.png",
+        "image_index": 5,
+        "image": "CLEVR_val_000005",
+        "caption": "There is a purple rubber ball; a purple rubber thing is in front of it",
+        "program": [
+        {
+            "function": "scene",
+            "inputs": [],
+            "_output": [0, 1],
+            "value_inputs": []
+        },
+        {
+            "function": "filter_color",
+            "inputs": [0],
+            "_output": [0],
+            "value_inputs": ["purple"]
+        },
+        {
+            "function": "filter_material",
+            "inputs": [1],
+            "_output": [0],
+            "value_inputs": ["rubber"]
+        },
+        {
+            "function": "filter_shape",
+            "inputs": [2],
+            "_output": [0],
+            "value_inputs": ["sphere"]
+        },
+        {
+            "function": "unique",
+            "inputs": [3],
+            "_output": 0,
+            "value_inputs": []
+        },
+        {
+            "function": "relate",
+            "inputs": [4],
+            "_output": [],
+            "value_inputs": ["front"]
+        },
+        {
+            "function": "filter_color",
+            "inputs": [5],
+            "_output": [],
+            "value_inputs": ["purple"]
+        },
+        {
+            "function": "filter_material",
+            "inputs": [6],
+            "_output": [],
+            "value_inputs": ["rubber"]
+        },
+        {
+            "function": "count",
+            "inputs": [7],
+            "_output": 0,
+            "value_inputs": []
+        }],
+        "answer": "no",
+        "template_filename": "all_attributes.json",
+        "question_family_index": 0,
+        "question_index": 21
+    },
+    {
+        "split": "val",
+        "image_filename": "CLEVR_val_000006.png",
+        "image_index": 6,
+        "image": "CLEVR_val_000006",
+        "caption": "There is a green matte ball; the gray block is to the right of it",
+        "program": [
+        {
+            "function": "scene",
+            "inputs": [],
+            "_output": [0, 1],
+            "value_inputs": []
+        },
+        {
+            "function": "filter_color",
+            "inputs": [0],
+            "_output": [0],
+            "value_inputs": ["green"]
+        },
+        {
+            "function": "filter_material",
+            "inputs": [1],
+            "_output": [0],
+            "value_inputs": ["rubber"]
+        },
+        {
+            "function": "filter_shape",
+            "inputs": [2],
+            "_output": [0],
+            "value_inputs": ["sphere"]
+        },
+        {
+            "function": "unique",
+            "inputs": [3],
+            "_output": 0,
+            "value_inputs": []
+        },
+        {
+            "function": "relate",
+            "inputs": [4],
+            "_output": [],
+            "value_inputs": ["right"]
+        },
+        {
+            "function": "filter_color",
+            "inputs": [5],
+            "_output": [],
+            "value_inputs": ["gray"]
+        },
+        {
+            "function": "filter_shape",
+            "inputs": [6],
+            "_output": [],
+            "value_inputs": ["cube"]
+        },
+        {
+            "function": "count",
+            "inputs": [7],
+            "_output": 0,
+            "value_inputs": []
+        }],
+        "answer": "no",
+        "template_filename": "3_attributes.json",
+        "question_family_index": 0,
+        "question_index": 22
+    },
+    {
+        "split": "val",
+        "image_filename": "CLEVR_val_000006.png",
+        "image_index": 6,
+        "image": "CLEVR_val_000006",
+        "caption": "There is a gray thing; the big green matte thing is on the left side of it",
+        "program": [
+        {
+            "function": "scene",
+            "inputs": [],
+            "_output": [0, 1],
+            "value_inputs": []
+        },
+        {
+            "function": "filter_color",
+            "inputs": [0],
+            "_output": [1],
+            "value_inputs": ["gray"]
+        },
+        {
+            "function": "unique",
+            "inputs": [1],
+            "_output": 1,
+            "value_inputs": []
+        },
+        {
+            "function": "relate",
+            "inputs": [2],
+            "_output": [],
+            "value_inputs": ["left"]
+        },
+        {
+            "function": "filter_size",
+            "inputs": [3],
+            "_output": [],
+            "value_inputs": ["large"]
+        },
+        {
+            "function": "filter_color",
+            "inputs": [4],
+            "_output": [],
+            "value_inputs": ["green"]
+        },
+        {
+            "function": "filter_material",
+            "inputs": [5],
+            "_output": [],
+            "value_inputs": ["rubber"]
+        },
+        {
+            "function": "count",
+            "inputs": [6],
+            "_output": 0,
+            "value_inputs": []
+        }],
+        "answer": "no",
+        "template_filename": "3_attributes.json",
+        "question_family_index": 2,
+        "question_index": 23
+    },
+    {
+        "split": "val",
+        "image_filename": "CLEVR_val_000006.png",
+        "image_index": 6,
+        "image": "CLEVR_val_000006",
+        "caption": "There is a big sphere; a large matte block is left of it",
+        "program": [
+        {
+            "function": "scene",
+            "inputs": [],
+            "_output": [0, 1],
+            "value_inputs": []
+        },
+        {
+            "function": "filter_size",
+            "inputs": [0],
+            "_output": [0, 1],
+            "value_inputs": ["large"]
+        },
+        {
+            "function": "filter_shape",
+            "inputs": [1],
+            "_output": [0],
+            "value_inputs": ["sphere"]
+        },
+        {
+            "function": "unique",
+            "inputs": [2],
+            "_output": 0,
+            "value_inputs": []
+        },
+        {
+            "function": "relate",
+            "inputs": [3],
+            "_output": [1],
+            "value_inputs": ["left"]
+        },
+        {
+            "function": "filter_size",
+            "inputs": [4],
+            "_output": [1],
+            "value_inputs": ["large"]
+        },
+        {
+            "function": "filter_material",
+            "inputs": [5],
+            "_output": [1],
+            "value_inputs": ["rubber"]
+        },
+        {
+            "function": "filter_shape",
+            "inputs": [6],
+            "_output": [1],
+            "value_inputs": ["cube"]
+        },
+        {
+            "function": "count",
+            "inputs": [7],
+            "_output": 1,
+            "value_inputs": []
+        }],
+        "answer": "yes",
+        "template_filename": "all_attributes.json",
+        "question_family_index": 0,
+        "question_index": 24
+    },
+    {
+        "split": "val",
+        "image_filename": "CLEVR_val_000007.png",
+        "image_index": 7,
+        "image": "CLEVR_val_000007",
+        "caption": "There is a tiny object; the large ball is in front of it",
+        "program": [
+        {
+            "function": "scene",
+            "inputs": [],
+            "_output": [0, 1],
+            "value_inputs": []
+        },
+        {
+            "function": "filter_size",
+            "inputs": [0],
+            "_output": [0],
+            "value_inputs": ["small"]
+        },
+        {
+            "function": "unique",
+            "inputs": [1],
+            "_output": 0,
+            "value_inputs": []
+        },
+        {
+            "function": "relate",
+            "inputs": [2],
+            "_output": [],
+            "value_inputs": ["front"]
+        },
+        {
+            "function": "filter_size",
+            "inputs": [3],
+            "_output": [],
+            "value_inputs": ["large"]
+        },
+        {
+            "function": "filter_shape",
+            "inputs": [4],
+            "_output": [],
+            "value_inputs": ["sphere"]
+        },
+        {
+            "function": "count",
+            "inputs": [5],
+            "_output": 0,
+            "value_inputs": []
+        }],
+        "answer": "no",
+        "template_filename": "3_attributes.json",
+        "question_family_index": 1,
+        "question_index": 25
+    },
+    {
+        "split": "val",
+        "image_filename": "CLEVR_val_000007.png",
+        "image_index": 7,
+        "image": "CLEVR_val_000007",
+        "caption": "thing is in front of the brown shiny sphere",
+        "program": [
+        {
+            "function": "scene",
+            "inputs": [],
+            "_output": [0, 1],
+            "value_inputs": []
+        },
+        {
+            "function": "filter_color",
+            "inputs": [0],
+            "_output": [1],
+            "value_inputs": ["brown"]
+        },
+        {
+            "function": "filter_material",
+            "inputs": [1],
+            "_output": [1],
+            "value_inputs": ["metal"]
+        },
+        {
+            "function": "filter_shape",
+            "inputs": [2],
+            "_output": [1],
+            "value_inputs": ["sphere"]
+        },
+        {
+            "function": "unique",
+            "inputs": [3],
+            "_output": 1,
+            "value_inputs": []
+        },
+        {
+            "function": "relate",
+            "inputs": [4],
+            "_output": [0],
+            "value_inputs": ["front"]
+        },
+        {
+            "function": "count",
+            "inputs": [5],
+            "_output": 1,
+            "value_inputs": []
+        }],
+        "answer": "yes",
+        "template_filename": "3_attributes.json",
+        "question_family_index": 0,
+        "question_index": 26
+    },
+    {
+        "split": "val",
+        "image_filename": "CLEVR_val_000007.png",
+        "image_index": 7,
+        "image": "CLEVR_val_000007",
+        "caption": "large metal thing is on the right side of the big object",
+        "program": [
+        {
+            "function": "scene",
+            "inputs": [],
+            "_output": [0, 1],
+            "value_inputs": []
+        },
+        {
+            "function": "filter_size",
+            "inputs": [0],
+            "_output": [1],
+            "value_inputs": ["large"]
+        },
+        {
+            "function": "unique",
+            "inputs": [1],
+            "_output": 1,
+            "value_inputs": []
+        },
+        {
+            "function": "relate",
+            "inputs": [2],
+            "_output": [0],
+            "value_inputs": ["right"]
+        },
+        {
+            "function": "filter_size",
+            "inputs": [3],
+            "_output": [],
+            "value_inputs": ["large"]
+        },
+        {
+            "function": "filter_material",
+            "inputs": [4],
+            "_output": [],
+            "value_inputs": ["metal"]
+        },
+        {
+            "function": "count",
+            "inputs": [5],
+            "_output": 0,
+            "value_inputs": []
+        }],
+        "answer": "no",
+        "template_filename": "3_attributes.json",
+        "question_family_index": 2,
+        "question_index": 27
+    },
+    {
+        "split": "val",
+        "image_filename": "CLEVR_val_000007.png",
+        "image_index": 7,
+        "image": "CLEVR_val_000007",
+        "caption": "There is a purple cylinder; a purple matte cylinder is to the right of it",
+        "program": [
+        {
+            "function": "scene",
+            "inputs": [],
+            "_output": [0, 1],
+            "value_inputs": []
+        },
+        {
+            "function": "filter_color",
+            "inputs": [0],
+            "_output": [0],
+            "value_inputs": ["purple"]
+        },
+        {
+            "function": "filter_shape",
+            "inputs": [1],
+            "_output": [0],
+            "value_inputs": ["cylinder"]
+        },
+        {
+            "function": "unique",
+            "inputs": [2],
+            "_output": 0,
+            "value_inputs": []
+        },
+        {
+            "function": "relate",
+            "inputs": [3],
+            "_output": [],
+            "value_inputs": ["right"]
+        },
+        {
+            "function": "filter_color",
+            "inputs": [4],
+            "_output": [],
+            "value_inputs": ["purple"]
+        },
+        {
+            "function": "filter_material",
+            "inputs": [5],
+            "_output": [],
+            "value_inputs": ["rubber"]
+        },
+        {
+            "function": "filter_shape",
+            "inputs": [6],
+            "_output": [],
+            "value_inputs": ["cylinder"]
+        },
+        {
+            "function": "count",
+            "inputs": [7],
+            "_output": 0,
+            "value_inputs": []
+        }],
+        "answer": "no",
+        "template_filename": "all_attributes.json",
+        "question_family_index": 0,
+        "question_index": 28
+    },
+    {
+        "split": "val",
+        "image_filename": "CLEVR_val_000008.png",
+        "image_index": 8,
+        "image": "CLEVR_val_000008",
+        "caption": "large yellow rubber object is right of the small thing",
+        "program": [
+        {
+            "function": "scene",
+            "inputs": [],
+            "_output": [0, 1],
+            "value_inputs": []
+        },
+        {
+            "function": "filter_size",
+            "inputs": [0],
+            "_output": [0],
+            "value_inputs": ["small"]
+        },
+        {
+            "function": "unique",
+            "inputs": [1],
+            "_output": 0,
+            "value_inputs": []
+        },
+        {
+            "function": "relate",
+            "inputs": [2],
+            "_output": [],
+            "value_inputs": ["right"]
+        },
+        {
+            "function": "filter_size",
+            "inputs": [3],
+            "_output": [],
+            "value_inputs": ["large"]
+        },
+        {
+            "function": "filter_color",
+            "inputs": [4],
+            "_output": [],
+            "value_inputs": ["yellow"]
+        },
+        {
+            "function": "filter_material",
+            "inputs": [5],
+            "_output": [],
+            "value_inputs": ["rubber"]
+        },
+        {
+            "function": "count",
+            "inputs": [6],
+            "_output": 0,
+            "value_inputs": []
+        }],
+        "answer": "no",
+        "template_filename": "3_attributes.json",
+        "question_family_index": 1,
+        "question_index": 29
+    },
+    {
+        "split": "val",
+        "image_filename": "CLEVR_val_000008.png",
+        "image_index": 8,
+        "image": "CLEVR_val_000008",
+        "caption": "thing is to the right of the yellow matte sphere",
+        "program": [
+        {
+            "function": "scene",
+            "inputs": [],
+            "_output": [0, 1],
+            "value_inputs": []
+        },
+        {
+            "function": "filter_color",
+            "inputs": [0],
+            "_output": [1],
+            "value_inputs": ["yellow"]
+        },
+        {
+            "function": "filter_material",
+            "inputs": [1],
+            "_output": [1],
+            "value_inputs": ["rubber"]
+        },
+        {
+            "function": "filter_shape",
+            "inputs": [2],
+            "_output": [1],
+            "value_inputs": ["sphere"]
+        },
+        {
+            "function": "unique",
+            "inputs": [3],
+            "_output": 1,
+            "value_inputs": []
+        },
+        {
+            "function": "relate",
+            "inputs": [4],
+            "_output": [0],
+            "value_inputs": ["right"]
+        },
+        {
+            "function": "count",
+            "inputs": [5],
+            "_output": 1,
+            "value_inputs": []
+        }],
+        "answer": "yes",
+        "template_filename": "3_attributes.json",
+        "question_family_index": 0,
+        "question_index": 30
+    },
+    {
+        "split": "val",
+        "image_filename": "CLEVR_val_000008.png",
+        "image_index": 8,
+        "image": "CLEVR_val_000008",
+        "caption": "small rubber block is left of the large thing",
+        "program": [
+        {
+            "function": "scene",
+            "inputs": [],
+            "_output": [0, 1],
+            "value_inputs": []
+        },
+        {
+            "function": "filter_size",
+            "inputs": [0],
+            "_output": [1],
+            "value_inputs": ["large"]
+        },
+        {
+            "function": "unique",
+            "inputs": [1],
+            "_output": 1,
+            "value_inputs": []
+        },
+        {
+            "function": "relate",
+            "inputs": [2],
+            "_output": [],
+            "value_inputs": ["left"]
+        },
+        {
+            "function": "filter_size",
+            "inputs": [3],
+            "_output": [],
+            "value_inputs": ["small"]
+        },
+        {
+            "function": "filter_material",
+            "inputs": [4],
+            "_output": [],
+            "value_inputs": ["rubber"]
+        },
+        {
+            "function": "filter_shape",
+            "inputs": [5],
+            "_output": [],
+            "value_inputs": ["cube"]
+        },
+        {
+            "function": "count",
+            "inputs": [6],
+            "_output": 0,
+            "value_inputs": []
+        }],
+        "answer": "no",
+        "template_filename": "3_attributes.json",
+        "question_family_index": 2,
+        "question_index": 31
+    },
+    {
+        "split": "val",
+        "image_filename": "CLEVR_val_000008.png",
+        "image_index": 8,
+        "image": "CLEVR_val_000008",
+        "caption": "There is a big yellow rubber ball; a big yellow thing is on the left side of it",
+        "program": [
+        {
+            "function": "scene",
+            "inputs": [],
+            "_output": [0, 1],
+            "value_inputs": []
+        },
+        {
+            "function": "filter_size",
+            "inputs": [0],
+            "_output": [1],
+            "value_inputs": ["large"]
+        },
+        {
+            "function": "filter_color",
+            "inputs": [1],
+            "_output": [1],
+            "value_inputs": ["yellow"]
+        },
+        {
+            "function": "filter_material",
+            "inputs": [2],
+            "_output": [1],
+            "value_inputs": ["rubber"]
+        },
+        {
+            "function": "filter_shape",
+            "inputs": [3],
+            "_output": [1],
+            "value_inputs": ["sphere"]
+        },
+        {
+            "function": "unique",
+            "inputs": [4],
+            "_output": 1,
+            "value_inputs": []
+        },
+        {
+            "function": "relate",
+            "inputs": [5],
+            "_output": [],
+            "value_inputs": ["left"]
+        },
+        {
+            "function": "filter_size",
+            "inputs": [6],
+            "_output": [],
+            "value_inputs": ["large"]
+        },
+        {
+            "function": "filter_color",
+            "inputs": [7],
+            "_output": [],
+            "value_inputs": ["yellow"]
+        },
+        {
+            "function": "count",
+            "inputs": [8],
+            "_output": 0,
+            "value_inputs": []
+        }],
+        "answer": "no",
+        "template_filename": "all_attributes.json",
+        "question_family_index": 0,
+        "question_index": 32
+    },
+    {
+        "split": "val",
+        "image_filename": "CLEVR_val_000009.png",
+        "image_index": 9,
+        "image": "CLEVR_val_000009",
+        "caption": "There is a green matte sphere; the big brown thing is right of it",
+        "program": [
+        {
+            "function": "scene",
+            "inputs": [],
+            "_output": [0, 1],
+            "value_inputs": []
+        },
+        {
+            "function": "filter_color",
+            "inputs": [0],
+            "_output": [0],
+            "value_inputs": ["green"]
+        },
+        {
+            "function": "filter_material",
+            "inputs": [1],
+            "_output": [0],
+            "value_inputs": ["rubber"]
+        },
+        {
+            "function": "filter_shape",
+            "inputs": [2],
+            "_output": [0],
+            "value_inputs": ["sphere"]
+        },
+        {
+            "function": "unique",
+            "inputs": [3],
+            "_output": 0,
+            "value_inputs": []
+        },
+        {
+            "function": "relate",
+            "inputs": [4],
+            "_output": [1],
+            "value_inputs": ["right"]
+        },
+        {
+            "function": "filter_size",
+            "inputs": [5],
+            "_output": [1],
+            "value_inputs": ["large"]
+        },
+        {
+            "function": "filter_color",
+            "inputs": [6],
+            "_output": [1],
+            "value_inputs": ["brown"]
+        },
+        {
+            "function": "count",
+            "inputs": [7],
+            "_output": 1,
+            "value_inputs": []
+        }],
+        "answer": "yes",
+        "template_filename": "3_attributes.json",
+        "question_family_index": 0,
+        "question_index": 33
+    },
+    {
+        "split": "val",
+        "image_filename": "CLEVR_val_000009.png",
+        "image_index": 9,
+        "image": "CLEVR_val_000009",
+        "caption": "There is a big green thing; the green sphere is behind it",
+        "program": [
+        {
+            "function": "scene",
+            "inputs": [],
+            "_output": [0, 1],
+            "value_inputs": []
+        },
+        {
+            "function": "filter_size",
+            "inputs": [0],
+            "_output": [0, 1],
+            "value_inputs": ["large"]
+        },
+        {
+            "function": "filter_color",
+            "inputs": [1],
+            "_output": [0],
+            "value_inputs": ["green"]
+        },
+        {
+            "function": "unique",
+            "inputs": [2],
+            "_output": 0,
+            "value_inputs": []
+        },
+        {
+            "function": "relate",
+            "inputs": [3],
+            "_output": [],
+            "value_inputs": ["behind"]
+        },
+        {
+            "function": "filter_color",
+            "inputs": [4],
+            "_output": [],
+            "value_inputs": ["green"]
+        },
+        {
+            "function": "filter_shape",
+            "inputs": [5],
+            "_output": [],
+            "value_inputs": ["sphere"]
+        },
+        {
+            "function": "count",
+            "inputs": [6],
+            "_output": 0,
+            "value_inputs": []
+        }],
+        "answer": "no",
+        "template_filename": "3_attributes.json",
+        "question_family_index": 2,
+        "question_index": 34
+    },
+    {
+        "split": "val",
+        "image_filename": "CLEVR_val_000009.png",
+        "image_index": 9,
+        "image": "CLEVR_val_000009",
+        "caption": "A shiny thing is on the right side of the brown metallic object",
+        "program": [
+        {
+            "function": "scene",
+            "inputs": [],
+            "_output": [0, 1],
+            "value_inputs": []
+        },
+        {
+            "function": "filter_color",
+            "inputs": [0],
+            "_output": [1],
+            "value_inputs": ["brown"]
+        },
+        {
+            "function": "filter_material",
+            "inputs": [1],
+            "_output": [1],
+            "value_inputs": ["metal"]
+        },
+        {
+            "function": "unique",
+            "inputs": [2],
+            "_output": 1,
+            "value_inputs": []
+        },
+        {
+            "function": "relate",
+            "inputs": [3],
+            "_output": [],
+            "value_inputs": ["right"]
+        },
+        {
+            "function": "filter_material",
+            "inputs": [4],
+            "_output": [],
+            "value_inputs": ["metal"]
+        },
+        {
+            "function": "count",
+            "inputs": [5],
+            "_output": 0,
+            "value_inputs": []
+        }],
+        "answer": "no",
+        "template_filename": "all_attributes.json",
+        "question_family_index": 0,
+        "question_index": 35
+    }]
+}

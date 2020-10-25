@@ -4,11 +4,11 @@ tests_output
 demo/temp
 embd_viz
 
-data
+#data
 #data/*
 #demo/captions/*
-#!demo
-demo/.ipynb_checkpoints
+demo
+#demo/.ipynb_checkpoints
 .idea
 *.npy
 

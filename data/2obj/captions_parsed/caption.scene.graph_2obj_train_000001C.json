@@ -1,0 +1,48 @@
+{
+    "relationships": [
+    {
+        "predicate": "in front of",
+        "subject": 0,
+        "text": ["metal sphere", "in front of", "rubber cylinder"],
+        "object": 1
+    }],
+    "phrase": "The large brown metal sphere is in front of a small red rubber cylinder",
+    "objects": [
+    {
+        "names": ["metal sphere"]
+    },
+    {
+        "names": ["rubber cylinder"]
+    }],
+    "attributes": [
+    {
+        "predicate": "is",
+        "subject": 0,
+        "attribute": "large",
+        "text": ["metal sphere", "is", "large"],
+        "object": "large"
+    },
+    {
+        "predicate": "is",
+        "subject": 0,
+        "attribute": "brown",
+        "text": ["metal sphere", "is", "brown"],
+        "object": "brown"
+    },
+    {
+        "predicate": "is",
+        "subject": 1,
+        "attribute": "small",
+        "text": ["rubber cylinder", "is", "small"],
+        "object": "small"
+    },
+    {
+        "predicate": "is",
+        "subject": 1,
+        "attribute": "red",
+        "text": ["rubber cylinder", "is", "red"],
+        "object": "red"
+    }],
+    "id": 1,
+    "url": "2obj\/images\/train\/CLEVR_train_000001.png"
+}

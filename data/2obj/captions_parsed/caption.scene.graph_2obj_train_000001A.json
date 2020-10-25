@@ -1,0 +1,48 @@
+{
+    "relationships": [
+    {
+        "predicate": "behind",
+        "subject": 0,
+        "text": ["rubber cylinder", "behind", "metal sphere"],
+        "object": 1
+    }],
+    "phrase": "A small red rubber cylinder is behind a large brown metal sphere",
+    "objects": [
+    {
+        "names": ["rubber cylinder"]
+    },
+    {
+        "names": ["metal sphere"]
+    }],
+    "attributes": [
+    {
+        "predicate": "is",
+        "subject": 0,
+        "attribute": "small",
+        "text": ["rubber cylinder", "is", "small"],
+        "object": "small"
+    },
+    {
+        "predicate": "is",
+        "subject": 0,
+        "attribute": "red",
+        "text": ["rubber cylinder", "is", "red"],
+        "object": "red"
+    },
+    {
+        "predicate": "is",
+        "subject": 1,
+        "attribute": "large",
+        "text": ["metal sphere", "is", "large"],
+        "object": "large"
+    },
+    {
+        "predicate": "is",
+        "subject": 1,
+        "attribute": "brown",
+        "text": ["metal sphere", "is", "brown"],
+        "object": "brown"
+    }],
+    "id": 1,
+    "url": "2obj\/images\/train\/CLEVR_train_000001.png"
+}
