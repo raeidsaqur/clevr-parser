@@ -107,13 +107,11 @@ satisfying the `Parser` interface signature (e.g. `parse(..)`).
 ## Citing
 If you use any part of this library in your research, please cite it using the following BibTex entry
 ```latex
-@misc{ClevrParser,
-  author = {Raeid Saqur, Ameet Deshpande},
-  title = {ClevrParser: A graph parser library for geometric learning on CLEVR Dataset},
-  year = {2020},
-  publisher = {GitHub},
-  journal = {GitHub Repository},
-  howpublished = {\url{https://github.com/raeidsaqur/clevr-parser}},
+@article{saqur2020clevr,
+  title={CLEVR Parser: A Graph Parser Library for Geometric Learning on Language Grounded Image Scenes},
+  author={Saqur, Raeid and Deshpande, Ameet},
+  journal={arXiv preprint arXiv:2009.09154},
+  year={2020}
 }
 ```
 
