@@ -26,6 +26,7 @@ from clevr_parser import setup_logging
 from clevr_parser.utils import *
 from spacy.pipeline import EntityRuler
 from spacy.tokens import Doc, Span, Token
+from spacy.language import Language
 
 logger = setup_logging(__name__, log_level=logging.INFO)
 
@@ -188,12 +189,13 @@ class CLEVRObjectRecognizer(object):
 		if nlp == None:
 			raise ValueError("nlp can NOT be None")
 		pipeline, _ = zip(*nlp.pipeline)
-		if ruler.name not in pipeline:
+		if ruler.name not in pipeline or force:
 			#print(f"Adding {ruler.name} at {hex(id(ruler))} in pipeline at {hex(id(nlp))}")
-			if after:
-				nlp.add_pipe(ruler, after=adj_comp)
-			else:
-				nlp.add_pipe(ruler, before=adj_comp)
+			# if after:
+			# 	nlp.add_pipe(ruler, after=adj_comp)
+			# else:
+			# 	nlp.add_pipe(ruler, before=adj_comp)
+			nlp.add_pipe(ruler, after=adj_comp if after else "ner", force=force)
 		else:
 			logger.warning(f"{ruler.name} already exists in pipeline\n\t{pipeline}")
 			if force:
@@ -294,3 +296,20 @@ class CLEVRObjectRecognizer(object):
 					token.tag_,
 					token._.is_color
 				))
+
+
+
+
+## Updated on 2024-09-17: spacy 3.x compatibility
+# https://spacy.io/api/language#component
+
+
+# Register the custom component for spaCy 3.x
+@Language.component("clevr_object_recognizer")
+def clevr_object_recognizer_component(nlp, name):
+    return CLEVRObjectRecognizer(nlp)
+
+# # https://spacy.io/api/language#factory
+# @Language.factory("clevr_object_recognizer")
+# def create_clevr_object_recognizer(nlp, name):
+#     return CLEVRObjectRecognizer(nlp)

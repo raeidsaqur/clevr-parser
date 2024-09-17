@@ -56,9 +56,16 @@ def _start_end(arrow):
     return start, end, mn, mx
 
 def print_parse_info(nlp, sent):
-    unicode_type = unicode if sys.version_info[0] < 3 else str
-    assert type(sent) is unicode_type
+    # unicode_type = unicode if sys.version_info[0] < 3 else str
+    # assert type(sent) is unicode_type
+    # if sys.version_info[0] < 3:
+    #     if not isinstance(sent, unicode):
+    #         raise TypeError("Input sentence must be a unicode string in Python 2.")
+    # else:
+    #     if not isinstance(sent, str):
+    #         raise TypeError("Input sentence must be a string in Python 3.")
 
+    assert isinstance(sent, str), "Input sentence must be of type 'str'"
     doc = nlp(sent)
     return print_parse(doc)
 
