@@ -15,7 +15,9 @@ import logging
 
 from clevr_parser import setup_logging
 from clevr_parser.utils import *
+from clevr_parser.config import config_entity_ruler
 from spacy.pipeline import EntityRuler
+from spacy.language import Language
 
 logger = setup_logging(__name__, log_level=logging.DEBUG)
 
@@ -28,10 +30,20 @@ class MatchingRecognizer(object):
     def __init__(self, nlp, label="MATCHING_RE", **kwargs):
         self.label = nlp.vocab.strings[label]
         self.nlp = nlp
-        self.ruler = EntityRuler(nlp, overwrite_ents=False, validate=True)
+        
+        # self.ruler = EntityRuler(nlp, overwrite_ents=False, validate=True)
+        ruler_name = f"entity_ruler_{self.name}"
+        # ruler_name = f"{self.name}"  # will create cyclic loop
+        self.ruler = EntityRuler(nlp, name=ruler_name, **config_entity_ruler)
+
         self.is_debug = kwargs.get("is_debug")
         try:
-            self.ruler = self.ruler.from_disk("../_data/matching-re-patterns.jsonl")
+            # Check if the file exists in the first location
+            file_path = "../_data/matching-re-patterns.jsonl"
+            if not os.path.exists(file_path):
+                # If not found, check the second location
+                file_path = "./_data/matching-re-patterns.jsonl"
+            self.ruler = self.ruler.from_disk(file_path)
             self._add_ruler_to_pipeline(nlp, self.ruler)
         except ValueError as ve:
             if self.is_debug:
@@ -67,9 +79,17 @@ class MatchingRecognizer(object):
 
         self._add_ruler_to_pipeline(self.nlp, self.ruler)
 
-    def _add_ruler_to_pipeline(self, nlp, ruler, name="matching_entity_ruler"):
+    # def _add_ruler_to_pipeline(self, nlp, ruler, name="matching_entity_ruler"):
+    def _add_ruler_to_pipeline(self, nlp, ruler, name="entity_ruler_matching_recognizer"):
         if nlp.has_pipe(name):
             nlp.replace_pipe(name, self.ruler)
         else:
-            nlp.add_pipe(self.ruler, name=name, last=True)
+            # nlp.add_pipe(self.ruler, name=name, last=True)
+            nlp.add_pipe(name, last=True) 
 
+
+
+# Register the custom component for spaCy 3.x
+@Language.component("matching_recognizer")
+def clevr_matching_recognizer_component(nlp, name):
+    return MatchingRecognizer(nlp)

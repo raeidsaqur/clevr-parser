@@ -62,6 +62,16 @@ class SpacyParser(ParserBackend):
             self.__nlp = spacy.load(model)
         except OSError as e:
             raise ImportError('Unable to load the English model. Run `python -m spacy download en` first.') from e
+        
+        # RS Update [Sep 17, 2024]: Spacy 3.x compability fix: decorators
+        # Adding components to the pipeline
+        self.__nlp.add_pipe("clevr_object_recognizer", before="ner")
+        if kwargs.get('has_spatial'):
+            self.__nlp.add_pipe("clevr_spatial_recognizer", after="clevr_object_recognizer")
+        if kwargs.get('has_matching'):
+            self.__nlp.add_pipe("clevr_matching_recognizer", after="clevr_object_recognizer")
+
+        # End of RS Update [Sep 17, 2024]
 
         self.__entity_recognizer = CLEVRObjectRecognizer(self.__nlp)
         self.__spatial_recognizer = None

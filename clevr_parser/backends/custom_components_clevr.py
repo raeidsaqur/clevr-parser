@@ -24,6 +24,7 @@ from typing import List, Dict
 
 from clevr_parser import setup_logging
 from clevr_parser.utils import *
+from clevr_parser.config import config_entity_ruler
 from spacy.pipeline import EntityRuler
 from spacy.tokens import Doc, Span, Token
 from spacy.language import Language
@@ -61,13 +62,29 @@ class CLEVRObjectRecognizer(object):
 		self._init_constants()
 		self._add_custom_spacy_extensions()
 		patterns = self.construct_patterns()
-		self.ruler = EntityRuler(nlp, phrase_matcher_attr=None, overwrite_ents=False, validate=True)
+
+		# update in config.config_entity_ruler
+		# config_entity_ruler = {
+		# 	"phrase_matcher_attr": None,
+		# 	"validate": True,
+		# 	"overwrite_ents": False,
+		# 	"ent_id_sep": "||",
+		# } 
+
+		# self.ruler = EntityRuler(nlp, phrase_matcher_attr=None, overwrite_ents=False, validate=True)  # Old spacy = 2.x
+		# self.ruler = EntityRuler(nlp, name="entity_ruler_clevr_object_recognizer", **config_entity_ruler)
+		# self.ruler = EntityRuler(nlp, name=f"entity_ruler_{self.name}", **config_entity_ruler)
+		# ruler_name = f"{self.name}"
+		ruler_name = f"entity_ruler_{self.name}"
+		self.ruler = EntityRuler(nlp, name=ruler_name, **config_entity_ruler)
 		self.ruler.add_patterns(patterns)					# label: CLEVR_OBJ
 		plural_patterns = self.construct_plural_patterns()  # label: CLEVR_OBJS
 		if self.include_plurals:
 			self.ruler.add_patterns(plural_patterns)
-
-		self._add_ruler_to_pipeline(nlp, self.ruler, force=True)
+		
+		# Add ruler to pipeline: Customized
+		# nlp.add_pipe("entity_ruler", config=config) 
+		self._add_ruler_to_pipeline(nlp, self.ruler, force=False)
 
 	@staticmethod
 	def is_equal_size(attr1:str, attr2:str) -> bool:
@@ -189,13 +206,12 @@ class CLEVRObjectRecognizer(object):
 		if nlp == None:
 			raise ValueError("nlp can NOT be None")
 		pipeline, _ = zip(*nlp.pipeline)
-		if ruler.name not in pipeline or force:
-			#print(f"Adding {ruler.name} at {hex(id(ruler))} in pipeline at {hex(id(nlp))}")
-			# if after:
-			# 	nlp.add_pipe(ruler, after=adj_comp)
-			# else:
-			# 	nlp.add_pipe(ruler, before=adj_comp)
-			nlp.add_pipe(ruler, after=adj_comp if after else "ner", force=force)
+		if ruler.name not in pipeline:
+			# print(f"Adding {ruler.name} at {hex(id(ruler))} in pipeline at {hex(id(nlp))}")
+			if after:
+				nlp.add_pipe(ruler.name, after=adj_comp)
+			else:
+				nlp.add_pipe(ruler.name, before=adj_comp)
 		else:
 			logger.warning(f"{ruler.name} already exists in pipeline\n\t{pipeline}")
 			if force:
@@ -304,12 +320,12 @@ class CLEVRObjectRecognizer(object):
 # https://spacy.io/api/language#component
 
 
-# Register the custom component for spaCy 3.x
-@Language.component("clevr_object_recognizer")
-def clevr_object_recognizer_component(nlp, name):
-    return CLEVRObjectRecognizer(nlp)
+# # Register the custom component for spaCy 3.x
+# @Language.component("clevr_object_recognizer")
+# def clevr_object_recognizer_component(nlp, name):
+#     return CLEVRObjectRecognizer(nlp)
 
 # # https://spacy.io/api/language#factory
-# @Language.factory("clevr_object_recognizer")
-# def create_clevr_object_recognizer(nlp, name):
-#     return CLEVRObjectRecognizer(nlp)
+@Language.factory("clevr_object_recognizer")
+def create_clevr_object_recognizer(nlp, name):
+    return CLEVRObjectRecognizer(nlp)

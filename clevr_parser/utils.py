@@ -40,12 +40,13 @@ __all__ = ['combine_en_graphs','compose_multimodal_graphs', 'draw_adjacency_matr
            'load_captions_and_groundings',
            'load_texts_and_groundings',
            'get_Gunion',
-           'get_Gunion_connected']
+           'get_Gunion_connected',]
 
 
 print_dash = lambda x: print(f"\n" + "-" * x + "\n")
 print_star = lambda x: print(f"\n" + "*" * x + "\n")
 print_eq = lambda x: print(f"\n" + "=" * x   + "\n")
+
 
 
 def invert_dict(d):
